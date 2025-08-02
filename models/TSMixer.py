@@ -37,7 +37,7 @@ class Model(nn.Module):
                                     for _ in range(configs.e_layers)])
         self.pred_len = configs.pred_len
         self.projection = nn.Linear(configs.seq_len, configs.pred_len)
-         if self.prob_expert:
+        if self.prob_expert:
             self.unc_head = nn.Linear(configs.seq_len, configs.pred_len)
 
     def forecast(self, x_enc, x_mark_enc, x_dec, x_mark_dec, mask=None):

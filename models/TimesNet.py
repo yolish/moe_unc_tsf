@@ -130,7 +130,7 @@ class Model(nn.Module):
                   (means[:, 0, :].unsqueeze(1).repeat(
                       1, self.pred_len + self.seq_len, 1)))
 
-         if self.prob_expert:
+        if self.prob_expert:
             # Sigma for Prob models Decoder
             log_sq_sigma_out = self.unc_head(enc_out)  # z: [bs x nvars x target_window]
             log_sq_sigma_out = log_sq_sigma_out.permute(0, 2, 1)
@@ -145,18 +145,7 @@ class Model(nn.Module):
         return dec_out
 
 
-         if self.prob_expert:
-            # Sigma for Prob models Decoder
-            log_sq_sigma_out = self.unc_head(enc_out)  # z: [bs x nvars x target_window]
-            log_sq_sigma_out = log_sq_sigma_out.permute(0, 2, 1)
-
-            # De-Normalization from Non-stationary Transformer
-            log_sq_sigma_out = log_sq_sigma_out * \
-                    (stdev[:, 0, :].unsqueeze(1).repeat(1, self.pred_len, 1))
-            log_sq_sigma_out = log_sq_sigma_out + \
-                    (means[:, 0, :].unsqueeze(1).repeat(1, self.pred_len, 1))
-            return dec_out, log_sq_sigma_out
-
+        
     def imputation(self, x_enc, x_mark_enc, x_dec, x_mark_dec, mask):
         # Normalization from Non-stationary Transformer
         means = torch.sum(x_enc, dim=1) / torch.sum(mask == 1, dim=1)

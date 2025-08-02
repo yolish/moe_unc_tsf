@@ -3,10 +3,7 @@ import os
 import torch
 import torch.backends
 from exp.exp_long_term_forecasting import Exp_Long_Term_Forecast
-from exp.exp_imputation import Exp_Imputation
 from exp.exp_short_term_forecasting import Exp_Short_Term_Forecast
-from exp.exp_anomaly_detection import Exp_Anomaly_Detection
-from exp.exp_classification import Exp_Classification
 from utils.print_args import print_args
 import random
 import numpy as np
@@ -24,8 +21,8 @@ if __name__ == '__main__':
                         help='task name, options:[long_term_forecast, short_term_forecast, imputation, classification, anomaly_detection]')
     parser.add_argument('--is_training', type=int, required=True, default=1, help='status')
     parser.add_argument('--model_id', type=str, required=True, default='test', help='model id')
-    parser.add_argument('--model', type=str, required=True, default='Autoformer',
-                        help='model name, options: [Autoformer, Transformer, TimesNet]')
+    parser.add_argument('--model', type=str, required=True, default='PatchTST',
+                        help='model name, supported options: [PatchTST]')
     
     # moe and uncertainty
     parser.add_argument('--num_experts', type=int, default=1, help="value > 1 indicates MoE")
@@ -35,7 +32,7 @@ if __name__ == '__main__':
 
     # data loader
     parser.add_argument('--data', type=str, required=True, default='ETTh1', help='dataset type')
-    parser.add_argument('--root_path', type=str, default='./data/ETT/', help='root path of the data file')
+    parser.add_argument('--root_path', type=str, default='./data/long_term_forecast/ETT/', help='root path of the data file')
     parser.add_argument('--data_path', type=str, default='ETTh1.csv', help='data file')
     parser.add_argument('--features', type=str, default='M',
                         help='forecasting task, options:[M, S, MS]; M:multivariate predict multivariate, S:univariate predict univariate, MS:multivariate predict univariate')
@@ -50,7 +47,7 @@ if __name__ == '__main__':
     parser.add_argument('--pred_len', type=int, default=96, help='prediction sequence length')
     parser.add_argument('--seasonal_patterns', type=str, default='Monthly', help='subset for M4')
     parser.add_argument('--inverse', action='store_true', help='inverse output data', default=False)
-
+ 
     # inputation task
     parser.add_argument('--mask_rate', type=float, default=0.25, help='mask ratio')
 
@@ -101,8 +98,6 @@ if __name__ == '__main__':
     parser.add_argument('--des', type=str, default='test', help='exp description')
     parser.add_argument('--loss', type=str, default='MSE', help='loss function')
     parser.add_argument('--lradj', type=str, default='type1', help='adjust learning rate')
-    parser.add_argument('--use_amp', action='store_true', help='use automatic mixed precision training', default=False)
-
     # GPU
     parser.add_argument('--use_gpu', type=bool, default=True, help='use gpu')
     parser.add_argument('--gpu', type=int, default=0, help='gpu')
@@ -150,14 +145,14 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # MOE and uncertainty currently supported only for time long term forecasting
+    assert(args.task_name =='long_term_forecast' or args.task_name =='short_term_forecast'), "Current supporting only time series forecasting"
     args.moe = args.num_experts > 1
-    if args.unc_gating:
-        assert(args.prob_expert, "uncertainty based gating required probabilstic experts")
     if args.prob_expert or args.unc_gating:
-        assert(args.moe, "probabilistic experts and uncertainty derived gating only supported for MoE for now")
+        assert(args.moe), "probabilistic experts and uncertainty derived gating only supported for MoE for now"
     if args.moe:
-        assert(args.task =='long_term_forecast', "MoE only supported for long-time forecasting")
-
+        if args.unc_gating:
+            assert(args.prob_expert), "uncertainty based gating required probabilstic experts"
+        
 
     if torch.cuda.is_available() and args.use_gpu:
         args.device = torch.device('cuda:{}'.format(args.gpu))
@@ -182,12 +177,6 @@ if __name__ == '__main__':
         Exp = Exp_Long_Term_Forecast
     elif args.task_name == 'short_term_forecast':
         Exp = Exp_Short_Term_Forecast
-    elif args.task_name == 'imputation':
-        Exp = Exp_Imputation
-    elif args.task_name == 'anomaly_detection':
-        Exp = Exp_Anomaly_Detection
-    elif args.task_name == 'classification':
-        Exp = Exp_Classification
     else:
         Exp = Exp_Long_Term_Forecast
 
@@ -201,7 +190,7 @@ if __name__ == '__main__':
                 args.model,
                 args.data,
                 int(args.moe),
-                int(args.prob_moe),
+                int(args.prob_expert),
                 int(args.unc_gating),
                 args.features,
                 args.seq_len,

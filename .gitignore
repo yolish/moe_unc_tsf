@@ -6,6 +6,18 @@ __pycache__/
 # C extensions
 *.so
 
+# Data
+data/
+*.csv
+
+# Env
+unc_moe/
+
+#Results
+*.pdf
+*.npy
+*.pth 
+
 # Distribution / packaging
 .Python
 build/

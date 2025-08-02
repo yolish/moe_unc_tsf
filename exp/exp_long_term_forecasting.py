@@ -11,7 +11,6 @@ import warnings
 import numpy as np
 from utils.dtw_metric import dtw, accelerated_dtw
 from utils.augmentation import run_augmentation, run_augmentation_single
-from moe import MoE
 
 warnings.filterwarnings('ignore')
 
@@ -23,9 +22,9 @@ class Exp_Long_Term_Forecast(Exp_Basic):
     def _build_model(self):
         expert_model = self.model_dict[self.args.model].Model
         if self.args.moe:
-            model = MoE(self.args, expert_model).float()
+            model = self.model_dict['MoE'](self.args, expert_model).float()
         else:
-            model = expert_model.Model(self.args).float()
+            model = expert_model(self.args).float()
 
         if self.args.use_multi_gpu and self.args.use_gpu:
             model = nn.DataParallel(model, device_ids=self.args.device_ids)
@@ -62,71 +61,37 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
                 dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
                 # encoder - decoder
-                if self.args.use_amp:
-                    with torch.cuda.amp.autocast():
-                        if self.args.moe:
-                            outputs, expert_unc, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
-                            
-                            # MoE validation loss computation inside autocast
-                            f_dim = -1 if self.args.features == 'MS' else 0
-                            batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
-                            
-                            # Handle MoE validation loss with time-varying weights
-                            loss = 0
-                            if self.args.prob_expert:
-                                for i in range(self.args.num_experts):
-                                    expert_outputs = outputs[:, i, :]  # [batch_size, seq_len]
-                                    expert_loss = criterion(expert_outputs, batch_y) 
-                                    expert_weight = expert_weights[:, i, :]  # [batch_size, seq_len]
-                                    weighted_loss = expert_loss * expert_weight
-                                    loss += weighted_loss.mean()
-                            else:
-                                for i in range(self.args.num_experts):
-                                    expert_outputs = outputs[:, i, :]  # [batch_size, seq_len]
-                                    expert_loss = (expert_outputs - batch_y) ** 2  # Element-wise squared difference
-                                    expert_weight = expert_weights[:, i, :]  # [batch_size, seq_len]
-                                    weighted_loss = expert_loss * expert_weight
-                                    loss += weighted_loss.mean()
-                        else:
-                            outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
-                            f_dim = -1 if self.args.features == 'MS' else 0
-                            outputs = outputs[:, -self.args.pred_len:, f_dim:]
-                            batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
-                            pred = outputs.detach().cpu()
-                            true = batch_y.detach().cpu()
-                            loss = criterion(pred, true)
-                else:
-                    if self.args.moe:
-                        outputs, expert_unc, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
-                        
-                        # MoE validation loss computation
-                        f_dim = -1 if self.args.features == 'MS' else 0
-                        batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
-                        
-                        # Handle MoE validation loss with time-varying weights
-                        loss = 0
-                        if self.args.prob_expert:
-                                for i in range(self.args.num_experts):
-                                    expert_outputs = outputs[:, i, :]  # [batch_size, seq_len]
-                                    expert_loss = criterion(expert_outputs, batch_y) # Guassian NLL loss
-                                    expert_weight = expert_weights[:, i, :]  # [batch_size, seq_len]
-                                    weighted_loss = expert_loss * expert_weight
-                                    loss += weighted_loss.mean()
-                        else:
+                if self.args.moe:
+                    outputs, expert_unc, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                    
+                    # MoE validation loss computation
+                    f_dim = -1 if self.args.features == 'MS' else 0
+                    batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
+                    
+                    # Handle MoE validation loss with time-varying weights
+                    loss = 0
+                    if self.args.prob_expert:
                             for i in range(self.args.num_experts):
                                 expert_outputs = outputs[:, i, :]  # [batch_size, seq_len]
-                                expert_loss = (expert_outputs - batch_y) ** 2  # Element-wise squared difference
+                                expert_loss = criterion(expert_outputs, batch_y) # Guassian NLL loss
                                 expert_weight = expert_weights[:, i, :]  # [batch_size, seq_len]
                                 weighted_loss = expert_loss * expert_weight
                                 loss += weighted_loss.mean()
                     else:
-                        outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
-                        f_dim = -1 if self.args.features == 'MS' else 0
-                        outputs = outputs[:, -self.args.pred_len:, f_dim:]
-                        batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
-                        pred = outputs.detach().cpu()
-                        true = batch_y.detach().cpu()
-                        loss = criterion(pred, true)
+                        for i in range(self.args.num_experts):
+                            expert_outputs = outputs[:, i, :]  # [batch_size, seq_len]
+                            expert_loss = (expert_outputs - batch_y) ** 2  # Element-wise squared difference
+                            expert_weight = expert_weights[:, i, :]  # [batch_size, seq_len]
+                            weighted_loss = expert_loss * expert_weight
+                            loss += weighted_loss.mean()
+                else:
+                    outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                    f_dim = -1 if self.args.features == 'MS' else 0
+                    outputs = outputs[:, -self.args.pred_len:, f_dim:]
+                    batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
+                    pred = outputs.detach().cpu()
+                    true = batch_y.detach().cpu()
+                    loss = criterion(pred, true)
 
                 total_loss.append(loss)
         total_loss = np.average(total_loss)
@@ -150,9 +115,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         model_optim = self._select_optimizer()
         criterion = self._select_criterion()
 
-        if self.args.use_amp:
-            scaler = torch.cuda.amp.GradScaler()
-
         for epoch in range(self.args.train_epochs):
             iter_count = 0
             train_loss = []
@@ -172,62 +134,29 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
 
                 # encoder - decoder
-                if self.args.use_amp:
-                    with torch.cuda.amp.autocast():
-                        if self.args.moe:
-                            outputs, expert_unc, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
-                            
-                            # MoE loss computation inside autocast
-                            f_dim = -1 if self.args.features == 'MS' else 0
-                            batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
-                            
-                            # loss is a weighted sum of the loss of each expert per time step 
-                            loss = 0
-                            # expert_weights shape: [batch_size, num_experts, seq_len]
-                            if self.args.prob_expert:
-                                for i in range(self.args.num_experts):
-                                    expert_outputs = outputs[:, i, :]  # [batch_size, seq_len]
-                                    expert_loss = criterion(expert_outputs, batch_y) 
-                                    expert_weight = expert_weights[:, i, :]  # [batch_size, seq_len]
-                                    weighted_loss = expert_loss * expert_weight
-                                    loss += weighted_loss.mean()
-                            else:
-                                for i in range(self.args.num_experts):
-                                    expert_outputs = outputs[:, i, :]  # [batch_size, seq_len]
-                                    expert_loss = (expert_outputs - batch_y) ** 2  # Element-wise squared difference
-                                    expert_weight = expert_weights[:, i, :]  # [batch_size, seq_len]
-                                    weighted_loss = expert_loss * expert_weight
-                                    loss += weighted_loss.mean()
-                        else:
-                            outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
-                            f_dim = -1 if self.args.features == 'MS' else 0
-                            outputs = outputs[:, -self.args.pred_len:, f_dim:]
-                            batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
-                            loss = criterion(outputs, batch_y)
+                if self.args.moe:
+                    outputs, expert_unc, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                    
+                    # MoE loss computation
+                    f_dim = -1 if self.args.features == 'MS' else 0
+                    batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
+                    
+                    # loss is a weighted sum of the loss of each expert per time step 
+                    loss = 0
+                    # expert_weights shape: [batch_size, num_experts, seq_len]
+                    for i in range(self.args.num_experts):
+                        expert_outputs = outputs[:, i, :]  # [batch_size, seq_len]
+                        expert_loss = (expert_outputs - batch_y) ** 2  # Element-wise squared difference
+                        expert_weight = expert_weights[:, i, :]  # [batch_size, seq_len]
+                        # Element-wise multiplication and sum
+                        weighted_loss = expert_loss * expert_weight
+                        loss += weighted_loss.mean()  # Average across batch and time
                 else:
-                    if self.args.moe:
-                        outputs, expert_unc, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
-                        
-                        # MoE loss computation
-                        f_dim = -1 if self.args.features == 'MS' else 0
-                        batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
-                        
-                        # loss is a weighted sum of the loss of each expert per time step 
-                        loss = 0
-                        # expert_weights shape: [batch_size, num_experts, seq_len]
-                        for i in range(self.args.num_experts):
-                            expert_outputs = outputs[:, i, :]  # [batch_size, seq_len]
-                            expert_loss = (expert_outputs - batch_y) ** 2  # Element-wise squared difference
-                            expert_weight = expert_weights[:, i, :]  # [batch_size, seq_len]
-                            # Element-wise multiplication and sum
-                            weighted_loss = expert_loss * expert_weight
-                            loss += weighted_loss.mean()  # Average across batch and time
-                    else:
-                        outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
-                        f_dim = -1 if self.args.features == 'MS' else 0
-                        outputs = outputs[:, -self.args.pred_len:, f_dim:]
-                        batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
-                        loss = criterion(outputs, batch_y)
+                    outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                    f_dim = -1 if self.args.features == 'MS' else 0
+                    outputs = outputs[:, -self.args.pred_len:, f_dim:]
+                    batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
+                    loss = criterion(outputs, batch_y)
                     
                 train_loss.append(loss.item())
 
@@ -239,13 +168,9 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     iter_count = 0
                     time_now = time.time()
 
-                if self.args.use_amp:
-                    scaler.scale(loss).backward()
-                    scaler.step(model_optim)
-                    scaler.update()
-                else:
-                    loss.backward()
-                    model_optim.step()
+                
+                loss.backward()
+                model_optim.step()
 
             print("Epoch: {} cost time: {}".format(epoch + 1, time.time() - epoch_time))
             train_loss = np.average(train_loss)
@@ -293,17 +218,10 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
                 dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
                 # encoder - decoder
-                if self.args.use_amp:
-                    with torch.cuda.amp.autocast():
-                        if self.args.moe:
-                            outputs, expert_unc, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
-                        else:
-                            outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                if self.args.moe:
+                    outputs, expert_unc, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
                 else:
-                    if self.args.moe:
-                        outputs, expert_unc, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
-                    else:
-                        outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                    outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
             
                 f_dim = -1 if self.args.features == 'MS' else 0
                 outputs = outputs[:, -self.args.pred_len:, :]

@@ -22,7 +22,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
     def _build_model(self):
         expert_model = self.model_dict[self.args.model].Model
         if self.args.moe:
-            model = self.model_dict['MoE'](self.args, expert_model).float()
+            model = self.model_dict['MoE'].Model(self.args, expert_model).float()
         else:
             model = expert_model(self.args).float()
 
@@ -39,11 +39,37 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         return model_optim
 
     def _select_criterion(self):
-        if self.args.prob_expert:
-            criterion = nn.GaussianNLLLoss(reduction='none')
+        if self.args.moe:
+            if self.args.prob_expert:
+                criterion = nn.GaussianNLLLoss(reduction='none')
+            else:
+                criterion = nn.MSELoss(reduction='none')
+
         else:
             criterion = nn.MSELoss()
         return criterion
+    
+    def moe_loss(self, outputs, expert_unc, expert_weights, batch_y, criterion):
+        # loss is a weighted sum of the loss of each expert per time step 
+        loss = 0
+        weighted_loss = None
+        # expert_weights shape: [batch_size, num_experts, pred_len]
+        for i in range(self.args.num_experts):
+            expert_outputs = outputs[:, i, :, :]  # [batch_size, pred_len, num_features]
+            expert_i_unc = expert_unc[:, i, :, :]
+            if self.args.prob_expert: # guassian NLL
+                expert_loss = criterion(expert_outputs,batch_y, expert_i_unc)
+            else:
+                expert_loss = criterion(expert_outputs,batch_y)
+            expert_weight = expert_weights[:, i, :]  #  [batch_size, pred_len, feaatures]
+            # Element-wise multiplication and sum   
+            if weighted_loss is None:
+                weighted_loss = expert_loss * expert_weight
+            else:
+                weighted_loss += expert_loss * expert_weight
+        
+        loss = weighted_loss.sum(dim=[1,2]).mean(dim=0) 
+        return loss  
  
 
     def vali(self, vali_data, vali_loader, criterion):
@@ -67,23 +93,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     # MoE validation loss computation
                     f_dim = -1 if self.args.features == 'MS' else 0
                     batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
-                    
-                    # Handle MoE validation loss with time-varying weights
-                    loss = 0
-                    if self.args.prob_expert:
-                            for i in range(self.args.num_experts):
-                                expert_outputs = outputs[:, i, :]  # [batch_size, seq_len]
-                                expert_loss = criterion(expert_outputs, batch_y) # Guassian NLL loss
-                                expert_weight = expert_weights[:, i, :]  # [batch_size, seq_len]
-                                weighted_loss = expert_loss * expert_weight
-                                loss += weighted_loss.mean()
-                    else:
-                        for i in range(self.args.num_experts):
-                            expert_outputs = outputs[:, i, :]  # [batch_size, seq_len]
-                            expert_loss = (expert_outputs - batch_y) ** 2  # Element-wise squared difference
-                            expert_weight = expert_weights[:, i, :]  # [batch_size, seq_len]
-                            weighted_loss = expert_loss * expert_weight
-                            loss += weighted_loss.mean()
+                    loss = self.moe_loss(outputs, expert_unc, expert_weights, batch_y, criterion) 
                 else:
                     outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
                     f_dim = -1 if self.args.features == 'MS' else 0
@@ -93,7 +103,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     true = batch_y.detach().cpu()
                     loss = criterion(pred, true)
 
-                total_loss.append(loss)
+                total_loss.append(loss.cpu().numpy())
         total_loss = np.average(total_loss)
         self.model.train()
         return total_loss
@@ -140,17 +150,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     # MoE loss computation
                     f_dim = -1 if self.args.features == 'MS' else 0
                     batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
-                    
-                    # loss is a weighted sum of the loss of each expert per time step 
-                    loss = 0
-                    # expert_weights shape: [batch_size, num_experts, seq_len]
-                    for i in range(self.args.num_experts):
-                        expert_outputs = outputs[:, i, :]  # [batch_size, seq_len]
-                        expert_loss = (expert_outputs - batch_y) ** 2  # Element-wise squared difference
-                        expert_weight = expert_weights[:, i, :]  # [batch_size, seq_len]
-                        # Element-wise multiplication and sum
-                        weighted_loss = expert_loss * expert_weight
-                        loss += weighted_loss.mean()  # Average across batch and time
+
+                    loss = self.moe_loss(outputs, expert_unc, expert_weights, batch_y, criterion) 
                 else:
                     outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
                     f_dim = -1 if self.args.features == 'MS' else 0
@@ -239,11 +240,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 batch_y = batch_y[:, :, f_dim:]
 
                 if self.args.moe:
-                    # Stack expert outputs: [batch_size, num_experts, seq_len]
-                    per_expert_outputs = torch.stack(outputs, dim=1)
-                    # expert_weights is [batch_size, num_experts, seq_len]
-                    # predict y as sum of weighted outputs 
-                    outputs = torch.sum(per_expert_outputs * expert_weights, dim=1) # [batch_size, seq_len]
+                    outputs = np.sum(outputs * expert_weights.cpu().numpy(), axis=1) # [batch_size, seq_len, num_features]
                 else:
                     outputs = outputs
 
@@ -251,14 +248,16 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 true = batch_y
                 if self.args.moe:
                     # Stack expert uncertainties: [batch_size, num_experts, seq_len]
-                    per_expert_unc = torch.stack(expert_unc, dim=1)
-                    # Aleatoric uncertainty: weighted average of expert uncertainties
-                    aleatoric_unc = torch.sum(per_expert_unc * expert_weights, dim=1) # [batch_size, seq_len]
-                    # Epistemic uncertainty: weighted variance of expert predictions
-                    epistemic_unc = torch.sum(expert_weights * (per_expert_outputs - outputs.unsqueeze(1))**2, dim=1) # [batch_size, seq_len]
-                    # Total uncertainty: aleatoric + epistemic
-                    unc = aleatoric_unc + epistemic_unc
-                    uncertainties.append(unc)
+                    if self.args.prob_expert: #TODO fix calculation and add saving
+                        if False:
+                            per_expert_unc = torch.stack(expert_unc, dim=1)
+                            # Aleatoric uncertainty: weighted average of expert uncertainties
+                            aleatoric_unc = torch.sum(per_expert_unc * expert_weights, dim=1) # [batch_size, seq_len]
+                            # Epistemic uncertainty: weighted variance of expert predictions
+                            epistemic_unc = torch.sum(expert_weights * (per_expert_outputs - outputs.unsqueeze(1))**2, dim=1) # [batch_size, seq_len]
+                            # Total uncertainty: aleatoric + epistemic
+                            unc = aleatoric_unc + epistemic_unc
+                            uncertainties.append(unc)
 
                 preds.append(pred)
                 trues.append(true)

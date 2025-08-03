@@ -72,7 +72,6 @@ class Gating(nn.Module): # based on DLinear model
         # Output
         # (batch_size, seq_length * d_model)
         output = enc_out.reshape(enc_out.shape[0], -1)
-        # (batch_size, num_classes)
         output = self.projection(output)
         return output
 
@@ -80,7 +79,7 @@ class Gating(nn.Module): # based on DLinear model
         dec_out = self.gating(x_enc)
         # reshape and pass through softmax to give weights per expert 
         weights = dec_out.reshape(dec_out.shape[0], self.num_experts, self.pred_len)
-        weights = F.softmax(dec_out, dim=1)
+        weights = F.softmax(weights, dim=1)
         return weights
 
 
@@ -92,7 +91,7 @@ class Model(nn.Module):
         self.unc_gating = configs.unc_gating
         self.prob_expert = configs.prob_expert
         self.task_name = configs.task_name
-        self.experts = nn.ModuleList([expert_model.Model(configs).float() for _ in range(self.num_experts)])
+        self.experts = nn.ModuleList([expert_model(configs).float() for _ in range(self.num_experts)])
         if not self.unc_gating:
             self.gating = Gating(configs).float()
 
@@ -103,27 +102,30 @@ class Model(nn.Module):
             for expert in self.experts:
                 sq_sigma = None
                 if self.prob_expert:
-                    dec_out, log_sq_sigma_out = expert.formard(x_enc, x_mark_enc, 
+                    dec_out, log_sq_sigma_out = expert(x_enc, x_mark_enc, 
                     x_dec, x_mark_dec, mask=None)
                     sq_sigma = torch.exp(log_sq_sigma_out)
                 else:
-                    dec_out, _ = expert.forward(x_enc, x_mark_enc,
-                     x_dec, x_mark_dec, mask=None)
+                    dec_out = expert.forward(x_enc, x_mark_enc,
+                        x_dec, x_mark_dec, mask=None)
                 expert_out.append(dec_out)
                 expert_unc.append(sq_sigma)
+            expert_out = torch.stack(expert_out, dim=1) # [batch_size, num_experts, pred_len, num_features]
+            expert_unc = torch.stack(expert_unc, dim=1) # [batch_size, num_experts, pred_len, num_features]
             if self.unc_gating:
-                # Stack expert uncertainties and compute weights based on inverse variance
-                expert_unc_stacked = torch.stack(expert_unc, dim=0)  # [num_experts, batch_size, seq_len, features]
+                
                 # Average across features to get per-expert uncertainty
-                expert_unc_avg = torch.mean(expert_unc_stacked, dim=-1)  # [num_experts, batch_size, seq_len]
+                expert_unc_avg = torch.mean(expert_unc, dim=-1)  # [batch_size, num_experts, pred_len]
                 # Inverse variance weighting: higher confidence (lower uncertainty) gets higher weight
-                inv_var = 1.0 / (expert_unc_avg + 1e-8)  # [num_experts, batch_size, seq_len]
-                sum_inv_var = torch.sum(inv_var, dim=0, keepdim=True)  # [1, batch_size, seq_len]
-                weights_temp = inv_var / sum_inv_var  # [num_experts, batch_size, seq_len]
-                weights = weights_temp.permute(1, 0, 2)  # [batch_size, num_experts, seq_len]
+                inv_var = 1.0 / (expert_unc_avg + 1e-8)  # [batch_size, num_experts, pred_len]
+                sum_inv_var = torch.sum(inv_var, dim=1, keepdim=True)  # [batch_size, 1, pred_len]
+                weights = inv_var / sum_inv_var  #  [batch_size, num_experts, pred_len]
+                #weights = weights_temp.permute(1, 0, 2)  # [batch_size, num_experts, pred_len]
             else:
-                weights = self.gating(x_enc)
-            
+                weights = self.gating(x_enc) # [batch_size, num_experts, pred_len]     
+            # repet weights for each feature dimension 
+            num_featuers = expert_out.shape[-1]
+            weights = weights.unsqueeze(-1).repeat(1, 1, 1, num_featuers)   
             return expert_out, expert_unc, weights 
         else:
             raise NotImplementedError("{} not supported with MoE".format(self.task_name))

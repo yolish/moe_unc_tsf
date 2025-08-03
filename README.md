@@ -1,6 +1,6 @@
 # Uncertainty-Aware Mixture-of-Experts for Time Series Forecasting
 
-## WORK IN PROGRESS 
+## Work in Progress   
 
 This repository provide the official implementatoin for Uncertainty-Aware Mixture-of-Experts
 
@@ -20,7 +20,7 @@ pip install -r requirements.txt
 
 ## Training
 
-## Infernce
+## Inference
 
 
 Our impelemntation leverages the great work of TSLib, providing a general framework for time series analysis:

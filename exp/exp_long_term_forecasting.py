@@ -1,6 +1,6 @@
 from data_provider.data_factory import data_provider
 from exp.exp_basic import Exp_Basic
-from utils.tools import EarlyStopping, adjust_learning_rate, visual
+from utils.tools import EarlyStopping, adjust_learning_rate, visual, visual_unc
 from utils.metrics import metric
 import torch
 import torch.nn as nn
@@ -48,6 +48,22 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         else:
             criterion = nn.MSELoss()
         return criterion
+    
+    def calc_aleatoric_epistermic_uncertainty(self, outputs, agg_outputs, 
+                                              expert_unc, expert_weights):
+        # Aleatoric uncertainty: weighted average of expert uncertainties
+        aleatoric_unc = torch.mean(expert_unc * expert_weights, dim=3).sum(dim=1) # [batch_size, seq_len]
+        # Epistemic uncertainty: weighted variance of expert predictions
+        epistemic_unc = None
+        for i in range(self.args.num_experts):
+            expert_diff = (agg_outputs - outputs[:, i, :, :])**2
+            if epistemic_unc is None:
+                epistemic_unc = expert_weights[:, i, :, :]*expert_diff
+            else:
+                epistemic_unc += expert_weights[:, i, :, :]*expert_diff
+        epistemic_unc = epistemic_unc.mean(dim=-1)
+        return aleatoric_unc, epistemic_unc, aleatoric_unc+epistemic_unc
+        
     
     def moe_loss(self, outputs, expert_unc, expert_weights, batch_y, criterion):
         # loss is a weighted sum of the loss of each expert per time step 
@@ -201,7 +217,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         preds = []
         trues = []
         uncertainties = [] # only for MoE
-        folder_path = './test_results/' + setting + '/'
+        folder_path = './visual_results/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
@@ -239,25 +255,22 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 outputs = outputs[:, :, f_dim:]
                 batch_y = batch_y[:, :, f_dim:]
 
+                aleatoric_uncertainty, epistermic_uncertainty = None, None
                 if self.args.moe:
-                    outputs = np.sum(outputs * expert_weights.cpu().numpy(), axis=1) # [batch_size, seq_len, num_features]
+                    outputs = torch.Tensor(outputs).to(self.device)
+                    agg_outputs = torch.sum(outputs * expert_weights, dim=1)
+                    if self.args.prob_expert:
+                        aleatoric_uncertainty, epistermic_uncertainty, total_uncertainty = self.calc_aleatoric_epistermic_uncertainty(outputs, agg_outputs, 
+                                                                            expert_unc, expert_weights)
+                        
+                    outputs = agg_outputs.cpu().numpy() # [batch_size, seq_len, num_features]
                 else:
                     outputs = outputs
 
                 pred = outputs
                 true = batch_y
-                if self.args.moe:
-                    # Stack expert uncertainties: [batch_size, num_experts, seq_len]
-                    if self.args.prob_expert: #TODO fix calculation and add saving
-                        if False:
-                            per_expert_unc = torch.stack(expert_unc, dim=1)
-                            # Aleatoric uncertainty: weighted average of expert uncertainties
-                            aleatoric_unc = torch.sum(per_expert_unc * expert_weights, dim=1) # [batch_size, seq_len]
-                            # Epistemic uncertainty: weighted variance of expert predictions
-                            epistemic_unc = torch.sum(expert_weights * (per_expert_outputs - outputs.unsqueeze(1))**2, dim=1) # [batch_size, seq_len]
-                            # Total uncertainty: aleatoric + epistemic
-                            unc = aleatoric_unc + epistemic_unc
-                            uncertainties.append(unc)
+
+                
 
                 preds.append(pred)
                 trues.append(true)
@@ -269,6 +282,9 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     gt = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0)
                     pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0)
                     visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))
+                    visual_unc(true[0, :, -1], pred[0, :, -1], total_uncertainty.cpu().numpy(), os.path.join(folder_path, str(i) + '_unc.pdf'))
+                    #TODO add visualization of uncertainty 
+
 
         preds = np.concatenate(preds, axis=0)
         trues = np.concatenate(trues, axis=0)

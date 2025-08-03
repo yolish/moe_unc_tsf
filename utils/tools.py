@@ -91,6 +91,16 @@ def visual(true, preds=None, name='./pic/test.pdf'):
     plt.legend()
     plt.savefig(name, bbox_inches='tight')
 
+def visual_unc(true, preds, unc, name='./pic/test_unc.pdf'):
+    plt.figure()
+    mse = (true-preds)**2
+    if preds is not None:
+        plt.plot(preds, label='Prediction', linewidth=2)
+    plt.plot(mse, label='Squared Error', linewidth=2)
+    plt.plot(unc, label='Uncertainty (a+e))', linewidth=2)
+    plt.legend()
+    plt.savefig(name, bbox_inches='tight')
+
 
 def adjustment(gt, pred):
     anomaly_state = False

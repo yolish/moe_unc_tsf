@@ -184,12 +184,12 @@ if __name__ == '__main__':
         for ii in range(args.itr):
             # setting record of experiments
             exp = Exp(args)  # set experiments
-            setting = '{}_{}_{}_{}_mo{}_pmo{}_ug{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_expand{}_dc{}_fc{}_eb{}_dt{}_{}_{}'.format(
+            setting = '{}_{}_{}_{}_ne{}_pmo{}_ug{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_expand{}_dc{}_fc{}_eb{}_dt{}_{}_{}'.format(
                 args.task_name,
                 args.model_id,
                 args.model,
                 args.data,
-                int(args.moe),
+                int(args.num_experts),
                 int(args.prob_expert),
                 int(args.unc_gating),
                 args.features,
@@ -220,12 +220,12 @@ if __name__ == '__main__':
     else:
         exp = Exp(args)  # set experiments
         ii = 0
-        setting = '{}_{}_{}_{}_mo{}_pe{}_ug{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_expand{}_dc{}_fc{}_eb{}_dt{}_{}_{}'.format(
+        setting = '{}_{}_{}_{}_ne{}_pe{}_ug{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_expand{}_dc{}_fc{}_eb{}_dt{}_{}_{}'.format(
             args.task_name,
             args.model_id,
             args.model,
             args.data,
-            int(args.moe),
+            int(args.num_experts),
             int(args.prob_expert),
             int(args.unc_gating),
             args.features,

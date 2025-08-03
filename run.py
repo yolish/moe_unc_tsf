@@ -14,7 +14,7 @@ if __name__ == '__main__':
     torch.manual_seed(fix_seed)
     np.random.seed(fix_seed)
 
-    parser = argparse.ArgumentParser(description='TimesNet')
+    parser = argparse.ArgumentParser(description='TS with Unc-MoE')
 
     # basic config
     parser.add_argument('--task_name', type=str, required=True, default='long_term_forecast',

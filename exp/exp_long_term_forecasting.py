@@ -282,7 +282,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     gt = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0)
                     pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0)
                     visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))
-                    visual_unc(true[0, :, -1], pred[0, :, -1], total_uncertainty.cpu().numpy(), os.path.join(folder_path, str(i) + '_unc.pdf'))
+                    visual_unc(true[0, :, -1], pred[0, :, -1], total_uncertainty.cpu().numpy()[0, :], os.path.join(folder_path, str(i) + '_unc.pdf'))
                     #TODO add visualization of uncertainty 
 
 

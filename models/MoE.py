@@ -105,15 +105,16 @@ class Model(nn.Module):
                     dec_out, log_sq_sigma_out = expert(x_enc, x_mark_enc, 
                     x_dec, x_mark_dec, mask=None)
                     sq_sigma = torch.exp(log_sq_sigma_out)
+                    expert_unc.append(sq_sigma)
                 else:
                     dec_out = expert.forward(x_enc, x_mark_enc,
                         x_dec, x_mark_dec, mask=None)
                 expert_out.append(dec_out)
-                expert_unc.append(sq_sigma)
-            expert_out = torch.stack(expert_out, dim=1) # [batch_size, num_experts, pred_len, num_features]
-            expert_unc = torch.stack(expert_unc, dim=1) # [batch_size, num_experts, pred_len, num_features]
-            if self.unc_gating:
                 
+            expert_out = torch.stack(expert_out, dim=1) # [batch_size, num_experts, pred_len, num_features]
+            if len(expert_unc) > 0:
+                expert_unc = torch.stack(expert_unc, dim=1) # [batch_size, num_experts, pred_len, num_features]
+            if self.unc_gating:
                 # Average across features to get per-expert uncertainty
                 expert_unc_avg = torch.mean(expert_unc, dim=-1)  # [batch_size, num_experts, pred_len]
                 # Inverse variance weighting: higher confidence (lower uncertainty) gets higher weight

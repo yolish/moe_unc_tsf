@@ -72,8 +72,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         # expert_weights shape: [batch_size, num_experts, pred_len]
         for i in range(self.args.num_experts):
             expert_outputs = outputs[:, i, :, :]  # [batch_size, pred_len, num_features]
-            expert_i_unc = expert_unc[:, i, :, :]
             if self.args.prob_expert: # guassian NLL
+                expert_i_unc = expert_unc[:, i, :, :]
                 expert_loss = criterion(expert_outputs,batch_y, expert_i_unc)
             else:
                 expert_loss = criterion(expert_outputs,batch_y)
@@ -255,7 +255,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 outputs = outputs[:, :, f_dim:]
                 batch_y = batch_y[:, :, f_dim:]
 
-                aleatoric_uncertainty, epistermic_uncertainty = None, None
+                
                 if self.args.moe:
                     outputs = torch.Tensor(outputs).to(self.device)
                     agg_outputs = torch.sum(outputs * expert_weights, dim=1)
@@ -282,8 +282,9 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     gt = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0)
                     pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0)
                     visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))
-                    visual_unc(true[0, :, -1], pred[0, :, -1], total_uncertainty.cpu().numpy()[0, :], os.path.join(folder_path, str(i) + '_unc.pdf'))
-                    #TODO add visualization of uncertainty 
+                    if self.args.prob_expert:
+                        visual_unc(true[0, :, -1], pred[0, :, -1], total_uncertainty.cpu().numpy()[0, :], os.path.join(folder_path, str(i) + '_unc.pdf'))
+                    
 
 
         preds = np.concatenate(preds, axis=0)

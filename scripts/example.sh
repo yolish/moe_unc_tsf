@@ -1,7 +1,7 @@
 models=("PatchTST")
-root_paths=("./data/long_term_forecast/ETT/")
-data_paths=("ETTh1.csv") 
-datasets=("ETTh1")
+root_paths=("./data/long_term_forecast/weather/" "./data/long_term_forecast/ETT/")
+data_paths=("weather.csv" "ETTh1.csv") 
+datasets=("custom" "ETTh1")
 pred_lengths=(96 192)
 num_experts=(1 3)
 configurations=(0 1 2)
@@ -64,7 +64,7 @@ do
                         --num_experts $ne \
                         --prob_expert
                     fi
-                    if [ $config -eq 2 ]; then
+                    if [ $config -eq 3 ]; then
                         echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --prob_expert --unc_gating"
                         python -u run.py \
                         --task_name long_term_forecast \

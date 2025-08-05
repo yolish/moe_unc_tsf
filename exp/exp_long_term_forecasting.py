@@ -52,7 +52,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
     def calc_aleatoric_epistermic_uncertainty(self, outputs, agg_outputs, 
                                               expert_unc, expert_weights):
         # Aleatoric uncertainty: weighted average of expert uncertainties
-        aleatoric_unc = torch.mean(expert_unc * expert_weights, dim=3).sum(dim=1) # [batch_size, seq_len]
+        aleatoric_unc = torch.sum(expert_unc * expert_weights, dim=1) #[batch_size, seq_len, num_feature]
         # Epistemic uncertainty: weighted variance of expert predictions
         epistemic_unc = None
         for i in range(self.args.num_experts):
@@ -61,7 +61,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 epistemic_unc = expert_weights[:, i, :, :]*expert_diff
             else:
                 epistemic_unc += expert_weights[:, i, :, :]*expert_diff
-        epistemic_unc = epistemic_unc.mean(dim=-1)
         return aleatoric_unc, epistemic_unc, aleatoric_unc+epistemic_unc
         
     
@@ -77,7 +76,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 expert_loss = criterion(expert_outputs,batch_y, expert_i_unc)
             else:
                 expert_loss = criterion(expert_outputs,batch_y)
-            expert_weight = expert_weights[:, i, :]  #  [batch_size, pred_len, feaatures]
+            expert_weight = expert_weights[:, i, :, :]  #  [batch_size, pred_len, num_features]
             # Element-wise multiplication and sum   
             if weighted_loss is None:
                 weighted_loss = expert_loss * expert_weight
@@ -216,7 +215,10 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
         preds = []
         trues = []
-        uncertainties = [] # only for MoE
+        # only for prob. MoE
+        unc = [] 
+        epi_unc = []
+        ale_unc = []
         folder_path = './visual_results/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
@@ -258,19 +260,21 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 
                 if self.args.moe:
                     outputs = torch.Tensor(outputs).to(self.device)
-                    agg_outputs = torch.sum(outputs * expert_weights, dim=1)
+                    agg_outputs = torch.sum(outputs * expert_weights, dim=1) #[batch_size, seq_len, num_features]
                     if self.args.prob_expert:
                         aleatoric_uncertainty, epistermic_uncertainty, total_uncertainty = self.calc_aleatoric_epistermic_uncertainty(outputs, agg_outputs, 
                                                                             expert_unc, expert_weights)
                         
+                        unc.append(total_uncertainty.cpu().numpy())
+                        epi_unc.append(epistermic_uncertainty.cpu().numpy())
+                        ale_unc.append(aleatoric_uncertainty.cpu().numpy())
+
                     outputs = agg_outputs.cpu().numpy() # [batch_size, seq_len, num_features]
                 else:
                     outputs = outputs
 
                 pred = outputs
                 true = batch_y
-
-                
 
                 preds.append(pred)
                 trues.append(true)
@@ -283,7 +287,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0)
                     visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))
                     if self.args.prob_expert:
-                        visual_unc(true[0, :, -1], pred[0, :, -1], total_uncertainty.cpu().numpy()[0, :], os.path.join(folder_path, str(i) + '_unc.pdf'))
+                        visual_unc(true[0, :, -1], pred[0, :, -1], total_uncertainty.cpu().numpy()[0, :, -1], os.path.join(folder_path, str(i) + '_unc.pdf'))
                     
 
 
@@ -326,5 +330,10 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, mape, mspe]))
         np.save(folder_path + 'pred.npy', preds)
         np.save(folder_path + 'true.npy', trues)
+        if self.args.prob_expert:
+            np.save(folder_path + 'total_unc.npy', unc)
+            np.save(folder_path + 'epi_unc.npy', epi_unc)
+            np.save(folder_path + 'ale_unc.npy', ale_unc)
+
 
         return

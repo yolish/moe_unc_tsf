@@ -15,18 +15,19 @@ if __name__ == '__main__':
     all_results_path = args.results_root_path
     result_folders = list(os.listdir(all_results_path))
     results_dict = {"task":[], "expert":[], "num_experts": [], "prob_moe":[], 
-                    "unc_gating":[], "dataset":[], "sl":[], "pl":[], "setting":[],
-                    "mse":[], "mae":[], "rmse":[], "mape":[], "mspe":[]}
+                    "unc_gating":[], "dataset":[], "sl":[], "pl":[], "mse":[], "setting":[],
+                    "mae":[], "rmse":[], "mape":[], "mspe":[]}
+    task = "long_term_forecast"
     for res_folder in result_folders:
         # extract hyperparams from folder name
         setting = res_folder
-        parts = setting.split("_")
-        results_dict["task"].append(parts[0])
-        results_dict["expert"].append(parts[2])
+        parts = setting.replace(task+"_","").split("_")
+        results_dict["task"].append(task)
+        results_dict["expert"].append(parts[1])
         results_dict["num_experts"].append(int(setting.split("ne")[1].split("_")[0]))
         results_dict["prob_moe"].append(int(setting.split("pmo")[1].split("_")[0]))
         results_dict["unc_gating"].append(int(setting.split("ug")[1].split("_")[0]))
-        results_dict["dataset"].append(parts[3])
+        results_dict["dataset"].append(parts[2])
         results_dict["sl"].append(int(setting.split("sl")[1].split("_")[0]))
         results_dict["pl"].append(int(setting.split("pl")[1].split("_")[0]))
         results_dict["setting"].append(setting)

@@ -180,6 +180,18 @@ if __name__ == '__main__':
     else:
         Exp = Exp_Long_Term_Forecast
 
+    dataset_name = args.data_path.replace(".csv","").replace("_","-")
+    '''
+    if dataset_name == "electricity" or dataset_name == "traffic":
+        if args.pred_len <= 192:
+            args.batch_size = 16
+        if args.pred_len > 192:
+            args.batch_size = 8
+    elif dataset_name == "weather":
+        if args.pred_len > 192:
+            args.batch_size = 9
+    '''
+
     if args.is_training:
         for ii in range(args.itr):
             # setting record of experiments
@@ -188,7 +200,7 @@ if __name__ == '__main__':
                 args.task_name,
                 args.model_id,
                 args.model,
-                args.data,
+                dataset_name,
                 int(args.num_experts),
                 int(args.prob_expert),
                 int(args.unc_gating),
@@ -207,16 +219,20 @@ if __name__ == '__main__':
                 args.embed,
                 args.distil,
                 args.des, ii)
+            
+            if os.path.isdir("results/{}".format(setting)):
+                print("Already run this experiment! skip training and testing for: {}".format(setting))
+            else:
 
-            print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
-            exp.train(setting)
+                print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
+                exp.train(setting)
 
-            print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-            exp.test(setting)
-            if args.gpu_type == 'mps':
-                torch.backends.mps.empty_cache()
-            elif args.gpu_type == 'cuda':
-                torch.cuda.empty_cache()
+                print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+                exp.test(setting)
+                if args.gpu_type == 'mps':
+                    torch.backends.mps.empty_cache()
+                elif args.gpu_type == 'cuda':
+                    torch.cuda.empty_cache()
     else:
         exp = Exp(args)  # set experiments
         ii = 0
@@ -224,7 +240,7 @@ if __name__ == '__main__':
             args.task_name,
             args.model_id,
             args.model,
-            args.data,
+            dataset_name,
             int(args.num_experts),
             int(args.prob_expert),
             int(args.unc_gating),

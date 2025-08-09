@@ -68,7 +68,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         # loss is a weighted sum of the loss of each expert per time step 
         loss = 0
         weighted_loss = None
-        # expert_weights shape: [batch_size, num_experts, pred_len]
+        # expert_weights shape: [batch_size, num_experts, pred_len, num_features]
         for i in range(self.args.num_experts):
             expert_outputs = outputs[:, i, :, :]  # [batch_size, pred_len, num_features]
             if self.args.prob_expert: # guassian NLL
@@ -330,10 +330,11 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, mape, mspe]))
         np.save(folder_path + 'pred.npy', preds)
         np.save(folder_path + 'true.npy', trues)
-        if self.args.prob_expert:
-            np.save(folder_path + 'total_unc.npy', unc)
-            np.save(folder_path + 'epi_unc.npy', epi_unc)
-            np.save(folder_path + 'ale_unc.npy', ale_unc)
+        if self.args.prob_expert :
+            pass
+            #np.save(folder_path + 'total_unc.npy', unc)
+            #np.save(folder_path + 'epi_unc.npy', epi_unc)
+            #np.save(folder_path + 'ale_unc.npy', ale_unc)
 
 
         return

@@ -99,6 +99,28 @@ def visual_unc(true, preds, unc, name='./pic/test_unc.pdf'):
     plt.legend()
     plt.savefig(name, bbox_inches='tight')
 
+def visual_unc_vertical(true, preds, unc, name='./pic/test_unc.pdf'):
+    """
+    Plots two charts in two separate subfigures, one under the other.
+    """
+    fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(8, 10)) # Create 2 rows, 1 column of subplots
+    plt.figure()
+    mse = (true-preds)**2
+    
+    # Plotting the first chart in the top subplot
+    axes[0].plot(mse)
+    axes[0].set_xlabel("Squared Error")
+    axes[0].set_ylabel("Time step")
+    axes[0].grid(True)
+
+    # Plotting the second chart in the bottom subplot
+    axes[1].plot(unc, color='orange') # changing color for distinction
+    axes[1].set_xlabel("Time Step")
+    axes[1].set_ylabel("Uncertainty")
+    axes[1].grid(True)
+
+    plt.tight_layout() # Adjust subplot parameters for a tight layout
+    plt.savefig(name, bbox_inches='tight')
 
 def adjustment(gt, pred):
     anomaly_state = False

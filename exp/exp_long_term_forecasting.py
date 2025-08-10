@@ -18,6 +18,7 @@ warnings.filterwarnings('ignore')
 class Exp_Long_Term_Forecast(Exp_Basic):
     def __init__(self, args):
         super(Exp_Long_Term_Forecast, self).__init__(args)
+        self.max_grad_norm = 1
 
     def _build_model(self):
         expert_model = self.model_dict[self.args.model].Model
@@ -186,7 +187,10 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
                 
                 loss.backward()
+                if self.args.prob_expert and self.args.max_grad_norm > 0:
+                    torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.args.max_grad_norm)
                 model_optim.step()
+                
 
             print("Epoch: {} cost time: {}".format(epoch + 1, time.time() - epoch_time))
             train_loss = np.average(train_loss)

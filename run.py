@@ -28,6 +28,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_experts', type=int, default=1, help="value > 1 indicates MoE")
     parser.add_argument('--prob_expert', action='store_true', help='construct probabilistic experts', default=False)
     parser.add_argument('--unc_gating', action='store_true', help='use uncertainty derived gating', default=False)
+    parser.add_argument('--max_grad_norm',type=int, help='value for max grad norm for prob MoE only, ignored if <=0 ', default=0)
 
 
     # data loader
@@ -181,17 +182,6 @@ if __name__ == '__main__':
         Exp = Exp_Long_Term_Forecast
 
     dataset_name = args.data_path.replace(".csv","").replace("_","-")
-    '''
-    if dataset_name == "electricity" or dataset_name == "traffic":
-        if args.pred_len <= 192:
-            args.batch_size = 16
-        if args.pred_len > 192:
-            args.batch_size = 8
-    elif dataset_name == "weather":
-        if args.pred_len > 192:
-            args.batch_size = 9
-    '''
-
     if args.is_training:
         for ii in range(args.itr):
             # setting record of experiments

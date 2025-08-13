@@ -223,6 +223,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         unc = [] 
         epi_unc = []
         ale_unc = []
+        weights = []
         folder_path = './visual_results/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
@@ -265,11 +266,10 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 if self.args.moe:
                     outputs = torch.Tensor(outputs).to(self.device)
                     agg_outputs = torch.sum(outputs * expert_weights, dim=1) #[batch_size, seq_len, num_features]
-                    if self.args.prob_expert:
-                        aleatoric_uncertainty, epistermic_uncertainty, total_uncertainty = self.calc_aleatoric_epistermic_uncertainty(outputs, agg_outputs, 
+                    if self.args.save_unc and self.args.prob_expert:
+                        aleatoric_uncertainty, epistermic_uncertainty, _ = self.calc_aleatoric_epistermic_uncertainty(outputs, agg_outputs, 
                                                                             expert_unc, expert_weights)
                         
-                        unc.append(total_uncertainty.cpu().numpy())
                         epi_unc.append(epistermic_uncertainty.cpu().numpy())
                         ale_unc.append(aleatoric_uncertainty.cpu().numpy())
 
@@ -282,6 +282,9 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
                 preds.append(pred)
                 trues.append(true)
+                if self.args.save_weights and self.args.moe:
+                    weights.append(expert_weights.detach().cpu().numpy())
+                '''
                 if i % 20 == 0:
                     input = batch_x.detach().cpu().numpy()
                     if test_data.scale and self.args.inverse:
@@ -290,13 +293,12 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     gt = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0)
                     pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0)
                     visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))
-                    if self.args.prob_expert:
-                        visual_unc(true[0, :, -1], pred[0, :, -1], total_uncertainty.cpu().numpy()[0, :, -1], os.path.join(folder_path, str(i) + '_unc.pdf'))
-                    
+                '''
 
 
         preds = np.concatenate(preds, axis=0)
         trues = np.concatenate(trues, axis=0)
+        
         print('test shape:', preds.shape, trues.shape)
         preds = preds.reshape(-1, preds.shape[-2], preds.shape[-1])
         trues = trues.reshape(-1, trues.shape[-2], trues.shape[-1])
@@ -334,11 +336,14 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         np.save(folder_path + 'metrics.npy', np.array([mae, mse, rmse, mape, mspe]))
         np.save(folder_path + 'pred.npy', preds)
         np.save(folder_path + 'true.npy', trues)
-        if self.args.prob_expert :
-            pass
-            #np.save(folder_path + 'total_unc.npy', unc)
-            #np.save(folder_path + 'epi_unc.npy', epi_unc)
-            #np.save(folder_path + 'ale_unc.npy', ale_unc)
-
-
+        if len(weights) > 0:
+           weights = np.concatenate(weights, axis=0)
+           np.save(folder_path + "weights.npy", weights)
+        
+        if len(epi_unc) > 0 :
+            epi_unc = np.concatenate(epi_unc, axis=0)
+            np.save(folder_path + 'epi_unc.npy', epi_unc)
+            ale_unc = np.concatenate(ale_unc, axis=0)
+            np.save(folder_path + 'ale_unc.npy', ale_unc)
+        
         return

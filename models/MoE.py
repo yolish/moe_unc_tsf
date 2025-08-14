@@ -47,9 +47,8 @@ class Model(nn.Module):
             for expert in self.experts:
                 sq_sigma = None
                 if self.prob_expert:
-                    dec_out, log_sq_sigma_out = expert(x_enc, x_mark_enc, 
+                    dec_out, sq_sigma = expert(x_enc, x_mark_enc, 
                     x_dec, x_mark_dec, mask=None)
-                    sq_sigma = torch.nn.functional.softplus(log_sq_sigma_out, threshold=5)
                     expert_unc.append(sq_sigma)
                 else:
                     dec_out = expert.forward(x_enc, x_mark_enc,

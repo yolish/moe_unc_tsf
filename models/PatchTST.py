@@ -26,6 +26,31 @@ class FlattenHead(nn.Module):
         x = self.linear(x)
         x = self.dropout(x)
         return x
+    
+class UncHead(nn.Module):
+    def __init__(self, n_vars, nf, target_window, d_model, head_dropout=0, arc_type="mlp"):
+        super().__init__()
+        if arc_type == "linear":
+            self.flatten_head = FlattenHead(n_vars, nf, target_window, head_dropout=head_dropout)
+        elif arc_type == "mlp":   
+            self.linear = nn.Linear(d_model, d_model)
+            self.flatten_head = FlattenHead(n_vars, nf, target_window, head_dropout=head_dropout)
+            self.relu = nn.ReLU(inplace=True)
+        self.arc_type = arc_type
+
+    def forward(self, x):  # x: [bs x nvars x d_model x patch_num]
+        x = x.permute(0, 1, 3, 2) # x: [bs x nvars x patch_num x d_model]
+        if self.arc_type == "linear":
+            x = self.flatten_head(x)
+        else:
+            x = self.linear(x)
+            x = self.relu(x)
+            x = self.flatten_head(x)
+        sq_sigma_out = x.permute(0, 2, 1) #[bs x horizon x num_var]
+        # non negative and stability
+        sq_sigma = torch.nn.functional.softplus(sq_sigma_out, threshold=5)
+        return sq_sigma
+
 
 
 class Model(nn.Module):
@@ -72,8 +97,8 @@ class Model(nn.Module):
             self.head = FlattenHead(configs.enc_in, self.head_nf, configs.pred_len,
                                     head_dropout=configs.dropout)
             if self.prob_expert:
-                self.unc_head = FlattenHead(configs.enc_in, self.head_nf, configs.pred_len,
-                                        head_dropout=0)
+                self.unc_head = UncHead(configs.enc_in, self.head_nf, configs.pred_len, configs.d_model, arc_type="mlp")
+                
         elif self.task_name == 'imputation' or self.task_name == 'anomaly_detection':
             self.head = FlattenHead(configs.enc_in, self.head_nf, configs.seq_len,
                                     head_dropout=configs.dropout)
@@ -116,18 +141,10 @@ class Model(nn.Module):
         dec_out = dec_out + \
                   (means[:, 0, :].unsqueeze(1).repeat(1, self.pred_len, 1))
 
-        log_sq_sigma_out = None
+        sq_sigma_out = None
         if self.prob_expert:
-            # Sigma for Prob models Decoder
-            log_sq_sigma_out = self.unc_head(enc_out)  # z: [bs x nvars x target_window]
-            log_sq_sigma_out = log_sq_sigma_out.permute(0, 2, 1)
-
-            # De-Normalization from Non-stationary Transformer
-            log_sq_sigma_out = log_sq_sigma_out * \
-                    (stdev[:, 0, :].unsqueeze(1).repeat(1, self.pred_len, 1))
-            log_sq_sigma_out = log_sq_sigma_out + \
-                    (means[:, 0, :].unsqueeze(1).repeat(1, self.pred_len, 1))
-            return dec_out, log_sq_sigma_out
+            sq_sigma_out = self.unc_head(enc_out)  # z: [bs x nvars x target_window]
+            return dec_out, sq_sigma_out
         return dec_out
 
     def imputation(self, x_enc, x_mark_enc, x_dec, x_mark_dec, mask):

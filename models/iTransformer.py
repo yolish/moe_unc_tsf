@@ -148,7 +148,8 @@ class Model(nn.Module):
             if self.prob_expert:
                 dec_out, log_sq_sigma_out = dec_out
                 return dec_out[:, -self.pred_len:, :], log_sq_sigma_out[:, -self.pred_len:, :]  # [B, L, D]
- 
+            else:
+                return dec_out[:, -self.pred_len:, :] 
         if self.task_name == 'imputation':
             dec_out = self.imputation(x_enc, x_mark_enc, x_dec, x_mark_dec, mask)
             return dec_out  # [B, L, D]

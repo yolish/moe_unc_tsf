@@ -220,10 +220,11 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         preds = []
         trues = []
         # only for prob. MoE
-        unc = [] 
         epi_unc = []
         ale_unc = []
         weights = []
+        per_expert_outputs = []
+        per_expert_unc = []
         folder_path = './visual_results/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
@@ -244,6 +245,12 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 # encoder - decoder
                 if self.args.moe:
                     outputs, expert_unc, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                    if self.args.save_expert_outputs:
+                        weights.append(expert_weights.detach().cpu().numpy())
+                        per_expert_outputs.append(outputs.detach().cpu().numpy())
+                        if self.args.prob_expert:
+                            per_expert_unc.append(expert_unc.detach().cpu().numpy())
+
                 else:
                     outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
             
@@ -282,8 +289,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
 
                 preds.append(pred)
                 trues.append(true)
-                if self.args.save_weights and self.args.moe:
-                    weights.append(expert_weights.detach().cpu().numpy())
+                    
                 '''
                 if i % 20 == 0:
                     input = batch_x.detach().cpu().numpy()
@@ -339,6 +345,13 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         if len(weights) > 0:
            weights = np.concatenate(weights, axis=0)
            np.save(folder_path + "weights.npy", weights)
+        if len(per_expert_outputs) > 0:
+            per_expert_outputs = np.concatenate(per_expert_outputs, axis=0)
+            np.save(folder_path + "per_expert_outputs.npy", per_expert_outputs)
+        if len(per_expert_unc) > 0:
+            per_expert_unc = np.concatenate(per_expert_unc, axis=0)
+            np.save(folder_path + "per_expert_unc.npy", per_expert_unc)
+
         
         if len(epi_unc) > 0 :
             epi_unc = np.concatenate(epi_unc, axis=0)

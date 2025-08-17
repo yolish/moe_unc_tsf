@@ -1,16 +1,15 @@
 import os
 import torch
-from models import Autoformer, MoE,TimesNet, DLinear, PatchTST
+from models import MoE, DLinear, PatchTST, iTransformer
 
 
 class Exp_Basic(object):
     def __init__(self, args):
         self.args = args
         self.model_dict = {
-            'TimesNet': TimesNet,
-            'Autoformer': Autoformer,
             'DLinear': DLinear,
             'PatchTST': PatchTST,
+            'iTransformer': iTransformer,
             'MoE': MoE
         }
 

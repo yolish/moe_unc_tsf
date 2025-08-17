@@ -141,7 +141,6 @@ class Model(nn.Module):
         dec_out = dec_out + \
                   (means[:, 0, :].unsqueeze(1).repeat(1, self.pred_len, 1))
 
-        sq_sigma_out = None
         if self.prob_expert:
             sq_sigma_out = self.unc_head(enc_out)  # z: [bs x nvars x target_window]
             return dec_out, sq_sigma_out

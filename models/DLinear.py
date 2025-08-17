@@ -3,7 +3,27 @@ import torch.nn as nn
 import torch.nn.functional as F
 from layers.Autoformer_EncDec import series_decomp
 
+class UncHead(nn.Module):
+    def __init__(self, seq_len, pred_len, arc_type="mlp"):
+        super().__init__()
+        if arc_type == "linear":
+            self.seasonal_unc_head = nn.Linear(seq_len, pred_len)
+            self.trend_unc_head = nn.Linear(seq_len, pred_len)
+        elif arc_type == "mlp":   
+            self.seasonal_unc_head = nn.Sequential(nn.Linear(seq_len, seq_len), 
+                                      nn.ReLU(inplace=True),
+            nn.Linear(seq_len, pred_len))
+            self.trend_unc_head = nn.Sequential(nn.Linear(seq_len, seq_len), 
+                                      nn.ReLU(inplace=True),
+            nn.Linear(seq_len, pred_len))
+        self.arc_type = arc_type
 
+    def forward(self, x_seasonal, x_trend):  # x: [bs x nvars x d_model x patch_num]
+        x = self.seasonal_unc_head(x_seasonal) + self.trend_unc_head(x_trend)
+        # non negative and stability
+        sq_sigma = torch.nn.functional.softplus(x, threshold=5)
+        return sq_sigma
+    
 class Model(nn.Module):
     """
     Paper link: https://arxiv.org/pdf/2205.13504.pdf
@@ -24,7 +44,10 @@ class Model(nn.Module):
         self.decompsition = series_decomp(configs.moving_avg)
         self.individual = individual
         self.channels = configs.enc_in
-
+        self.prob_expert = configs.prob_expert
+        if self.prob_expert:
+            assert(not self.individual) # because support was not added yet
+         
         if self.individual:
             self.Linear_Seasonal = nn.ModuleList()
             self.Linear_Trend = nn.ModuleList()
@@ -34,6 +57,7 @@ class Model(nn.Module):
                     nn.Linear(self.seq_len, self.pred_len))
                 self.Linear_Trend.append(
                     nn.Linear(self.seq_len, self.pred_len))
+                
 
                 self.Linear_Seasonal[i].weight = nn.Parameter(
                     (1 / self.seq_len) * torch.ones([self.pred_len, self.seq_len]))
@@ -42,6 +66,7 @@ class Model(nn.Module):
         else:
             self.Linear_Seasonal = nn.Linear(self.seq_len, self.pred_len)
             self.Linear_Trend = nn.Linear(self.seq_len, self.pred_len)
+            self.Unc_Head = UncHead(self.seq_len, self.pred_len)
 
             self.Linear_Seasonal.weight = nn.Parameter(
                 (1 / self.seq_len) * torch.ones([self.pred_len, self.seq_len]))
@@ -66,11 +91,19 @@ class Model(nn.Module):
                     seasonal_init[:, i, :])
                 trend_output[:, i, :] = self.Linear_Trend[i](
                     trend_init[:, i, :])
+                
+
         else:
             seasonal_output = self.Linear_Seasonal(seasonal_init)
             trend_output = self.Linear_Trend(trend_init)
+            if self.prob_expert:
+                unc_output = self.Unc_Head(seasonal_init, trend_init)
         x = seasonal_output + trend_output
-        return x.permute(0, 2, 1)
+        x = x.permute(0, 2, 1)
+        if self.prob_expert:
+            return x, unc_output.permute(0, 2, 1)
+        else:
+            return x
 
     def forecast(self, x_enc):
         # Encoder
@@ -97,7 +130,11 @@ class Model(nn.Module):
     def forward(self, x_enc, x_mark_enc, x_dec, x_mark_dec, mask=None):
         if self.task_name == 'long_term_forecast' or self.task_name == 'short_term_forecast':
             dec_out = self.forecast(x_enc)
-            return dec_out[:, -self.pred_len:, :]  # [B, L, D]
+            if self.prob_expert:
+                dec_out, log_sq_sigma_out = dec_out
+                return dec_out[:, -self.pred_len:, :], log_sq_sigma_out[:, -self.pred_len:, :]  # [B, L, D]
+            else:
+                return dec_out[:, -self.pred_len:, :]  # [B, L, D]
         if self.task_name == 'imputation':
             dec_out = self.imputation(x_enc)
             return dec_out  # [B, L, D]

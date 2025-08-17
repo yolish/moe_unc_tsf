@@ -1,6 +1,6 @@
 import os
 import torch
-from models import Autoformer, MoE,TimesNet, DLinear, TSMixer, PatchTST
+from models import Autoformer, MoE,TimesNet, DLinear, PatchTST
 
 
 class Exp_Basic(object):
@@ -11,7 +11,6 @@ class Exp_Basic(object):
             'Autoformer': Autoformer,
             'DLinear': DLinear,
             'PatchTST': PatchTST,
-            'TSMixer': TSMixer,
             'MoE': MoE
         }
 

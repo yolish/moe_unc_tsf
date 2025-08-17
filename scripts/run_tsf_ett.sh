@@ -1,5 +1,5 @@
 export CUDA_VISIBLE_DEVICES=$1
-models=("PatchTST")
+models=("iTransformer" "PatchTST" "DLinear")
 root_paths=("./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/")
 data_paths=("ETTh2.csv" "ETTm2.csv" "ETTm1.csv" "ETTh1.csv") 
 datasets=("ETTh2" "ETTm2" "ETTm1" "ETTh1")

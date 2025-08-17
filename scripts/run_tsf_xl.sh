@@ -1,8 +1,8 @@
 export CUDA_VISIBLE_DEVICES=$1
 models=("DLinear" "iTransformer" "PatchTST")
-root_paths=("./data/long_term_forecast/electricity/" "./data/long_term_forecast/weather/" )
-data_paths=("electricity.csv" "weather.csv") 
-datasets=("custom" "custom")
+root_paths=("./data/long_term_forecast/traffic/")
+data_paths=("traffic.csv") 
+datasets=("custom")
 pred_lengths=(96 192 336 720)
 num_experts=(3)
 configurations=(1 3)

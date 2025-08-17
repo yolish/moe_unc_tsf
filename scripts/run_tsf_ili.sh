@@ -1,5 +1,5 @@
 export CUDA_VISIBLE_DEVICES=$1
-models=("PatchTST")
+models=("DLinear" "iTransformer" "PatchTST")
 root_paths=("./data/long_term_forecast/illness/")
 data_paths=("national_illness.csv") 
 datasets=("custom")

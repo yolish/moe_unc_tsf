@@ -1,10 +1,11 @@
 export CUDA_VISIBLE_DEVICES=$1
-models=("DLinear" "iTransformer" "PatchTST")
+#models=("DLinear" "iTransformer" "PatchTST")
+models=("iTransformer" "PatchTST")
 root_paths=("./data/long_term_forecast/traffic/")
 data_paths=("traffic.csv") 
 datasets=("custom")
 pred_lengths=(96 192 336 720)
-num_experts=(3)
+num_experts=(1 3)
 configurations=(1 3)
 seeds=(2021)
 model_id="test"
@@ -47,6 +48,7 @@ do
                         --batch_size $batch_size \
                         --pred_len $pred_len \
                         --seed $seed \
+                        --learning_rate 0.001 \
                         --num_experts $ne 
                     fi
                     if [ $config -eq 2 ]; then
@@ -67,6 +69,7 @@ do
                         --seed $seed \
                         --num_experts $ne \
                         --prob_expert \
+                        --learning_rate 0.001 \
                         --max_grad_norm 1
                     fi
                     if [ $config -eq 3 ]; then
@@ -88,6 +91,7 @@ do
                         --num_experts $ne \
                         --prob_expert \
                         --unc_gating \
+                        --learning_rate 0.001 \
                         --max_grad_norm 1
                     fi
                     

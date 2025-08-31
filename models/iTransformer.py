@@ -10,18 +10,17 @@ class UncHead(nn.Module):
     def __init__(self, d_model, pred_len, arc_type="mlp"):
         super().__init__()
         if arc_type == "linear":
-            self.unc_head = nn.Linear(d_model, pred_len, bias=True)
+            self.unc_head = nn.Linear(d_model, pred_len)
         elif arc_type == "mlp":   
-            self.linear = nn.Linear(d_model, d_model)
             self.unc_head = nn.Sequential(nn.Linear(d_model, d_model), 
                                       nn.ReLU(inplace=True),
                                         nn.Linear(d_model, pred_len))
         self.arc_type = arc_type
-
+ 
     def forward(self, x):  # x: [bs x nvars x d_model x patch_num]
         x = self.unc_head(x)
         sq_sigma_out = x.permute(0, 2, 1) # non negative and stability
-        sq_sigma = torch.nn.functional.softplus(sq_sigma_out, threshold=5)
+        sq_sigma = torch.nn.functional.softplus(sq_sigma_out, threshold=20)
         return sq_sigma
 
 

@@ -1,11 +1,12 @@
 export CUDA_VISIBLE_DEVICES=$1
-models=("DLinear" "iTransformer" "PatchTST")
+models=("iTransformer" "PatchTST")
+#models=("DLinear" "iTransformer" "PatchTST")
 root_paths=("./data/long_term_forecast/illness/")
 data_paths=("national_illness.csv") 
 datasets=("custom")
 pred_lengths=(24 36 48 60)
 num_experts=(1 3)
-configurations=(1 2 3)
+configurations=(1 3)
 seeds=(2021)
 model_id="test"
 features="M"

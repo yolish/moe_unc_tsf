@@ -31,7 +31,9 @@ if __name__ == '__main__':
     parser.add_argument('--max_grad_norm',type=int, help='value for max grad norm for prob MoE only, ignored if <=0 ', default=0)
     parser.add_argument('--save_expert_outputs', action='store_true', help='save weights and per expert outputs', default=False)
     parser.add_argument('--save_unc', action='store_true', help='save moe uncertainties', default=False)
-
+    parser.add_argument('--save_outputs', action='store_true', help='save predictions and ground truth', default=False)
+    parser.add_argument('--save_visuals', action='store_true', help='save visualization of predictions vs. ground truth', default=False)
+    parser.add_argument('--unc_head_type', type=str, default="mlp", help='uncertainty head architecture')
 
     # data loader
     parser.add_argument('--data', type=str, required=True, default='ETTh1', help='dataset type')

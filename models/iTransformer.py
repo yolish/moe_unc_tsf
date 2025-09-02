@@ -57,7 +57,7 @@ class Model(nn.Module):
         if self.task_name == 'long_term_forecast' or self.task_name == 'short_term_forecast':
             self.projection = nn.Linear(configs.d_model, configs.pred_len, bias=True)
             if self.prob_expert:
-                self.unc_head = UncHead(configs.d_model, configs.pred_len)
+                self.unc_head = UncHead(configs.d_model, configs.pred_len, configs.unc_head_type)
         if self.task_name == 'imputation':
             self.projection = nn.Linear(configs.d_model, configs.seq_len, bias=True)
         if self.task_name == 'anomaly_detection':

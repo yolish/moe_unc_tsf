@@ -97,7 +97,7 @@ class Model(nn.Module):
             self.head = FlattenHead(configs.enc_in, self.head_nf, configs.pred_len,
                                     head_dropout=configs.dropout)
             if self.prob_expert:
-                self.unc_head = UncHead(configs.enc_in, self.head_nf, configs.pred_len, configs.d_model, arc_type="mlp")
+                self.unc_head = UncHead(configs.enc_in, self.head_nf, configs.pred_len, configs.d_model, arc_type=configs.unc_head_type)
                 
         elif self.task_name == 'imputation' or self.task_name == 'anomaly_detection':
             self.head = FlattenHead(configs.enc_in, self.head_nf, configs.seq_len,

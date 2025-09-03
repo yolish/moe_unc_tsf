@@ -3,7 +3,6 @@ import os
 import torch
 import torch.backends
 from exp.exp_long_term_forecasting import Exp_Long_Term_Forecast
-from exp.exp_short_term_forecasting import Exp_Short_Term_Forecast
 from utils.print_args import print_args
 import random
 import numpy as np
@@ -150,7 +149,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # MOE and uncertainty currently supported only for time long term forecasting
-    assert(args.task_name =='long_term_forecast' or args.task_name =='short_term_forecast'), "Current supporting only time series forecasting"
+    assert(args.task_name =='long_term_forecast'), "Current supporting only time series forecasting"
     args.moe = args.num_experts > 1
     if args.prob_expert or args.unc_gating:
         assert(args.moe), "probabilistic experts and uncertainty derived gating only supported for MoE for now"
@@ -178,13 +177,7 @@ if __name__ == '__main__':
     print('Args in experiment:')
     print_args(args)
 
-    if args.task_name == 'long_term_forecast':
-        Exp = Exp_Long_Term_Forecast
-    elif args.task_name == 'short_term_forecast':
-        Exp = Exp_Short_Term_Forecast
-    else:
-        Exp = Exp_Long_Term_Forecast
-
+    Exp = Exp_Long_Term_Forecast # only supporting this task for now
     dataset_name = args.data_path.replace(".csv","").replace("_","-")
     if args.is_training:
         for ii in range(args.itr):

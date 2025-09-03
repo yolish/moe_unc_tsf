@@ -21,7 +21,7 @@ class UncHead(nn.Module):
     def forward(self, x_seasonal, x_trend):  # x: [bs x nvars x d_model x patch_num]
         x = self.seasonal_unc_head(x_seasonal) + self.trend_unc_head(x_trend)
         # non negative and stability
-        sq_sigma = torch.nn.functional.softplus(x, threshold=5)
+        sq_sigma = torch.nn.functional.softplus(x, threshold=20)
         return sq_sigma
     
 class Model(nn.Module):

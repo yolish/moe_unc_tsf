@@ -15,8 +15,8 @@ if __name__ == '__main__':
     all_results_path = args.results_root_path
     result_folders = list(os.listdir(all_results_path))
     results_dict = {"task":[], "expert":[], "num_experts": [], "prob_moe":[], 
-                    "unc_gating":[], "dataset":[], "sl":[], "pl":[], "mse":[], "setting":[],
-                    "mae":[], "rmse":[], "mape":[], "mspe":[]}
+                    "unc_gating":[], "dataset":[], "sl":[], "pl":[], "mse":[],
+                    "mae":[], "rmse":[], "mape":[], "mspe":[], "setting":[]}
     task = "long_term_forecast"
     for res_folder in result_folders:
         # extract hyperparams from folder name

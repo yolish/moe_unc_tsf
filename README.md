@@ -1,14 +1,13 @@
-# Uncertainty-Aware Mixture-of-Experts for Time Series Forecasting
+# MoGU: Mixture-of-Gaussians with Uncertainty-based Gating for Time Series Forecasting
 
-## Work in Progress   
+This repository provide the official implementatoin for our paper: "MoGU: Mixture-of-Gaussians with Uncertainty-based Gating for Time Series Forecasting"
 
-This repository provide the official implementatoin for Uncertainty-Aware Mixture-of-Experts
-
-Main contributions in the repo:
-- We extend existing time series forecasting with Ensemble MoE
-- We extend TSF models as probabilistic models
-- We enable MoE with probabilistic experts, yielding both per expert and overall uncertainty estimation 
-- We introduce uncertainty driven gating
+This repo implements:
+- Stochastic time series forecasting: extending selected TSF models to estimate mean (the prediction) and variance (the uncertainty) 
+- Ensemble Mixture-of-Experts for time series forecasting
+- Ensemble Mixture-of-Gaussians for time series forecasting
+- Ensemble Mixture-of-Gaussians with Uncertainty-based gating (MoGU)
+- Uncertainty reporting at inference (Epistermic, Aleatoric and Overall) - per expert and for the entire system
 
 ## Setup
 ```
@@ -18,9 +17,14 @@ pip install -r requirements.txt
  pip3 install torch --index-url https://download.pytorch.org/whl/cu128
 ```
 
-## Training
+## Datasets
+Follow the instructions in TSLib (https://github.com/thuml/Time-Series-Library/) to download and set up the forecasting datasets 
 
-## Inference
+## Training and Inference
+Run the following to reproduce training and inference for the main datasets used in the repository
+```
+bash run_all.sh
+```
 
 
 Our impelemntation leverages the great work of TSLib, providing a general framework for time series analysis:

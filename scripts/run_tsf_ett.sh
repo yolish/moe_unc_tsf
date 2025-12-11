@@ -1,13 +1,18 @@
 export CUDA_VISIBLE_DEVICES=$1
-models=("iTransformer" "PatchTST")
+models=("iTransformer")
 #models=("iTransformer" "PatchTST" "DLinear")
-root_paths=("./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/")
-data_paths=("ETTh2.csv" "ETTm2.csv" "ETTm1.csv" "ETTh1.csv") 
-datasets=("ETTh2" "ETTm2" "ETTm1" "ETTh1")
-pred_lengths=(720 336 192 96)
-num_experts=(1 3)
+root_paths=("./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/")
+#root_paths=("./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/")
+data_paths=("ETTm1.csv" "ETTh1.csv") 
+datasets=("ETTm1" "ETTh1")
+#data_paths=("ETTh2.csv" "ETTm2.csv" "ETTm1.csv" "ETTh1.csv") 
+#datasets=("ETTh2" "ETTm2" "ETTm1" "ETTh1")
+#pred_lengths=(720 336 192 96)
+pred_lengths=(96)
+num_experts=(3)
+#num_experts=(1 3)
 configurations=(1 3)
-seeds=(2021)
+seeds=(2021 2022 2023 2024 2025)
 model_id="test"
 features="M"
 seq_len=96
@@ -33,7 +38,7 @@ do
               do
                     
                     if [ $config -eq 1 ]; then
-                        echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne"
+                        echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --seed $seed"
                         python -u run.py \
                         --task_name long_term_forecast \
                         --is_training 1 \
@@ -51,7 +56,7 @@ do
                         --num_experts $ne 
                     fi
                     if [ $config -eq 2 ]; then
-                        echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --prob_expert"
+                        echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --prob_expert --seed $seed"
                         python -u run.py \
                         --task_name long_term_forecast \
                         --is_training 1 \
@@ -70,8 +75,8 @@ do
                         --prob_expert
                     fi
                     if [ $config -eq 3 ]; then
-                        if [$pl -eq 96]; then
-                            echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --prob_expert --unc_gating"
+                        if [ $pred_len -eq 96 ]; then
+                            echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --prob_expert --unc_gating --seed $seed"
                             python -u run.py \
                             --task_name long_term_forecast \
                             --is_training 1 \
@@ -92,7 +97,7 @@ do
                             --save_outputs \
                             --save_unc 
                         else
-                         echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --prob_expert --unc_gating"
+                         echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --prob_expert --unc_gating --seed $seed"
                             python -u run.py \
                             --task_name long_term_forecast \
                             --is_training 1 \

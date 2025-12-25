@@ -1,4 +1,4 @@
-from calibration.conformal_calibratio import ConformalCalibrator
+from calibration.cp_vs_calibration import CPVSHorizonCalibration
 from data_provider.data_factory import data_provider
 from exp.exp_basic import Exp_Basic
 from utils.tools import EarlyStopping, adjust_learning_rate, visual, visual_unc
@@ -376,7 +376,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             print("Warning: No checkpoint found! Using current model weights.")
             
         self.model.eval()
-        calibrator = ConformalCalibrator(alpha=0.1)
+        calibrator = CPVSHorizonCalibration(alpha=0.1)
 
         def get_data_with_uncertainty(flag):
             _, loader = self._get_data(flag=flag)
@@ -422,7 +422,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         
         print("Fitting Calibrator (finding q)...")
         q = calibrator.fit(val_preds, val_uncs, val_trues)
-        print(f"Calibration Factor (q) Found: {q:.4f}")
+        print(f"Calibration Factor (q) stats: Mean={np.mean(q):.4f}, Min={np.min(q):.4f}, Max={np.max(q):.4f}")
 
         print("Applying Calibration to Test Set...")
         test_preds, test_uncs, test_trues = get_data_with_uncertainty('test')
@@ -442,6 +442,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             
         with open("result_calibration.txt", 'a') as f:
             f.write(f"{setting}\n")
-            f.write(f"q: {q:.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
- 
+            # f.write(f"q: {q:.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
+            f.write(f"q_mean: {np.mean(q):.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
         return q, coverage, width

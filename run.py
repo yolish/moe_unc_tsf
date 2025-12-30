@@ -8,10 +8,10 @@ import random
 import numpy as np
 
 if __name__ == '__main__':
-    fix_seed = 2021
-    random.seed(fix_seed)
-    torch.manual_seed(fix_seed)
-    np.random.seed(fix_seed)
+    #fix_seed = 2021
+    #random.seed(fix_seed)
+    #torch.manual_seed(fix_seed)
+    #np.random.seed(fix_seed)
 
     parser = argparse.ArgumentParser(description='TS with Unc-MoE')
 
@@ -179,13 +179,18 @@ if __name__ == '__main__':
     print('Args in experiment:')
     print_args(args)
 
+    fix_seed = args.seed 
+    random.seed(fix_seed)
+    torch.manual_seed(fix_seed)
+    np.random.seed(fix_seed)
+
     Exp = Exp_Long_Term_Forecast # only supporting this task for now
     dataset_name = args.data_path.replace(".csv","").replace("_","-")
     if args.is_training:
         for ii in range(args.itr):
             # setting record of experiments
             exp = Exp(args)  # set experiments
-            setting = '{}_{}_{}_{}_ne{}_pe{}_ug{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_expand{}_dc{}_fc{}_eb{}_dt{}_{}_{}_seed{}'.format(
+            setting = '{}_{}_{}_{}_ne{}_pmo{}_ug{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_expand{}_dc{}_fc{}_eb{}_dt{}_{}_{}_seed{}'.format(
                 args.task_name,
                 args.model_id,
                 args.model,
@@ -207,7 +212,8 @@ if __name__ == '__main__':
                 args.factor,
                 args.embed,
                 args.distil,
-                args.des, ii)
+                args.des, ii,
+                args.seed)
             
             if os.path.isdir("results/{}".format(setting)):
                 print("Already run this experiment! skip training and testing for: {}".format(setting))
@@ -229,7 +235,7 @@ if __name__ == '__main__':
     else:
         exp = Exp(args)  # set experiments
         ii = 0
-        setting = '{}_{}_{}_{}_ne{}_pe{}_ug{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_expand{}_dc{}_fc{}_eb{}_dt{}_{}_{}'.format(
+        setting = '{}_{}_{}_{}_ne{}_pe{}_ug{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_expand{}_dc{}_fc{}_eb{}_dt{}_{}_{}_seed{}'.format(
             args.task_name,
             args.model_id,
             args.model,
@@ -251,7 +257,8 @@ if __name__ == '__main__':
             args.factor,
             args.embed,
             args.distil,
-            args.des, ii)
+            args.des, ii,
+            args.seed)
 
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
         exp.test(setting, test=1)

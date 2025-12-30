@@ -1,3 +1,4 @@
+from calibration.conformal_calibratio import ConformalCalibrator
 from data_provider.data_factory import data_provider
 from exp.exp_basic import Exp_Basic
 from utils.tools import EarlyStopping, adjust_learning_rate, visual, visual_unc
@@ -361,3 +362,86 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             np.save(folder_path + 'ale_unc.npy', ale_unc)
         
         return
+
+
+    def calibrate(self, setting):
+        print(">>>>>>> Start Calibration Phase (CP-VS) >>>>>>>>>>>>>>>>>>>>>>>>>>")
+        
+        # Load the best checkpoint from training
+        path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
+        if os.path.exists(path):
+            self.model.load_state_dict(torch.load(path))
+            print(f"Loaded best model from {path}")
+        else:
+            print("Warning: No checkpoint found! Using current model weights.")
+            
+        self.model.eval()
+        calibrator = ConformalCalibrator(alpha=0.1)
+
+        def get_data_with_uncertainty(flag):
+            _, loader = self._get_data(flag=flag)
+            preds_list, uncs_list, trues_list = [], [], []
+            
+            with torch.no_grad():
+                for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(loader):
+                    batch_x = batch_x.float().to(self.device)
+                    batch_y = batch_y.float().to(self.device)
+                    batch_x_mark = batch_x_mark.float().to(self.device)
+                    batch_y_mark = batch_y_mark.float().to(self.device)
+                    
+                    dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
+                    dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
+                    
+                    if self.args.moe and self.args.prob_expert:
+                        outputs, expert_unc, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                        
+                        agg_outputs = torch.sum(outputs * expert_weights, dim=1)
+                        
+                        _, _, total_variance = self.calc_aleatoric_epistermic_uncertainty(
+                            outputs, agg_outputs, expert_unc, expert_weights
+                        )
+                        sigma = torch.sqrt(total_variance)
+                        pred = agg_outputs
+                    else:
+                        outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                        pred = outputs
+                        sigma = torch.ones_like(pred) * 1e-6 
+
+                    f_dim = -1 if self.args.features == 'MS' else 0
+                    
+                    preds_list.append(pred[:, -self.args.pred_len:, f_dim:].cpu().numpy())
+                    uncs_list.append(sigma[:, -self.args.pred_len:, f_dim:].cpu().numpy())
+                    trues_list.append(batch_y[:, -self.args.pred_len:, f_dim:].cpu().numpy())
+            
+            return np.concatenate(preds_list, axis=0), \
+                   np.concatenate(uncs_list, axis=0), \
+                   np.concatenate(trues_list, axis=0)
+
+        print("Fetching Validation Data for Calibration...")
+        val_preds, val_uncs, val_trues = get_data_with_uncertainty('val')
+        
+        print("Fitting Calibrator (finding q)...")
+        q = calibrator.fit(val_preds, val_uncs, val_trues)
+        print(f"Calibration Factor (q) Found: {q:.4f}")
+
+        print("Applying Calibration to Test Set...")
+        test_preds, test_uncs, test_trues = get_data_with_uncertainty('test')
+        lower, upper = calibrator.predict(test_preds, test_uncs)
+
+        # Calculate Empirical Coverage (PICP)
+        coverage = np.mean((test_trues >= lower) & (test_trues <= upper))
+        # Calculate Average Interval Width (MPIW)
+        width = np.mean(np.abs(upper - lower))
+        
+        print(f"Calibration Results -> Coverage: {coverage:.4f} | Avg Width: {width:.4f}")
+        
+        # Save results to text file
+        folder_path = './results/' + setting + '/'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            
+        with open("result_calibration.txt", 'a') as f:
+            f.write(f"{setting}\n")
+            f.write(f"q: {q:.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
+ 
+        return q, coverage, width

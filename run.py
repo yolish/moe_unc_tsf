@@ -226,9 +226,9 @@ if __name__ == '__main__':
 
                 print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
                 exp.test(setting)
-            if args.moe and args.prob_expert and args.do_calibration:
-                print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-                exp.calibrate(setting)
+                if args.moe and args.prob_expert and args.do_calibration:
+                    print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+                    exp.calibrate(setting)
 
                 if args.gpu_type == 'mps':
                     torch.backends.mps.empty_cache()

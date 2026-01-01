@@ -1,4 +1,4 @@
-from calibration.cp_vs_calibration import CPVSHorizonCalibration
+from calibration.cp_vs_calibration import AdaptiveCPVS
 from data_provider.data_factory import data_provider
 from exp.exp_basic import Exp_Basic
 from utils.tools import EarlyStopping, adjust_learning_rate, visual, visual_unc
@@ -363,23 +363,24 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         
         return
 
-
-    def calibrate(self, setting):
-        print(">>>>>>> Start Calibration Phase (CP-VS) >>>>>>>>>>>>>>>>>>>>>>>>>>")
+def calibrate(self, setting):
+        print(">>>>>>> Start Calibration >>>>>>>>>>>")
         
-        # Load the best checkpoint from training
+        # Load model
         path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
         if os.path.exists(path):
             self.model.load_state_dict(torch.load(path))
-            print(f"Loaded best model from {path}")
+            print(f"Loaded model from {path}")
         else:
-            print("Warning: No checkpoint found! Using current model weights.")
-            
+            print("Warning: No checkpoint found! Using current weights.")
+        
         self.model.eval()
-        calibrator = CPVSHorizonCalibration(alpha=0.1)
+        
+        calibrator = AdaptiveCPVS(alpha=0.1, window_size=300)
 
+        # Get Data Helper
         def get_data_with_uncertainty(flag):
-            _, loader = self._get_data(flag=flag)
+            data_set, loader = self._get_data(flag=flag) 
             preds_list, uncs_list, trues_list = [], [], []
             
             with torch.no_grad():
@@ -394,9 +395,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     
                     if self.args.moe and self.args.prob_expert:
                         outputs, expert_unc, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
-                        
                         agg_outputs = torch.sum(outputs * expert_weights, dim=1)
-                        
                         _, _, total_variance = self.calc_aleatoric_epistermic_uncertainty(
                             outputs, agg_outputs, expert_unc, expert_weights
                         )
@@ -415,33 +414,65 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             
             return np.concatenate(preds_list, axis=0), \
                    np.concatenate(uncs_list, axis=0), \
-                   np.concatenate(trues_list, axis=0)
+                   np.concatenate(trues_list, axis=0), \
+                   data_set 
 
-        print("Fetching Validation Data for Calibration...")
-        val_preds, val_uncs, val_trues = get_data_with_uncertainty('val')
-        
-        print("Fitting Calibrator (finding q)...")
-        q = calibrator.fit(val_preds, val_uncs, val_trues)
-        print(f"Calibration Factor (q) stats: Mean={np.mean(q):.4f}, Min={np.min(q):.4f}, Max={np.max(q):.4f}")
+        print("Fetching Validation Data...")
+        val_preds, val_uncs, val_trues, _ = get_data_with_uncertainty('val')
+        calibrator.fit(val_preds, val_uncs, val_trues)
+        print(f"Initialized with {len(val_preds)} samples.")
 
-        print("Applying Calibration to Test Set...")
-        test_preds, test_uncs, test_trues = get_data_with_uncertainty('test')
-        lower, upper = calibrator.predict(test_preds, test_uncs)
+        print("Starting Online Calibration...")
+        test_preds, test_uncs, test_trues, test_data_obj = get_data_with_uncertainty('test')
+        
+        final_lowers = []
+        final_uppers = []
+        final_trues = []
+        q_history = [] 
 
-        # Calculate Empirical Coverage (PICP)
-        coverage = np.mean((test_trues >= lower) & (test_trues <= upper))
-        # Calculate Average Interval Width (MPIW)
-        width = np.mean(np.abs(upper - lower))
+        n_test = test_preds.shape[0]
         
-        print(f"Calibration Results -> Coverage: {coverage:.4f} | Avg Width: {width:.4f}")
+        for t in range(n_test):
+            curr_pred = test_preds[t]
+            curr_sigma = test_uncs[t]
+            curr_true = test_trues[t]
+            
+            lower, upper, curr_q = calibrator.predict_one_step(curr_pred, curr_sigma)
+            
+            final_lowers.append(lower)
+            final_uppers.append(upper)
+            q_history.append(curr_q)
+            
+            calibrator.update(curr_pred, curr_sigma, curr_true)
+            
+            if t % 500 == 0:
+                print(f"Step {t}/{n_test} | q: {curr_q:.4f}")
+
+        final_lowers = np.array(final_lowers)
+        final_uppers = np.array(final_uppers)
+
+        if test_data_obj.scale and self.args.inverse:
+            print("Applying Inverse Transform to metrics...")
+            shape = final_lowers.shape
+            
+            final_lowers = test_data_obj.inverse_transform(final_lowers.reshape(shape[0] * shape[1], -1)).reshape(shape)
+            final_uppers = test_data_obj.inverse_transform(final_uppers.reshape(shape[0] * shape[1], -1)).reshape(shape)
+            test_trues = test_data_obj.inverse_transform(test_trues.reshape(shape[0] * shape[1], -1)).reshape(shape)
+
+        coverage = np.mean((test_trues >= final_lowers) & (test_trues <= final_uppers))
+        width = np.mean(np.abs(final_uppers - final_lowers))
         
-        # Save results to text file
+        print(f"\nAdaptive Scalar Results:")
+        print(f"Mean q: {np.mean(q_history):.4f}")
+        print(f"Coverage: {coverage:.4f}")
+        print(f"Avg Width: {width:.4f}")
+        
         folder_path = './results/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
             
         with open("result_calibration.txt", 'a') as f:
-            f.write(f"{setting}\n")
-            # f.write(f"q: {q:.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
-            f.write(f"q_mean: {np.mean(q):.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
-        return q, coverage, width
+            f.write(f"{setting} (Adaptive Scalar)\n")
+            f.write(f"q_mean: {np.mean(q_history):.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
+            
+        return coverage, width

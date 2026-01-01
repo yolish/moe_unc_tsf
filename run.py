@@ -145,6 +145,8 @@ if __name__ == '__main__':
     # TimeXer
     parser.add_argument('--patch_len', type=int, default=16, help='patch length')
 
+    # Calibration
+    parser.add_argument('--do_calibration', type=int, default=1, help='whether to perform calibration')
 
     args = parser.parse_args()
 
@@ -224,9 +226,9 @@ if __name__ == '__main__':
 
                 print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
                 exp.test(setting)
+            if args.moe and args.prob_expert and args.do_calibration:
                 print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-                if args.moe and args.prob_expert:
-                    exp.calibrate(setting)
+                exp.calibrate(setting)
 
                 if args.gpu_type == 'mps':
                     torch.backends.mps.empty_cache()
@@ -263,7 +265,7 @@ if __name__ == '__main__':
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
         exp.test(setting, test=1)
         print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-        if args.moe and args.prob_expert:
+        if args.moe and args.prob_expert and args.do_calibration:
             exp.calibrate(setting)
 
         if args.gpu_type == 'mps':

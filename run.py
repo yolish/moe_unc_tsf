@@ -6,12 +6,9 @@ from exp.exp_long_term_forecasting import Exp_Long_Term_Forecast
 from utils.print_args import print_args
 import random
 import numpy as np
+from utils.analysis import analyze_and_save_weights
 
 if __name__ == '__main__':
-    #fix_seed = 2021
-    #random.seed(fix_seed)
-    #torch.manual_seed(fix_seed)
-    #np.random.seed(fix_seed)
 
     parser = argparse.ArgumentParser(description='TS with Unc-MoE')
 
@@ -224,16 +221,19 @@ if __name__ == '__main__':
                 print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
                 exp.train(setting)
 
-                print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-                exp.test(setting)
-                if args.moe and args.prob_expert and args.do_calibration:
-                    print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-                    exp.calibrate(setting)
+            print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+            exp.test(setting)
+            print('>>>>>>>analyze_and_save_weights : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+            analyze_and_save_weights(setting, args)
 
-                if args.gpu_type == 'mps':
-                    torch.backends.mps.empty_cache()
-                elif args.gpu_type == 'cuda':
-                    torch.cuda.empty_cache()
+            if args.moe and args.prob_expert and args.do_calibration:
+                print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+                exp.calibrate(setting)
+
+            if args.gpu_type == 'mps':
+                torch.backends.mps.empty_cache()
+            elif args.gpu_type == 'cuda':
+                torch.cuda.empty_cache()
     else:
         exp = Exp(args)  # set experiments
         ii = 0
@@ -264,6 +264,7 @@ if __name__ == '__main__':
 
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
         exp.test(setting, test=1)
+        analyze_and_save_weights(setting, args)
         print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
         if args.moe and args.prob_expert and args.do_calibration:
             exp.calibrate(setting)

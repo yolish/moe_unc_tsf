@@ -8,10 +8,6 @@ import random
 import numpy as np
 
 if __name__ == '__main__':
-    #fix_seed = 2021
-    #random.seed(fix_seed)
-    #torch.manual_seed(fix_seed)
-    #np.random.seed(fix_seed)
 
     parser = argparse.ArgumentParser(description='TS with Unc-MoE')
 
@@ -145,17 +141,21 @@ if __name__ == '__main__':
     # TimeXer
     parser.add_argument('--patch_len', type=int, default=16, help='patch length')
 
+    # Calibration
+    parser.add_argument('--do_calibration', type=int, default=1, help='whether to perform calibration')
 
     args = parser.parse_args()
 
     # MOE and uncertainty currently supported only for time long term forecasting
     assert(args.task_name =='long_term_forecast'), "Current supporting only time series forecasting"
-    args.moe = args.num_experts > 1
-    if args.prob_expert or args.unc_gating:
-        assert(args.moe), "probabilistic experts and uncertainty derived gating only supported for MoE for now"
-    if args.moe:
-        if args.unc_gating:
-            assert(args.prob_expert), "uncertainty based gating required probabilstic experts"
+    args.moe = (args.num_experts > 1) or (args.prob_expert) 
+    # if args.prob_expert or args.unc_gating:
+    #     assert(args.moe), "probabilistic experts and uncertainty derived gating only supported for MoE for now"
+    if args.unc_gating and args.num_experts == 1:
+        print(">> SKIPPING: Redundant experiment (Single Expert + Unc Gating).")
+        exit()
+    if args.unc_gating:
+        assert(args.prob_expert), "uncertainty based gating required probabilstic experts"
         
 
     if torch.cuda.is_available() and args.use_gpu:
@@ -188,7 +188,7 @@ if __name__ == '__main__':
         for ii in range(args.itr):
             # setting record of experiments
             exp = Exp(args)  # set experiments
-            setting = '{}_{}_{}_{}_ne{}_pmo{}_ug{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_expand{}_dc{}_fc{}_eb{}_dt{}_{}_{}_seed{}'.format(
+            setting = '{}_{}_{}_{}_ne{}_pe{}_ug{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_expand{}_dc{}_fc{}_eb{}_dt{}_{}_{}_seed{}'.format(
                 args.task_name,
                 args.model_id,
                 args.model,
@@ -220,12 +220,18 @@ if __name__ == '__main__':
                 print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
                 exp.train(setting)
 
-                print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-                exp.test(setting)
-                if args.gpu_type == 'mps':
-                    torch.backends.mps.empty_cache()
-                elif args.gpu_type == 'cuda':
-                    torch.cuda.empty_cache()
+            print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+            exp.test(setting)
+            print('>>>>>>>analyze_and_save_weights : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+
+            if args.moe and args.prob_expert and args.do_calibration:
+                print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+                exp.calibrate(setting)
+
+            if args.gpu_type == 'mps':
+                torch.backends.mps.empty_cache()
+            elif args.gpu_type == 'cuda':
+                torch.cuda.empty_cache()
     else:
         exp = Exp(args)  # set experiments
         ii = 0
@@ -256,6 +262,10 @@ if __name__ == '__main__':
 
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
         exp.test(setting, test=1)
+        print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+        if args.moe and args.prob_expert and args.do_calibration:
+            exp.calibrate(setting)
+
         if args.gpu_type == 'mps':
             torch.backends.mps.empty_cache()
         elif args.gpu_type == 'cuda':

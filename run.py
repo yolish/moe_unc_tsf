@@ -6,7 +6,6 @@ from exp.exp_long_term_forecasting import Exp_Long_Term_Forecast
 from utils.print_args import print_args
 import random
 import numpy as np
-from utils.analysis import analyze_and_save_weights
 
 if __name__ == '__main__':
 
@@ -224,7 +223,6 @@ if __name__ == '__main__':
             print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
             exp.test(setting)
             print('>>>>>>>analyze_and_save_weights : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-            analyze_and_save_weights(setting, args)
 
             if args.moe and args.prob_expert and args.do_calibration:
                 print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
@@ -264,7 +262,6 @@ if __name__ == '__main__':
 
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
         exp.test(setting, test=1)
-        analyze_and_save_weights(setting, args)
         print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
         if args.moe and args.prob_expert and args.do_calibration:
             exp.calibrate(setting)

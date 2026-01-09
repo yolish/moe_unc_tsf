@@ -223,19 +223,19 @@ if __name__ == '__main__':
                 print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
                 exp.train(setting)
 
-            print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-            exp.test(setting)
-            print('>>>>>>>analyze_and_save_weights : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+                print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+                exp.test(setting)
+                print('>>>>>>>analyze_and_save_weights : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
 
-            print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-            if args.moe and args.prob_expert and args.do_cpvs_calibration:
-                exp.calibrate_cpvs(setting)
-            if args.use_quantile_loss and args.do_cqr_calibration:
-                if args.prob_expert:
-                    print(f"Skipping CQR for setting {setting}: Pinball loss is incompatible with prob experts")
-                else:
-                    print(f"Running CQR calibration for {setting}...")
-                    exp.calibrate_cqr(setting)
+                print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+                if args.moe and args.prob_expert and args.do_cpvs_calibration:
+                    exp.calibrate_cpvs(setting)
+                if args.use_quantile_loss and args.do_cqr_calibration:
+                    if args.prob_expert:
+                        print(f"Skipping CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                    else:
+                        print(f"Running CQR calibration for {setting}...")
+                        exp.calibrate_cqr(setting)
 
             if args.gpu_type == 'mps':
                 torch.backends.mps.empty_cache()

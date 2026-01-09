@@ -12,6 +12,9 @@ import warnings
 import numpy as np
 from utils.dtw_metric import dtw, accelerated_dtw
 from utils.augmentation import run_augmentation, run_augmentation_single
+from utils.losses import QuantileLoss
+from calibration.cqr_calibration import OnlineCQRQuantile   
+
 
 warnings.filterwarnings('ignore')
 
@@ -22,7 +25,29 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         self.max_grad_norm = 1
 
     def _build_model(self):
-        expert_model = self.model_dict[self.args.model].Model
+        if hasattr(self.args, 'use_quantile_loss') and self.args.use_quantile_loss:
+            if self.args.c_out == self.args.enc_in:
+                print(f"Force adjusting c_out from {self.args.c_out} to {self.args.c_out * 2} in build_model")
+                self.args.c_out = self.args.c_out * 2
+
+        base_model_cls = self.model_dict[self.args.model].Model
+
+        class QuantileWrapper(nn.Module):
+            def __init__(self, args):
+                super().__init__()
+                self.model = base_model_cls(args)
+                self.projector = nn.Linear(args.enc_in, args.c_out)
+
+            def forward(self, x, x_mark, dec_inp, y_mark, **kwargs):
+                out = self.model(x, x_mark, dec_inp, y_mark, **kwargs)
+                return self.projector(out)
+
+        if self.args.use_quantile_loss and self.args.c_out > self.args.enc_in:
+            print("Using QuantileWrapper to expand model output dimensions.")
+            expert_model = QuantileWrapper
+        else:
+            expert_model = base_model_cls
+
         if self.args.moe:
             model = self.model_dict['MoE'].Model(self.args, expert_model).float()
         else:
@@ -41,15 +66,17 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         return model_optim
 
     def _select_criterion(self):
-        if self.args.moe:
-            if self.args.prob_expert:
-                criterion = nn.GaussianNLLLoss(reduction='none')
+            if hasattr(self.args, 'use_quantile_loss') and self.args.use_quantile_loss:
+                return QuantileLoss(quantiles=[0.05, 0.95])
+                
+            if self.args.moe:
+                if self.args.prob_expert:
+                    criterion = nn.GaussianNLLLoss(reduction='none')
+                else:
+                    criterion = nn.MSELoss(reduction='none')
             else:
-                criterion = nn.MSELoss(reduction='none')
-
-        else:
-            criterion = nn.MSELoss()
-        return criterion
+                criterion = nn.MSELoss()
+            return criterion
     
     def calc_aleatoric_epistermic_uncertainty(self, outputs, agg_outputs, 
                                               expert_unc, expert_weights):
@@ -211,7 +238,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         self.model.load_state_dict(torch.load(best_model_path))
 
         return self.model
-
+    
     def test(self, setting, test=0):
         test_data, test_loader = self._get_data(flag='test')
         if test:
@@ -226,6 +253,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         weights = []
         per_expert_outputs = []
         per_expert_unc = []
+        
         folder_path = './visual_results/' + setting + '/'
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
@@ -243,6 +271,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 # decoder input
                 dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
                 dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
+                
                 # encoder - decoder
                 if self.args.moe:
                     outputs, expert_unc, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
@@ -251,15 +280,36 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                         per_expert_outputs.append(outputs.detach().cpu().numpy())
                         if self.args.prob_expert:
                             per_expert_unc.append(expert_unc.detach().cpu().numpy())
-
                 else:
                     outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
             
                 f_dim = -1 if self.args.features == 'MS' else 0
+                
                 outputs = outputs[:, -self.args.pred_len:, :]
-                batch_y = batch_y[:, -self.args.pred_len:, :].to(self.device)
-                outputs = outputs.detach().cpu().numpy()
-                batch_y = batch_y.detach().cpu().numpy()
+
+
+                if hasattr(self.args, 'use_quantile_loss') and self.args.use_quantile_loss:
+                    batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device) 
+                    outputs = outputs.detach().cpu().numpy()
+                    batch_y = batch_y.detach().cpu().numpy()
+
+                    n_feats = batch_y.shape[-1]
+                    pred_low = outputs[:, :, :n_feats]
+                    pred_high = outputs[:, :, n_feats:]
+
+                    if test_data.scale and self.args.inverse:
+                        shape = batch_y.shape
+                        pred_low = test_data.inverse_transform(pred_low.reshape(shape[0] * shape[1], -1)).reshape(shape)
+                        pred_high = test_data.inverse_transform(pred_high.reshape(shape[0] * shape[1], -1)).reshape(shape)
+                        batch_y = test_data.inverse_transform(batch_y.reshape(shape[0] * shape[1], -1)).reshape(shape)
+                    
+                    outputs = (pred_low + pred_high) / 2.0
+                    
+                else:
+                    batch_y = batch_y[:, -self.args.pred_len:, :].to(self.device)           
+                    outputs = outputs.detach().cpu().numpy()
+                    batch_y = batch_y.detach().cpu().numpy()
+
                 if test_data.scale and self.args.inverse:
                     shape = batch_y.shape
                     if outputs.shape[-1] != batch_y.shape[-1]:
@@ -300,8 +350,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                         gt = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0)
                         pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0)
                         visual(gt, pd, os.path.join(folder_path, str(i) + '.pdf'))
-                
-
 
         preds = np.concatenate(preds, axis=0)
         trues = np.concatenate(trues, axis=0)
@@ -344,6 +392,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         if self.args.save_outputs:
             np.save(folder_path + 'pred.npy', preds)
             np.save(folder_path + 'true.npy', trues)
+        
         if len(weights) > 0:
            weights = np.concatenate(weights, axis=0)
            np.save(folder_path + "weights.npy", weights)
@@ -353,7 +402,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         if len(per_expert_unc) > 0:
             per_expert_unc = np.concatenate(per_expert_unc, axis=0)
             np.save(folder_path + "per_expert_unc.npy", per_expert_unc)
-
         
         if len(epi_unc) > 0 :
             epi_unc = np.concatenate(epi_unc, axis=0)
@@ -363,7 +411,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         
         return
 
-    def calibrate(self, setting):
+    def calibrate_cpvs(self, setting):
             print(">>>>>>> Start Calibration >>>>>>>>>>>")
             
             # Load model
@@ -473,6 +521,78 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 
             with open("result_calibration.txt", 'a') as f:
                 f.write(f"{setting} (Adaptive Scalar)\n")
+                f.write(f"q_mean: {np.mean(q_history):.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
+                
+            return coverage, width
+        
+    def calibrate_cqr(self, setting):
+            path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
+            if os.path.exists(path):
+                self.model.load_state_dict(torch.load(path))
+            self.model.eval()
+            
+            calibrator = OnlineCQRQuantile(alpha=0.1, window_size=300)
+
+            def get_quantile_preds(flag):
+                _, loader = self._get_data(flag=flag) 
+                lowers, uppers, trues = [], [], []
+                
+                with torch.no_grad():
+                    for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(loader):
+                        batch_x = batch_x.float().to(self.device)
+                        batch_y = batch_y.float().to(self.device)
+                        batch_x_mark = batch_x_mark.float().to(self.device)
+                        batch_y_mark = batch_y_mark.float().to(self.device)
+                        
+                        dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
+                        dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
+                        
+                        outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                        
+                        f_dim = -1 if self.args.features == 'MS' else 0
+                        true_y = batch_y[:, -self.args.pred_len:, f_dim:]
+                        
+                        n_feats = true_y.shape[-1]
+                        
+                        pred_lower = outputs[:, -self.args.pred_len:, :n_feats]      
+                        pred_upper = outputs[:, -self.args.pred_len:, n_feats:]    
+
+                        lowers.append(pred_lower.cpu().numpy())
+                        uppers.append(pred_upper.cpu().numpy())
+                        trues.append(true_y.cpu().numpy())
+                
+                return np.concatenate(lowers, 0), np.concatenate(uppers, 0), np.concatenate(trues, 0)
+
+            val_low, val_high, val_true = get_quantile_preds('val')
+            calibrator.fit(val_low, val_high, val_true)
+
+            test_low, test_high, test_true = get_quantile_preds('test')
+            
+            final_lowers, final_uppers = [], []
+            q_history = []
+            
+            for t in range(len(test_true)):
+                l, u, q = calibrator.predict_one_step(test_low[t], test_high[t])
+                final_lowers.append(l)
+                final_uppers.append(u)
+                q_history.append(q)
+                
+                calibrator.update(test_low[t], test_high[t], test_true[t])
+                
+            final_lowers = np.array(final_lowers)
+            final_uppers = np.array(final_uppers)
+
+            coverage = np.mean((test_true >= final_lowers) & (test_true <= final_uppers))
+            width = np.mean(np.abs(final_uppers - final_lowers))
+            
+            print(f"Coverage: {coverage:.4f}, Width: {width:.4f}")
+            
+            folder_path = './results/' + setting + '/'
+            if not os.path.exists(folder_path):
+                os.makedirs(folder_path)
+                
+            with open("result_calibration_cqr_quantile.txt", 'a') as f:
+                f.write(f"{setting} (CQR Quantile alpha=0.1)\n")
                 f.write(f"q_mean: {np.mean(q_history):.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
                 
             return coverage, width

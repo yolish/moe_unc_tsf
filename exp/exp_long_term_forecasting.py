@@ -412,21 +412,15 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         return
 
     def calibrate_cpvs(self, setting):
-            print(">>>>>>> Start Calibration >>>>>>>>>>>")
+            print(">>>>>>> Start Calibration (CPVS) >>>>>>>>>>>")
             
-            # Load model
             path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
             if os.path.exists(path):
                 self.model.load_state_dict(torch.load(path))
-                print(f"Loaded model from {path}")
-            else:
-                print("Warning: No checkpoint found! Using current weights.")
-            
             self.model.eval()
             
-            calibrator = AdaptiveCPVS(alpha=0.1, window_size=300)
+            calibrator = AdaptiveCPVS(alpha=0.1, window_size=500)
 
-            # Get Data Helper
             def get_data_with_uncertainty(flag):
                 data_set, loader = self._get_data(flag=flag) 
                 preds_list, uncs_list, trues_list = [], [], []
@@ -465,44 +459,52 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     np.concatenate(trues_list, axis=0), \
                     data_set 
 
-            print("Fetching Validation Data...")
+            # שלב 1: אימון ראשוני על הולידציה
             val_preds, val_uncs, val_trues, _ = get_data_with_uncertainty('val')
             calibrator.fit(val_preds, val_uncs, val_trues)
-            print(f"Initialized with {len(val_preds)} samples.")
 
-            print("Starting Online Calibration...")
+            # שלב 2: ריצה על הטסט (Online)
             test_preds, test_uncs, test_trues, test_data_obj = get_data_with_uncertainty('test')
             
             final_lowers = []
             final_uppers = []
-            final_trues = []
             q_history = [] 
 
             n_test = test_preds.shape[0]
+            pred_len = self.args.pred_len
             
+            # אופטימיזציה: חישוב מחדש רק כשהחלון משתנה
+            last_q = None
+
             for t in range(n_test):
-                curr_pred = test_preds[t]
-                curr_sigma = test_uncs[t]
-                curr_true = test_trues[t]
-                
-                lower, upper, curr_q = calibrator.predict_one_step(curr_pred, curr_sigma)
+                # החלון משתנה רק אם בצעד הקודם ביצענו update
+                window_changed = ((t - 1 - pred_len) >= 0)
+
+                if last_q is None or window_changed:
+                    lower, upper, curr_q = calibrator.predict_one_step(test_preds[t], test_uncs[t])
+                    last_q = curr_q
+                else:
+                    curr_q = last_q
+                    interval_width = curr_q * test_uncs[t]
+                    lower = test_preds[t] - interval_width
+                    upper = test_preds[t] + interval_width
                 
                 final_lowers.append(lower)
                 final_uppers.append(upper)
                 q_history.append(curr_q)
                 
-                calibrator.update(curr_pred, curr_sigma, curr_true)
-                
-                if t % 500 == 0:
-                    print(f"Step {t}/{n_test} | q: {curr_q:.4f}")
+                # --- תיקון זליגת המידע: עדכון מושהה ---
+                t_update = t - pred_len
+                if t_update >= 0:
+                    calibrator.update(test_preds[t_update], test_uncs[t_update], test_trues[t_update])
 
             final_lowers = np.array(final_lowers)
             final_uppers = np.array(final_uppers)
 
+            # חזרה לסקאלה המקורית
             if test_data_obj.scale and self.args.inverse:
                 print("Applying Inverse Transform to metrics...")
                 shape = final_lowers.shape
-                
                 final_lowers = test_data_obj.inverse_transform(final_lowers.reshape(shape[0] * shape[1], -1)).reshape(shape)
                 final_uppers = test_data_obj.inverse_transform(final_uppers.reshape(shape[0] * shape[1], -1)).reshape(shape)
                 test_trues = test_data_obj.inverse_transform(test_trues.reshape(shape[0] * shape[1], -1)).reshape(shape)
@@ -510,7 +512,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             coverage = np.mean((test_trues >= final_lowers) & (test_trues <= final_uppers))
             width = np.mean(np.abs(final_uppers - final_lowers))
             
-            print(f"\nAdaptive Scalar Results:")
+            print(f"\nAdaptive CPVS Results (Delayed):")
             print(f"Mean q: {np.mean(q_history):.4f}")
             print(f"Coverage: {coverage:.4f}")
             print(f"Avg Width: {width:.4f}")
@@ -519,80 +521,102 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             if not os.path.exists(folder_path):
                 os.makedirs(folder_path)
                 
-            with open("result_calibration.txt", 'a') as f:
-                f.write(f"{setting} (Adaptive Scalar)\n")
+            with open("result_calibration_cpvs.txt", 'a') as f:
+                f.write(f"{setting} (Adaptive CPVS Delayed)\n")
                 f.write(f"q_mean: {np.mean(q_history):.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
                 
             return coverage, width
         
     def calibrate_cqr(self, setting):
-            path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
-            if os.path.exists(path):
-                self.model.load_state_dict(torch.load(path))
-            self.model.eval()
+        path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
+        if os.path.exists(path):
+            self.model.load_state_dict(torch.load(path))
+        self.model.eval()
+        
+        calibrator = OnlineCQRQuantile(alpha=0.1, window_size=300)
+
+        def get_quantile_preds(flag):
+            data_set, loader = self._get_data(flag=flag) 
+            lowers, uppers, trues = [], [], []
             
-            calibrator = OnlineCQRQuantile(alpha=0.1, window_size=300)
+            with torch.no_grad():
+                for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(loader):
+                    batch_x = batch_x.float().to(self.device)
+                    batch_y = batch_y.float().to(self.device)
+                    batch_x_mark = batch_x_mark.float().to(self.device)
+                    batch_y_mark = batch_y_mark.float().to(self.device)
+                    
+                    dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
+                    dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
+                    
+                    outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                    
+                    f_dim = -1 if self.args.features == 'MS' else 0
+                    true_y = batch_y[:, -self.args.pred_len:, f_dim:]
+                    
+                    n_feats = true_y.shape[-1]
+                    pred_lower = outputs[:, -self.args.pred_len:, :n_feats]      
+                    pred_upper = outputs[:, -self.args.pred_len:, n_feats:]    
 
-            def get_quantile_preds(flag):
-                _, loader = self._get_data(flag=flag) 
-                lowers, uppers, trues = [], [], []
-                
-                with torch.no_grad():
-                    for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(loader):
-                        batch_x = batch_x.float().to(self.device)
-                        batch_y = batch_y.float().to(self.device)
-                        batch_x_mark = batch_x_mark.float().to(self.device)
-                        batch_y_mark = batch_y_mark.float().to(self.device)
-                        
-                        dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
-                        dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
-                        
-                        outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
-                        
-                        f_dim = -1 if self.args.features == 'MS' else 0
-                        true_y = batch_y[:, -self.args.pred_len:, f_dim:]
-                        
-                        n_feats = true_y.shape[-1]
-                        
-                        pred_lower = outputs[:, -self.args.pred_len:, :n_feats]      
-                        pred_upper = outputs[:, -self.args.pred_len:, n_feats:]    
-
-                        lowers.append(pred_lower.cpu().numpy())
-                        uppers.append(pred_upper.cpu().numpy())
-                        trues.append(true_y.cpu().numpy())
-                
-                return np.concatenate(lowers, 0), np.concatenate(uppers, 0), np.concatenate(trues, 0)
-
-            val_low, val_high, val_true = get_quantile_preds('val')
-            calibrator.fit(val_low, val_high, val_true)
-
-            test_low, test_high, test_true = get_quantile_preds('test')
+                    lowers.append(pred_lower.cpu().numpy())
+                    uppers.append(pred_upper.cpu().numpy())
+                    trues.append(true_y.cpu().numpy())
             
-            final_lowers, final_uppers = [], []
-            q_history = []
-            
-            for t in range(len(test_true)):
+            return np.concatenate(lowers, 0), np.concatenate(uppers, 0), np.concatenate(trues, 0), data_set
+
+        val_low, val_high, val_true, _ = get_quantile_preds('val')
+        calibrator.fit(val_low, val_high, val_true)
+
+        test_low, test_high, test_true, test_data_obj = get_quantile_preds('test')
+        
+        final_lowers, final_uppers = [], []
+        q_history = []
+        
+        pred_len = self.args.pred_len
+        last_q = None
+
+        print(f"Starting Sliding Window CQR with Delay of {pred_len} steps...")
+
+        for t in range(len(test_true)):
+            window_changed = ((t - 1 - pred_len) >= 0)
+
+            if last_q is None or window_changed:
                 l, u, q = calibrator.predict_one_step(test_low[t], test_high[t])
-                final_lowers.append(l)
-                final_uppers.append(u)
-                q_history.append(q)
-                
-                calibrator.update(test_low[t], test_high[t], test_true[t])
-                
-            final_lowers = np.array(final_lowers)
-            final_uppers = np.array(final_uppers)
+                last_q = q
+            else:
+                q = last_q
+                l = test_low[t] - q
+                u = test_high[t] + q
 
-            coverage = np.mean((test_true >= final_lowers) & (test_true <= final_uppers))
-            width = np.mean(np.abs(final_uppers - final_lowers))
+            final_lowers.append(l)
+            final_uppers.append(u)
+            q_history.append(q)
             
-            print(f"Coverage: {coverage:.4f}, Width: {width:.4f}")
+            t_update = t - pred_len
+            if t_update >= 0:
+                calibrator.update(test_low[t_update], test_high[t_update], test_true[t_update])
             
-            folder_path = './results/' + setting + '/'
-            if not os.path.exists(folder_path):
-                os.makedirs(folder_path)
-                
-            with open("result_calibration_cqr_quantile.txt", 'a') as f:
-                f.write(f"{setting} (CQR Quantile alpha=0.1)\n")
-                f.write(f"q_mean: {np.mean(q_history):.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
-                
-            return coverage, width
+        final_lowers = np.array(final_lowers)
+        final_uppers = np.array(final_uppers)
+
+        if test_data_obj.scale and self.args.inverse:
+            print("Applying Inverse Transform to CQR results...")
+            shape = final_lowers.shape
+            final_lowers = test_data_obj.inverse_transform(final_lowers.reshape(shape[0] * shape[1], -1)).reshape(shape)
+            final_uppers = test_data_obj.inverse_transform(final_uppers.reshape(shape[0] * shape[1], -1)).reshape(shape)
+            test_true = test_data_obj.inverse_transform(test_true.reshape(shape[0] * shape[1], -1)).reshape(shape)
+
+        coverage = np.mean((test_true >= final_lowers) & (test_true <= final_uppers))
+        width = np.mean(np.abs(final_uppers - final_lowers))
+        
+        print(f"Coverage: {coverage:.4f}, Width: {width:.4f}")
+        
+        folder_path = './results/' + setting + '/'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            
+        with open("result_calibration_cqr_quantile.txt", 'a') as f:
+            f.write(f"{setting} (CQR Quantile alpha=0.1, Delayed Update)\n")
+            f.write(f"q_mean: {np.mean(q_history):.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
+            
+        return coverage, width

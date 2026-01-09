@@ -149,9 +149,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    # if args.use_quantile_loss:
-    #         print(f"Adjusting c_out from {args.c_out} to {args.c_out * 2} for Quantile Regression (2 quantiles)")
-    #         args.c_out = args.c_out * 2
 
     # MOE and uncertainty currently supported only for time long term forecasting
     assert(args.task_name =='long_term_forecast'), "Current supporting only time series forecasting"

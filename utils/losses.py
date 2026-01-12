@@ -87,3 +87,27 @@ class mase_loss(nn.Module):
         masep = t.mean(t.abs(insample[:, freq:] - insample[:, :-freq]), dim=1)
         masked_masep_inv = divide_no_nan(mask, masep[:, None])
         return t.mean(t.abs(target - forecast) * masked_masep_inv)
+
+
+class QuantileLoss(nn.Module):
+    def __init__(self, quantiles=[0.05, 0.95]):
+        super(QuantileLoss, self).__init__()
+        self.quantiles = quantiles
+
+    def forward(self, preds, target):
+        loss = 0
+        for i, q in enumerate(self.quantiles):
+            if preds.dim() == target.dim() + 1:
+                q_pred = preds[..., i] 
+            else:
+                total_dim = preds.shape[-1]
+                num_q = len(self.quantiles)
+                feat_dim = total_dim // num_q
+                start = i * feat_dim
+                end = (i + 1) * feat_dim
+                q_pred = preds[..., start:end]
+
+            errors = target - q_pred
+            loss += t.max((q - 1) * errors, q * errors).mean()
+            
+        return loss

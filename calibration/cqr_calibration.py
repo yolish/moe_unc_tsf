@@ -1,7 +1,7 @@
 import numpy as np
 
 class OnlineCQRQuantile:
-    def __init__(self, alpha=0.1, window_size=300):
+    def __init__(self, alpha=0.1, window_size=500):
         self.alpha = alpha
         self.window_size = window_size
         self.scores_window = None

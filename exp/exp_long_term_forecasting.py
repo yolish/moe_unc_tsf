@@ -14,7 +14,7 @@ from utils.dtw_metric import dtw, accelerated_dtw
 from utils.augmentation import run_augmentation, run_augmentation_single
 from utils.losses import QuantileLoss
 from calibration.cqr_calibration import OnlineCQRQuantile   
-
+from calibration.cp_calibration import StandardCP_MSE
 
 warnings.filterwarnings('ignore')
 
@@ -533,7 +533,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             self.model.load_state_dict(torch.load(path))
         self.model.eval()
         
-        calibrator = OnlineCQRQuantile(alpha=0.1, window_size=300)
+        calibrator = OnlineCQRQuantile(alpha=0.1, window_size=500)
 
         def get_quantile_preds(flag):
             data_set, loader = self._get_data(flag=flag) 
@@ -617,6 +617,122 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             
         with open("result_calibration_cqr_quantile.txt", 'a') as f:
             f.write(f"{setting} (CQR Quantile alpha=0.1, Delayed Update)\n")
+            f.write(f"q_mean: {np.mean(q_history):.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
+            
+        return coverage, width
+    
+    def calibrate_mse_cp(self, setting):
+        print(">>>>>>> Start Standard CP Calibration (Sliding Window for MSE) >>>>>>>>>>>")
+        
+        # Load best model
+        path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
+        if os.path.exists(path):
+            self.model.load_state_dict(torch.load(path))
+        self.model.eval()
+        
+        # Initialize the new Standard Calibrator
+        calibrator = StandardCP_MSE(alpha=0.1, window_size=500)
+
+        # Helper to get deterministic predictions (ignoring uncertainty heads)
+        def get_deterministic_preds(flag):
+            data_set, loader = self._get_data(flag=flag) 
+            preds_list, trues_list = [], []
+            
+            with torch.no_grad():
+                for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(loader):
+                    batch_x = batch_x.float().to(self.device)
+                    batch_y = batch_y.float().to(self.device)
+                    batch_x_mark = batch_x_mark.float().to(self.device)
+                    batch_y_mark = batch_y_mark.float().to(self.device)
+                    
+                    dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
+                    dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
+                    
+                    # Run model
+                    if self.args.moe:
+                        # For MoE, we might get multiple outputs, we need the aggregated prediction
+                        outputs, _, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                        # Aggregate experts: weighted sum
+                        pred = torch.sum(outputs * expert_weights, dim=1) 
+                    else:
+                        outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                        pred = outputs
+
+                    f_dim = -1 if self.args.features == 'MS' else 0
+                    
+                    preds_list.append(pred[:, -self.args.pred_len:, f_dim:].cpu().numpy())
+                    trues_list.append(batch_y[:, -self.args.pred_len:, f_dim:].cpu().numpy())
+            
+            return np.concatenate(preds_list, axis=0), \
+                   np.concatenate(trues_list, axis=0), \
+                   data_set 
+
+        # Step 1: Initial Fit on Validation Data
+        print("Fitting calibrator on Validation set...")
+        val_preds, val_trues, _ = get_deterministic_preds('val')
+        calibrator.fit(val_preds, val_trues)
+
+        # Step 2: Online Calibration on Test Data (Sliding Window)
+        print("Running Online Calibration on Test set...")
+        test_preds, test_trues, test_data_obj = get_deterministic_preds('test')
+        
+        final_lowers = []
+        final_uppers = []
+        q_history = [] 
+
+        n_test = test_preds.shape[0]
+        pred_len = self.args.pred_len
+        last_q = None
+
+        for t in range(n_test):
+            # Recalculate Q only when the window shifts (optimization)
+            # Since update happens at (t - pred_len), the window changes logic follows that lag.
+            window_changed = ((t - 1 - pred_len) >= 0)
+
+            if last_q is None or window_changed:
+                lower, upper, curr_q = calibrator.predict_one_step(test_preds[t])
+                last_q = curr_q
+            else:
+                curr_q = last_q
+                # For Standard CP: Width = Q (constant for the current window state)
+                interval_width = curr_q 
+                lower = test_preds[t] - interval_width
+                upper = test_preds[t] + interval_width
+            
+            final_lowers.append(lower)
+            final_uppers.append(upper)
+            q_history.append(curr_q)
+            
+            # Update the calibrator with delayed ground truth to prevent leakage
+            t_update = t - pred_len
+            if t_update >= 0:
+                calibrator.update(test_preds[t_update], test_trues[t_update])
+
+        final_lowers = np.array(final_lowers)
+        final_uppers = np.array(final_uppers)
+
+        # Inverse Transform for metrics calculation
+        if test_data_obj.scale and self.args.inverse:
+            print("Applying Inverse Transform to metrics...")
+            shape = final_lowers.shape
+            final_lowers = test_data_obj.inverse_transform(final_lowers.reshape(shape[0] * shape[1], -1)).reshape(shape)
+            final_uppers = test_data_obj.inverse_transform(final_uppers.reshape(shape[0] * shape[1], -1)).reshape(shape)
+            test_trues = test_data_obj.inverse_transform(test_trues.reshape(shape[0] * shape[1], -1)).reshape(shape)
+
+        coverage = np.mean((test_trues >= final_lowers) & (test_trues <= final_uppers))
+        width = np.mean(np.abs(final_uppers - final_lowers))
+        
+        print(f"\nStandard CP (MSE) Results:")
+        print(f"Mean q (Absolute Error Quantile): {np.mean(q_history):.4f}")
+        print(f"Coverage: {coverage:.4f}")
+        print(f"Avg Width: {width:.4f}")
+        
+        folder_path = './results/' + setting + '/'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            
+        with open("result_calibration_mse_cp.txt", 'a') as f:
+            f.write(f"{setting} (Standard CP with Sliding Window)\n")
             f.write(f"q_mean: {np.mean(q_history):.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
             
         return coverage, width

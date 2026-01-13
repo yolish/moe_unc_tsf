@@ -459,11 +459,9 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     np.concatenate(trues_list, axis=0), \
                     data_set 
 
-            # שלב 1: אימון ראשוני על הולידציה
             val_preds, val_uncs, val_trues, _ = get_data_with_uncertainty('val')
             calibrator.fit(val_preds, val_uncs, val_trues)
 
-            # שלב 2: ריצה על הטסט (Online)
             test_preds, test_uncs, test_trues, test_data_obj = get_data_with_uncertainty('test')
             
             final_lowers = []
@@ -473,11 +471,9 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             n_test = test_preds.shape[0]
             pred_len = self.args.pred_len
             
-            # אופטימיזציה: חישוב מחדש רק כשהחלון משתנה
             last_q = None
 
             for t in range(n_test):
-                # החלון משתנה רק אם בצעד הקודם ביצענו update
                 window_changed = ((t - 1 - pred_len) >= 0)
 
                 if last_q is None or window_changed:
@@ -493,7 +489,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 final_uppers.append(upper)
                 q_history.append(curr_q)
                 
-                # --- תיקון זליגת המידע: עדכון מושהה ---
                 t_update = t - pred_len
                 if t_update >= 0:
                     calibrator.update(test_preds[t_update], test_uncs[t_update], test_trues[t_update])
@@ -501,7 +496,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             final_lowers = np.array(final_lowers)
             final_uppers = np.array(final_uppers)
 
-            # חזרה לסקאלה המקורית
             if test_data_obj.scale and self.args.inverse:
                 print("Applying Inverse Transform to metrics...")
                 shape = final_lowers.shape
@@ -630,10 +624,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             self.model.load_state_dict(torch.load(path))
         self.model.eval()
         
-        # Initialize the new Standard Calibrator
         calibrator = StandardCP_MSE(alpha=0.1, window_size=500)
 
-        # Helper to get deterministic predictions (ignoring uncertainty heads)
         def get_deterministic_preds(flag):
             data_set, loader = self._get_data(flag=flag) 
             preds_list, trues_list = [], []
@@ -648,11 +640,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                     dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
                     dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
                     
-                    # Run model
                     if self.args.moe:
-                        # For MoE, we might get multiple outputs, we need the aggregated prediction
                         outputs, _, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
-                        # Aggregate experts: weighted sum
                         pred = torch.sum(outputs * expert_weights, dim=1) 
                     else:
                         outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
@@ -667,12 +656,10 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                    np.concatenate(trues_list, axis=0), \
                    data_set 
 
-        # Step 1: Initial Fit on Validation Data
         print("Fitting calibrator on Validation set...")
         val_preds, val_trues, _ = get_deterministic_preds('val')
         calibrator.fit(val_preds, val_trues)
 
-        # Step 2: Online Calibration on Test Data (Sliding Window)
         print("Running Online Calibration on Test set...")
         test_preds, test_trues, test_data_obj = get_deterministic_preds('test')
         
@@ -685,8 +672,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         last_q = None
 
         for t in range(n_test):
-            # Recalculate Q only when the window shifts (optimization)
-            # Since update happens at (t - pred_len), the window changes logic follows that lag.
+
             window_changed = ((t - 1 - pred_len) >= 0)
 
             if last_q is None or window_changed:
@@ -694,7 +680,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 last_q = curr_q
             else:
                 curr_q = last_q
-                # For Standard CP: Width = Q (constant for the current window state)
                 interval_width = curr_q 
                 lower = test_preds[t] - interval_width
                 upper = test_preds[t] + interval_width
@@ -703,7 +688,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             final_uppers.append(upper)
             q_history.append(curr_q)
             
-            # Update the calibrator with delayed ground truth to prevent leakage
             t_update = t - pred_len
             if t_update >= 0:
                 calibrator.update(test_preds[t_update], test_trues[t_update])
@@ -711,7 +695,6 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         final_lowers = np.array(final_lowers)
         final_uppers = np.array(final_uppers)
 
-        # Inverse Transform for metrics calculation
         if test_data_obj.scale and self.args.inverse:
             print("Applying Inverse Transform to metrics...")
             shape = final_lowers.shape

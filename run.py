@@ -238,9 +238,9 @@ if __name__ == '__main__':
                     else:
                         print(f"Running CQR calibration for {setting}...")
                         exp.calibrate_cqr(setting)
-                if args.do_cp_calibration and not args.prob_expert:
+                if args.do_cp_calibration:
                     print(f"Running CP calibration for {setting}...")
-                    exp.calibrate_mse_cp(setting)
+                    exp.calibrate_cp(setting)
 
             if args.gpu_type == 'mps':
                 torch.backends.mps.empty_cache()
@@ -286,9 +286,9 @@ if __name__ == '__main__':
             else:
                 print(f"Running CQR calibration for {setting}...")
                 exp.calibrate_cqr(setting)
-        if args.do_cp_calibration and not args.prob_expert:
+        if args.do_cp_calibration:
             print(f"Running CP calibration for {setting}...")
-            exp.calibrate_mse_cp(setting)
+            exp.calibrate_cp(setting)
 
         if args.gpu_type == 'mps':
             torch.backends.mps.empty_cache()

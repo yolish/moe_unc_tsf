@@ -14,7 +14,7 @@ from utils.dtw_metric import dtw, accelerated_dtw
 from utils.augmentation import run_augmentation, run_augmentation_single
 from utils.losses import QuantileLoss
 from calibration.cqr_calibration import OnlineCQRQuantile   
-from calibration.cp_calibration import StandardCP_MSE
+from calibration.cp_calibration import AdaptiveCP
 
 warnings.filterwarnings('ignore')
 
@@ -419,7 +419,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 self.model.load_state_dict(torch.load(path))
             self.model.eval()
             
-            calibrator = AdaptiveCPVS(alpha=0.1, window_size=500)
+            calibrator = AdaptiveCPVS(alpha=0.1, window_size=1000)
 
             def get_data_with_uncertainty(flag):
                 data_set, loader = self._get_data(flag=flag) 
@@ -527,7 +527,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             self.model.load_state_dict(torch.load(path))
         self.model.eval()
         
-        calibrator = OnlineCQRQuantile(alpha=0.1, window_size=500)
+        calibrator = OnlineCQRQuantile(alpha=0.1, window_size=1000)
 
         def get_quantile_preds(flag):
             data_set, loader = self._get_data(flag=flag) 
@@ -615,8 +615,8 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             
         return coverage, width
     
-    def calibrate_mse_cp(self, setting):
-        print(">>>>>>> Start Standard CP Calibration (Sliding Window for MSE) >>>>>>>>>>>")
+    def calibrate_cp(self, setting):
+        print(">>>>>>> Start Standard CP Calibration (Sliding Window) >>>>>>>>>>>")
         
         # Load best model
         path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
@@ -624,7 +624,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             self.model.load_state_dict(torch.load(path))
         self.model.eval()
         
-        calibrator = StandardCP_MSE(alpha=0.1, window_size=500)
+        calibrator = AdaptiveCP(alpha=0.1, window_size=1000)
 
         def get_deterministic_preds(flag):
             data_set, loader = self._get_data(flag=flag) 
@@ -705,7 +705,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         coverage = np.mean((test_trues >= final_lowers) & (test_trues <= final_uppers))
         width = np.mean(np.abs(final_uppers - final_lowers))
         
-        print(f"\nStandard CP (MSE) Results:")
+        print(f"\nStandard CP Results:")
         print(f"Mean q (Absolute Error Quantile): {np.mean(q_history):.4f}")
         print(f"Coverage: {coverage:.4f}")
         print(f"Avg Width: {width:.4f}")

@@ -145,6 +145,8 @@ if __name__ == '__main__':
     # TimeXer
     parser.add_argument('--patch_len', type=int, default=16, help='patch length')
 
+    # Calibration
+    parser.add_argument('--do_calibration', type=int, default=1, help='whether to perform calibration')
 
     args = parser.parse_args()
 
@@ -190,7 +192,7 @@ if __name__ == '__main__':
         for ii in range(args.itr):
             # setting record of experiments
             exp = Exp(args)  # set experiments
-            setting = '{}_{}_{}_{}_ne{}_pmo{}_ug{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_expand{}_dc{}_fc{}_eb{}_dt{}_{}_{}_seed{}'.format(
+            setting = '{}_{}_{}_{}_ne{}_pe{}_ug{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_expand{}_dc{}_fc{}_eb{}_dt{}_{}_{}_seed{}'.format(
                 args.task_name,
                 args.model_id,
                 args.model,
@@ -224,8 +226,8 @@ if __name__ == '__main__':
 
                 print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
                 exp.test(setting)
-                print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-                if args.moe and args.prob_expert:
+                if args.moe and args.prob_expert and args.do_calibration:
+                    print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
                     exp.calibrate(setting)
 
                 if args.gpu_type == 'mps':
@@ -263,7 +265,7 @@ if __name__ == '__main__':
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
         exp.test(setting, test=1)
         print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-        if args.moe and args.prob_expert:
+        if args.moe and args.prob_expert and args.do_calibration:
             exp.calibrate(setting)
 
         if args.gpu_type == 'mps':

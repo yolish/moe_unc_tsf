@@ -150,12 +150,14 @@ if __name__ == '__main__':
 
     # MOE and uncertainty currently supported only for time long term forecasting
     assert(args.task_name =='long_term_forecast'), "Current supporting only time series forecasting"
-    args.moe = args.num_experts > 1
-    if args.prob_expert or args.unc_gating:
-        assert(args.moe), "probabilistic experts and uncertainty derived gating only supported for MoE for now"
-    if args.moe:
-        if args.unc_gating:
-            assert(args.prob_expert), "uncertainty based gating required probabilstic experts"
+    args.moe = (args.num_experts > 1) or (args.prob_expert) 
+    # if args.prob_expert or args.unc_gating:
+    #     assert(args.moe), "probabilistic experts and uncertainty derived gating only supported for MoE for now"
+    if args.unc_gating and args.num_experts == 1:
+        print(">> SKIPPING: Redundant experiment (Single Expert + Unc Gating).")
+        exit()
+    if args.unc_gating:
+        assert(args.prob_expert), "uncertainty based gating required probabilstic experts"
         
 
     if torch.cuda.is_available() and args.use_gpu:
@@ -222,6 +224,10 @@ if __name__ == '__main__':
 
                 print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
                 exp.test(setting)
+                print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+                if args.moe and args.prob_expert:
+                    exp.calibrate(setting)
+
                 if args.gpu_type == 'mps':
                     torch.backends.mps.empty_cache()
                 elif args.gpu_type == 'cuda':
@@ -256,6 +262,10 @@ if __name__ == '__main__':
 
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
         exp.test(setting, test=1)
+        print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+        if args.moe and args.prob_expert:
+            exp.calibrate(setting)
+
         if args.gpu_type == 'mps':
             torch.backends.mps.empty_cache()
         elif args.gpu_type == 'cuda':

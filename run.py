@@ -145,6 +145,8 @@ if __name__ == '__main__':
     parser.add_argument('--do_cpvs_calibration', default=False, action='store_true', help='whether to perform CPVS calibration')
     parser.add_argument('--do_cqr_calibration', default=False, action='store_true', help='Whether to perform CQR calibration')
     parser.add_argument('--do_cp_calibration', default=False, action='store_true', help='Whether to perform CP calibration')
+    parser.add_argument('--do_aleatoric_mog_calibration', default=False, action='store_true', help='Whether to perform Aleatoric MOG calibration')
+    parser.add_argument('--do_aleatoric_only_calibration', default=False, action='store_true', help='Whether to perform Aleatoric Only calibration')
     
     # Pinball loss
     parser.add_argument('--use_quantile_loss', action='store_true', help='Use Pinball loss for quantile regression instead of MSE', default=False)
@@ -241,7 +243,13 @@ if __name__ == '__main__':
                 if args.do_cp_calibration:
                     print(f"Running CP calibration for {setting}...")
                     exp.calibrate_cp(setting)
-
+                if args.do_aleatoric_mog_calibration and args.prob_expert and args.num_experts > 1:
+                    print(f"Running Aleatoric MOG calibration for {setting}...")
+                    exp.calibrate_aleatoric_mog(setting)
+                if args.do_aleatoric_only_calibration and args.prob_expert and args.num_experts > 1:
+                    print(f"Running Aleatoric Only calibration for {setting}...")
+                    exp.calibrate_aleatoric_only(setting)
+                
             if args.gpu_type == 'mps':
                 torch.backends.mps.empty_cache()
             elif args.gpu_type == 'cuda':
@@ -289,7 +297,13 @@ if __name__ == '__main__':
         if args.do_cp_calibration:
             print(f"Running CP calibration for {setting}...")
             exp.calibrate_cp(setting)
-
+        if args.do_aleatoric_mog_calibration and args.prob_expert and args.num_experts > 1:
+            print(f"Running Aleatoric MOG calibration for {setting}...")
+            exp.calibrate_aleatoric_mog(setting)
+        if args.do_aleatoric_only_calibration and  args.prob_expert and args.num_experts > 1:
+            print(f"Running Aleatoric Only calibration for {setting}...")
+            exp.calibrate_aleatoric_only(setting)
+            
         if args.gpu_type == 'mps':
             torch.backends.mps.empty_cache()
         elif args.gpu_type == 'cuda':

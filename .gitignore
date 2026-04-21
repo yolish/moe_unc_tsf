@@ -217,3 +217,15 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+
+# results
+checkpoints/
+results/
+
+# others 
+load_balancing_analysis/regression_task/synthetic_results/
+synthetic_results/
+logs/
+*.txt
+*.xlsx

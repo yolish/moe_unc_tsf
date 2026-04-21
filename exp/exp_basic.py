@@ -1,6 +1,6 @@
 import os
 import torch
-from models import MoE, DLinear, PatchTST, iTransformer
+from models import MoE, DLinear, PatchTST, TimeMixer, iTransformer
 
 
 class Exp_Basic(object):
@@ -10,7 +10,8 @@ class Exp_Basic(object):
             'DLinear': DLinear,
             'PatchTST': PatchTST,
             'iTransformer': iTransformer,
-            'MoE': MoE
+            'MoE': MoE,
+            'TimeMixer': TimeMixer
         }
 
         self.device = self._acquire_device()

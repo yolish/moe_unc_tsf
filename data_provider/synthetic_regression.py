@@ -4,7 +4,7 @@ from torch.utils.data import Dataset
 
 class SyntheticDatasetA(Dataset):
     def __init__(self, num_samples=5000, split='train'):
-        np.random.seed(42 if split == 'train' else 43)
+        np.random.seed(45 if split == 'train' else 46)
         self.x = np.random.uniform(-1, 1, num_samples).astype(np.float32)
         self.y = np.zeros_like(self.x)
         
@@ -28,7 +28,7 @@ class SyntheticDatasetA(Dataset):
 
 class SyntheticDatasetB(Dataset):
     def __init__(self, num_samples=10000, split='train'):
-        np.random.seed(42 if split == 'train' else 43)
+        np.random.seed(45 if split == 'train' else 46)
         self.x = np.random.uniform(-1, 1, num_samples).astype(np.float32)
         self.y = np.zeros_like(self.x)
         

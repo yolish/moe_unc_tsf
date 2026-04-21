@@ -17,6 +17,7 @@ from calibration.cqr_calibration import OnlineCQRQuantile
 from calibration.cp_calibration import AdaptiveCP
 from calibration.aleatoric_mog_calibration import AleatoricMOGCalibrator
 from calibration.aleatoric_only_calibration import AleatoricOnlyCalibrator
+from calibration.aleatoric_mog_calibration_second_option import AleatoricMOGCalibratorSecondOption
 
 warnings.filterwarnings('ignore')
 
@@ -421,7 +422,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 self.model.load_state_dict(torch.load(path))
             self.model.eval()
             
-            calibrator = AdaptiveCPVS(alpha=0.1, window_size=1000)
+            calibrator = AdaptiveCPVS(alpha=0.1, window_size=500)
 
             def get_data_with_uncertainty(flag):
                 data_set, loader = self._get_data(flag=flag) 
@@ -529,7 +530,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             self.model.load_state_dict(torch.load(path))
         self.model.eval()
         
-        calibrator = OnlineCQRQuantile(alpha=0.1, window_size=1000)
+        calibrator = OnlineCQRQuantile(alpha=0.1, window_size=500)
 
         def get_quantile_preds(flag):
             data_set, loader = self._get_data(flag=flag) 
@@ -831,8 +832,130 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             f.write(f"{setting} \n")
             f.write(f"q_sq_mean: {np.mean(q_history):.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
             
+            
+        np.save(folder_path + 'step_widths.npy', np.abs(final_uppers - final_lowers))
+        np.save(folder_path + 'step_ale_vars.npy', test_ale)
+        np.save(folder_path + 'step_epi_vars.npy', test_epi)
+            
         return coverage, width
     
+
+    def calibrate_aleatoric_mog_second_option(self, setting):
+        path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
+        if os.path.exists(path):
+            self.model.load_state_dict(torch.load(path))
+        self.model.eval()
+        
+        calibrator = AleatoricMOGCalibratorSecondOption(alpha=0.1, window_size=500)
+
+        def get_separated_uncertainty_data(flag):
+            data_set, loader = self._get_data(flag=flag) 
+            preds_list, ale_list, epi_list, trues_list = [], [], [], []
+            
+            with torch.no_grad():
+                for i, (batch_x, batch_y, batch_x_mark, batch_y_mark) in enumerate(loader):
+                    batch_x = batch_x.float().to(self.device)
+                    batch_y = batch_y.float().to(self.device)
+                    batch_x_mark = batch_x_mark.float().to(self.device)
+                    batch_y_mark = batch_y_mark.float().to(self.device)
+                    
+                    dec_inp = torch.zeros_like(batch_y[:, -self.args.pred_len:, :]).float()
+                    dec_inp = torch.cat([batch_y[:, :self.args.label_len, :], dec_inp], dim=1).float().to(self.device)
+                    
+                    if self.args.moe and self.args.prob_expert:
+                        outputs, expert_unc, expert_weights = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                        agg_outputs = torch.sum(outputs * expert_weights, dim=1)
+                        
+                        ale_unc, epi_unc, _ = self.calc_aleatoric_epistermic_uncertainty(
+                            outputs, agg_outputs, expert_unc, expert_weights
+                        )
+                        pred = agg_outputs
+                    else:
+                        outputs = self.model(batch_x, batch_x_mark, dec_inp, batch_y_mark)
+                        pred = outputs
+                        ale_unc = torch.ones_like(pred) * 1e-6 
+                        epi_unc = torch.zeros_like(pred)
+
+                    f_dim = -1 if self.args.features == 'MS' else 0
+                    
+                    preds_list.append(pred[:, -self.args.pred_len:, f_dim:].cpu().numpy())
+                    ale_list.append(ale_unc[:, -self.args.pred_len:, f_dim:].cpu().numpy())
+                    epi_list.append(epi_unc[:, -self.args.pred_len:, f_dim:].cpu().numpy())
+                    trues_list.append(batch_y[:, -self.args.pred_len:, f_dim:].cpu().numpy())
+            
+            return np.concatenate(preds_list, axis=0), \
+                   np.concatenate(ale_list, axis=0), \
+                   np.concatenate(epi_list, axis=0), \
+                   np.concatenate(trues_list, axis=0), \
+                   data_set 
+
+        val_preds, val_ale, val_epi, val_trues, _ = get_separated_uncertainty_data('val')
+        calibrator.fit(val_preds, val_ale, val_epi, val_trues)
+
+        test_preds, test_ale, test_epi, test_trues, test_data_obj = get_separated_uncertainty_data('test')
+        
+        final_lowers = []
+        final_uppers = []
+        q_history = [] 
+
+        n_test = test_preds.shape[0]
+        pred_len = self.args.pred_len
+        last_q = None
+
+        for t in range(n_test):
+            window_changed = ((t - 1 - pred_len) >= 0)
+
+            if last_q is None or window_changed:
+                lower, upper, curr_q = calibrator.predict_one_step(test_preds[t], test_ale[t], test_epi[t])
+                last_q = curr_q
+            else:
+                curr_q = last_q 
+                calibrated_var = curr_q * test_ale[t] + test_epi[t]
+                width = np.sqrt(np.maximum(0, calibrated_var))
+                lower = test_preds[t] - width
+                upper = test_preds[t] + width
+            
+            final_lowers.append(lower)
+            final_uppers.append(upper)
+            q_history.append(np.mean(curr_q)) 
+            
+            t_update = t - pred_len
+            if t_update >= 0:
+                calibrator.update(test_preds[t_update], test_ale[t_update], test_epi[t_update], test_trues[t_update])
+
+        final_lowers = np.array(final_lowers)
+        final_uppers = np.array(final_uppers)
+
+        if test_data_obj.scale and self.args.inverse:
+            shape = final_lowers.shape
+            final_lowers = test_data_obj.inverse_transform(final_lowers.reshape(shape[0] * shape[1], -1)).reshape(shape)
+            final_uppers = test_data_obj.inverse_transform(final_uppers.reshape(shape[0] * shape[1], -1)).reshape(shape)
+            test_trues = test_data_obj.inverse_transform(test_trues.reshape(shape[0] * shape[1], -1)).reshape(shape)
+
+        coverage = np.mean((test_trues >= final_lowers) & (test_trues <= final_uppers))
+        width = np.mean(np.abs(final_uppers - final_lowers))
+        
+        print(f"\nAleatoric MOG CP Results:")
+        print(f"Mean q: {np.mean(q_history):.4f}")
+        print(f"Coverage: {coverage:.4f}")
+        print(f"Avg Width: {width:.4f}")
+
+
+        folder_path = './results/' + setting + '/'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            
+        with open("result_calibration_aleatoric.txt", 'a') as f:
+            f.write(f"{setting} \n")
+            f.write(f"q_sq_mean: {np.mean(q_history):.4f}, Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
+            
+            
+        np.save(folder_path + 'step_widths.npy', np.abs(final_uppers - final_lowers))
+        np.save(folder_path + 'step_ale_vars.npy', test_ale)
+        np.save(folder_path + 'step_epi_vars.npy', test_epi)
+            
+        return coverage, width
+
     def calibrate_aleatoric_only(self, setting):
         print(">>>>>>> Start Aleatoric ONLY Calibration >>>>>>>>>>>")
         
@@ -841,7 +964,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             self.model.load_state_dict(torch.load(path))
         self.model.eval()
         
-        calibrator = AleatoricOnlyCalibrator(alpha=0.1, window_size=1000)
+        calibrator = AleatoricOnlyCalibrator(alpha=0.1, window_size=500)
 
         def get_aleatoric_data(flag):
             data_set, loader = self._get_data(flag=flag) 

@@ -1,13 +1,16 @@
 export CUDA_VISIBLE_DEVICES=$1
-models=("iTransformer" "PatchTST")
-#models=("DLinear" "iTransformer" "PatchTST")
+# models=("DLinear" "PatchTST")
+#models=("DLinear" "iTransformer" "PatchTST" "TimeMixer")
+models=("TimeMixer")
 root_paths=("./data/long_term_forecast/illness/")
 data_paths=("national_illness.csv") 
 datasets=("custom")
 pred_lengths=(24 36 48 60)
-num_experts=(1 3)
-configurations=(1 3)
-seeds=(2021)
+#pred_lengths=(24)
+#num_experts=(1 3)
+num_experts=(3)
+configurations=(1 2 3)
+seeds=(4021 4022 4023 4024 4025)
 model_id="test"
 features="M"
 seq_len=96
@@ -68,7 +71,8 @@ do
                         --seed $seed \
                         --num_experts $ne \
                         --prob_expert \
-                        --max_grad_norm 1
+                        --max_grad_norm 1 \
+
                     fi
                     if [ $config -eq 3 ]; then
                         echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --prob_expert --unc_gating"
@@ -89,7 +93,10 @@ do
                         --num_experts $ne \
                         --prob_expert \
                         --unc_gating \
-                        --max_grad_norm 1
+                        --max_grad_norm 1 \
+                        --save_unc \
+                        --save_expert_outputs
+
                     fi
                     
                 done

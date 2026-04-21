@@ -31,7 +31,7 @@ def parse_args():
     parser.add_argument('--output_dir', type=str, default='./synthetic_results')
     return parser.parse_args()
 
-def set_seed(seed=42):
+def set_seed(seed=45):
     """קיבוע אקראיות מוחלט כדי להבטיח הוגנות באתחול בין המודלים"""
     random.seed(seed)
     np.random.seed(seed)
@@ -54,7 +54,7 @@ def main():
     # ---------------------------------------------------------
     # קיבוע האקראיות רגע לפני יצירת המודל
     # ---------------------------------------------------------
-    set_seed(42)
+    set_seed(45)
 
     if args.num_experts > 1:
         model = RegressionMoE.Model(args, SimpleMLP.Model).to(device)
@@ -141,32 +141,32 @@ def main():
         x_plot_np = x_plot.cpu().numpy().flatten()
         test_dataset = test_loader.dataset
         
-    plt.figure(figsize=(10, 6))
-    plt.scatter(test_dataset.x.numpy().flatten(), test_dataset.y.numpy().flatten(), s=2, alpha=0.2, label='True Data (Test)')
-    plt.plot(x_plot_np, agg_pred.flatten(), color='red', label='Aggregated Mean', linewidth=2)
+    # plt.figure(figsize=(10, 6))
+    # plt.scatter(test_dataset.x.numpy().flatten(), test_dataset.y.numpy().flatten(), s=2, alpha=0.2, label='True Data (Test)')
+    # plt.plot(x_plot_np, agg_pred.flatten(), color='red', label='Aggregated Mean', linewidth=2)
     
-    if args.num_experts > 1:
-        expert_out_np = expert_out.squeeze(-1).cpu().numpy()
-        for i in range(args.num_experts):
-            plt.plot(x_plot_np, expert_out_np[:, i], linestyle='--', alpha=0.7, label=f'Expert {i+1} Mean')
+    # if args.num_experts > 1:
+    #     expert_out_np = expert_out.squeeze(-1).cpu().numpy()
+    #     for i in range(args.num_experts):
+    #         plt.plot(x_plot_np, expert_out_np[:, i], linestyle='--', alpha=0.7, label=f'Expert {i+1} Mean')
             
-    plt.legend()
-    plt.title(f"Dataset {args.dataset} | Experts: {args.num_experts} | Prob: {args.prob_expert} | MoGU: {args.unc_gating}")
+    # plt.legend()
+    # plt.title(f"Dataset {args.dataset} | Experts: {args.num_experts} | Prob: {args.prob_expert} | MoGU: {args.unc_gating}")
     
-    setting_name = f"Dataset{args.dataset}_NE{args.num_experts}_Prob{args.prob_expert}_MoGU{args.unc_gating}"
-    plt.savefig(os.path.join(args.output_dir, f"{setting_name}_predictions.png"))
+    # setting_name = f"Dataset{args.dataset}_NE{args.num_experts}_Prob{args.prob_expert}_MoGU{args.unc_gating}"
+    # plt.savefig(os.path.join(args.output_dir, f"{setting_name}_predictions.png"))
     
-    if args.num_experts > 1:
-        plt.figure(figsize=(10, 4))
-        for i in range(args.num_experts):
-            plt.plot(x_plot_np, weights[:, i], label=f'Expert {i+1}')
-        plt.legend()
-        plt.title(f"Routing Weights across input space X | MoGU: {args.unc_gating}")
-        plt.xlabel("x")
-        plt.ylabel("Routing Weight")
-        plt.savefig(os.path.join(args.output_dir, f"{setting_name}_weights.png"))
+    # if args.num_experts > 1:
+    #     plt.figure(figsize=(10, 4))
+    #     for i in range(args.num_experts):
+    #         plt.plot(x_plot_np, weights[:, i], label=f'Expert {i+1}')
+    #     plt.legend()
+    #     plt.title(f"Routing Weights across input space X | MoGU: {args.unc_gating}")
+    #     plt.xlabel("x")
+    #     plt.ylabel("Routing Weight")
+    #     plt.savefig(os.path.join(args.output_dir, f"{setting_name}_weights.png"))
 
-    print(f"Finished {setting_name}. Plots saved to {args.output_dir}.")
+    # print(f"Finished {setting_name}. Plots saved to {args.output_dir}.")
 
 if __name__ == '__main__':
     main()

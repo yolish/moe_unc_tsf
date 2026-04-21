@@ -22,7 +22,7 @@ class Config:
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-def set_seed(seed=42):
+def set_seed(seed=45):
     """קיבוע אקראיות מוחלט כדי להבטיח הוגנות באתחול בין המודלים"""
     random.seed(seed)
     np.random.seed(seed)
@@ -48,7 +48,7 @@ def train_and_get_weights(args, model_name, prob_expert, unc_gating):
     # ---------------------------------------------------------
     # כאן אנחנו מקבעים את האקראיות רגע לפני בניית המודל!
     # ---------------------------------------------------------
-    set_seed(42)
+    set_seed(45)
     
     model = RegressionMoE.Model(configs, SimpleMLP.Model).to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
@@ -127,7 +127,7 @@ def main():
     _, weights_mogu = train_and_get_weights(args, "MoGU", prob_expert=True, unc_gating=True)
     
     fig, axes = plt.subplots(1, 3, figsize=(18, 5), sharey=True)
-    titles = ["Standard MoE\n(Expert Collapse)", "Probabilistic MoE / MoG\n(Instability/Collapse)", "MoGU (Ours)\n(Perfect Specialization)"]
+    titles = ["MOE", "MOG", "MoGU"]
     weights_list = [weights_moe, weights_mog, weights_mogu]
     
     for idx, ax in enumerate(axes):

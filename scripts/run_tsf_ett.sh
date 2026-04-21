@@ -1,20 +1,32 @@
 export CUDA_VISIBLE_DEVICES=$1
-models=("iTransformer")
-#models=("iTransformer" "PatchTST" "DLinear")
+#models=("DLinear")
+# models=("iTransformer" "PatchTST" "DLinear" "TimeMixer")
+models=("PatchTST" "DLinear")
 #root_paths=("./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/")
 root_paths=("./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/")
-#data_paths=("ETTm1.csv" "ETTh1.csv") 
-#datasets=("ETTm1" "ETTh1")
 data_paths=("ETTh2.csv" "ETTm2.csv" "ETTm1.csv" "ETTh1.csv") 
 datasets=("ETTh2" "ETTm2" "ETTm1" "ETTh1")
-#pred_lengths=(720 336 192 96)
-pred_lengths=(96)
-num_experts=(1)
+# root_paths=("./data/long_term_forecast/ETT/")
+# data_paths=("ETTh1.csv") 
+# datasets=("ETTh1")
+#data_paths=("ETTm1.csv" "ETTh1.csv") 
+#datasets=("ETTm1" "ETTh1")
+pred_lengths=(720 336 192 96)
+#pred_lengths=(720 336 192)
+
+#pred_lengths=(336 192)
+
+#pred_lengths=(96)
+num_experts=(3)
 #num_experts=(1 3)
-#configurations=(2 3)
-configurations=(4)
+configurations=(1 2 3)
+#configurations=(1 2 3)
 #seeds=(2351 2352 2353 2354 2355)
-seeds=(1193)
+#seeds=(4021 4022 4023)
+#seeds=(4021 4022 4023 4024 4025)
+seeds=(4022 4025)
+
+#seeds=(84201 84202 84203)
 model_id="test"
 features="M"
 seq_len=96
@@ -55,7 +67,8 @@ do
                         --batch_size $batch_size \
                         --pred_len $pred_len \
                         --seed $seed \
-                        --num_experts $ne 
+                        --num_experts $ne \
+                        --do_cp_calibration
                     fi
                     if [ $config -eq 2 ]; then
                         echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --prob_expert --seed $seed"
@@ -74,7 +87,9 @@ do
                         --pred_len $pred_len \
                         --seed $seed \
                         --num_experts $ne \
-                        --prob_expert
+                        --prob_expert \
+                        --do_cpvs_calibration \
+
                     fi
                     if [ $config -eq 3 ]; then
                         if [ $pred_len -eq 96 ]; then
@@ -98,7 +113,9 @@ do
                             --unc_gating \
                             --save_outputs \
                             --save_unc \
-                            --save_expert_outputs
+                            --save_expert_outputs \
+                            --do_cpvs_calibration \
+
                         else
                          echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --prob_expert --unc_gating --seed $seed"
                             python -u run.py \

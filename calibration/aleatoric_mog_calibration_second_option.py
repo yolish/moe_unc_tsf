@@ -1,7 +1,7 @@
 import numpy as np
 import numpy as np
 
-class AleatoricMOGCalibrator:
+class AleatoricMOGCalibratorSecondOption:
     def __init__(self, alpha=0.1, window_size=1000):
         self.alpha = alpha
         self.window_size = window_size
@@ -9,6 +9,7 @@ class AleatoricMOGCalibrator:
         
     def _calc_heuristic(self, ale_var, epi_var):
         std_ale = np.sqrt(np.maximum(0, ale_var))
+        std_epi = np.sqrt(np.maximum(0, epi_var))
         var_ale = np.maximum(0, ale_var)
         var_epi = np.maximum(0, epi_var)
         
@@ -20,7 +21,7 @@ class AleatoricMOGCalibrator:
         ratio_clipped = np.clip(ratio, a_min=0, a_max=5.0)
         
         # חישוב ההיוריסטיקה: סטיית תקן אליאטורית כפול האקספוננט של היחס
-        H_x = std_ale * np.exp(ratio_clipped)
+        H_x = (std_epi + std_ale) * np.exp(ratio_clipped)
         return H_x
 
     def fit(self, val_preds, val_ale, val_epi, val_trues):

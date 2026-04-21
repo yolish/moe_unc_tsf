@@ -3,6 +3,7 @@ import os
 import torch
 import torch.backends
 from exp.exp_long_term_forecasting import Exp_Long_Term_Forecast
+from utils.analysis import analyze_and_save_weights
 from utils.print_args import print_args
 import random
 import numpy as np
@@ -81,9 +82,9 @@ if __name__ == '__main__':
     parser.add_argument('--decomp_method', type=str, default='moving_avg',
                         help='method of series decompsition, only support moving_avg or dft_decomp')
     parser.add_argument('--use_norm', type=int, default=1, help='whether to use normalize; True 1 False 0')
-    parser.add_argument('--down_sampling_layers', type=int, default=0, help='num of down sampling layers')
-    parser.add_argument('--down_sampling_window', type=int, default=1, help='down sampling window size')
-    parser.add_argument('--down_sampling_method', type=str, default=None,
+    parser.add_argument('--down_sampling_layers', type=int, default=2, help='num of down sampling layers')
+    parser.add_argument('--down_sampling_window', type=int, default=2, help='down sampling window size')
+    parser.add_argument('--down_sampling_method', type=str, default='avg',
                         help='down sampling method, only support avg, max, conv')
     parser.add_argument('--seg_len', type=int, default=96,
                         help='the length of segmen-wise iteration of SegRNN')
@@ -147,6 +148,7 @@ if __name__ == '__main__':
     parser.add_argument('--do_cp_calibration', default=False, action='store_true', help='Whether to perform CP calibration')
     parser.add_argument('--do_aleatoric_mog_calibration', default=False, action='store_true', help='Whether to perform Aleatoric MOG calibration')
     parser.add_argument('--do_aleatoric_only_calibration', default=False, action='store_true', help='Whether to perform Aleatoric Only calibration')
+    parser.add_argument('--do_aleatoric_mog_calibration_second_option', default=False, action='store_true', help='Whether to perform Aleatoric MOG calibration second option')
     
     # Pinball loss
     parser.add_argument('--use_quantile_loss', action='store_true', help='Use Pinball loss for quantile regression instead of MSE', default=False)
@@ -230,7 +232,7 @@ if __name__ == '__main__':
                 print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
                 exp.test(setting)
                 print('>>>>>>>analyze_and_save_weights : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-
+                analyze_and_save_weights(setting, args)
                 print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
                 if args.moe and args.prob_expert and args.do_cpvs_calibration:
                     exp.calibrate_cpvs(setting)
@@ -243,12 +245,15 @@ if __name__ == '__main__':
                 if args.do_cp_calibration:
                     print(f"Running CP calibration for {setting}...")
                     exp.calibrate_cp(setting)
-                if args.do_aleatoric_mog_calibration and args.prob_expert and args.num_experts > 1:
+                if args.do_aleatoric_mog_calibration and args.prob_expert:
                     print(f"Running Aleatoric MOG calibration for {setting}...")
                     exp.calibrate_aleatoric_mog(setting)
-                if args.do_aleatoric_only_calibration and args.prob_expert and args.num_experts > 1:
+                if args.do_aleatoric_only_calibration and args.prob_expert:
                     print(f"Running Aleatoric Only calibration for {setting}...")
                     exp.calibrate_aleatoric_only(setting)
+                if args.do_aleatoric_mog_calibration_second_option and args.prob_expert:
+                    print(f"Running Aleatoric MOG calibration second option for {setting}...")
+                    exp.calibrate_aleatoric_mog_second_option(setting)
                 
             if args.gpu_type == 'mps':
                 torch.backends.mps.empty_cache()
@@ -284,6 +289,10 @@ if __name__ == '__main__':
 
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
         exp.test(setting, test=1)
+
+        print('>>>>>>>analyze_and_save_weights : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+        analyze_and_save_weights(setting, args)
+
         print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
         if args.moe and args.prob_expert and args.do_cpvs_calibration:
             exp.calibrate_cpvs(setting)
@@ -297,13 +306,16 @@ if __name__ == '__main__':
         if args.do_cp_calibration:
             print(f"Running CP calibration for {setting}...")
             exp.calibrate_cp(setting)
-        if args.do_aleatoric_mog_calibration and args.prob_expert and args.num_experts > 1:
+        if args.do_aleatoric_mog_calibration and args.prob_expert:
             print(f"Running Aleatoric MOG calibration for {setting}...")
             exp.calibrate_aleatoric_mog(setting)
-        if args.do_aleatoric_only_calibration and  args.prob_expert and args.num_experts > 1:
+        if args.do_aleatoric_only_calibration and  args.prob_expert:
             print(f"Running Aleatoric Only calibration for {setting}...")
             exp.calibrate_aleatoric_only(setting)
-            
+        if args.do_aleatoric_mog_calibration_second_option and args.prob_expert:
+            print(f"Running Aleatoric MOG calibration second option for {setting}...")
+            exp.calibrate_aleatoric_mog_second_option(setting)
+
         if args.gpu_type == 'mps':
             torch.backends.mps.empty_cache()
         elif args.gpu_type == 'cuda':

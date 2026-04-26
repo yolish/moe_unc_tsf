@@ -208,7 +208,6 @@ class Model(nn.Module):
         self.down_sampling_window = configs.down_sampling_window
         self.channel_independence = configs.channel_independence
         
-        # זיהוי האם מופעל Probabilistic Expert (למודלי MOG/MOGU)
         self.prob_expert = getattr(configs, 'prob_expert', False)
 
         self.pdm_blocks = nn.ModuleList([PastDecomposableMixing(configs)
@@ -383,29 +382,22 @@ class Model(nn.Module):
                 enc_out = self.enc_embedding(x, None)  # [B,T,C]
                 enc_out_list.append(enc_out)
 
-        # Past Decomposable Mixing as encoder for past
         for i in range(self.layer):
             enc_out_list = self.pdm_blocks[i](enc_out_list)
 
-        # Future Multipredictor Mixing as decoder for future
         dec_out_list = self.future_multi_mixing(B, enc_out_list, x_list)
 
         dec_out = torch.stack(dec_out_list, dim=-1).sum(-1)
         dec_out = self.normalize_layers[0](dec_out, 'denorm')
 
         if self.prob_expert:
-            # 1. מיצוע על ציר הזמן כדי לייצר וקטור תקציר לכל סדרת זמן
             enc_pooled = enc_out_list[0].mean(dim=1) 
             
-            # 2. סידור למבנה תלת-ממדי *לפני* הכניסה לראש אי-הוודאות
             if self.channel_independence:
-                # הופך מ-[56, 512] ל-[8, 7, 512]
                 enc_pooled = enc_pooled.reshape(B, self.configs.c_out, -1)
             else:
-                # אם אין עצמאות ערוצים, מוסיפים ממד פיקטיבי כדי שה-permute לא יקרוס
                 enc_pooled = enc_pooled.unsqueeze(1)
                 
-            # 3. הפעלת הראש (הוא כבר יעשה את הליניאריות ואת ה-permute בעצמו)
             sq_sigma_out = self.unc_head(enc_pooled)
             
             return dec_out, sq_sigma_out
@@ -448,7 +440,6 @@ class Model(nn.Module):
 
         enc_out = enc_out_list[0]
         # Output
-        # the output transformer encoder/decoder embeddings don't include non-linearity
         output = self.act(enc_out)
         output = self.dropout(output)
         # zero-out padding embeddings
@@ -523,7 +514,6 @@ class Model(nn.Module):
             enc_out = self.enc_embedding(x, None)  # [B,T,C]
             enc_out_list.append(enc_out)
 
-        # MultiScale-CrissCrossAttention  as encoder for past
         for i in range(self.layer):
             enc_out_list = self.pdm_blocks[i](enc_out_list)
 

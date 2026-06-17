@@ -746,3 +746,112 @@ class UEAloader(Dataset):
 
     def __len__(self):
         return len(self.all_IDs)
+
+
+class Dataset_Synthetic(Dataset):
+    def __init__(self, root_path=None, flag='train', size=None, data_path=None, proportions=[0.2, 0.3, 0.5]):
+        self.n_samples = 500 if size is None else size[0]
+        self.proportions = proportions
+        self.flag = flag
+        
+        seed_map = {'train': 42, 'val': 43, 'test': 44}
+        np.random.seed(seed_map.get(flag, 42))
+        
+        self.__read_data__()
+
+    def __read_data__(self):
+        X = np.random.uniform(-3, 3, self.n_samples)
+        eps = np.random.normal(0, 1, self.n_samples)
+        
+        domains = np.random.choice([0, 1, 2], p=self.proportions, size=self.n_samples)
+        Y = np.zeros(self.n_samples)
+        
+        Y[domains == 0] = X[domains == 0] + eps[domains == 0]
+        Y[domains == 1] = X[domains == 1]**2 + eps[domains == 1]
+        Y[domains == 2] = X[domains == 2]**3 + eps[domains == 2]
+        
+        self.X = torch.tensor(X, dtype=torch.float32).unsqueeze(1)
+        self.Y = torch.tensor(Y, dtype=torch.float32).unsqueeze(1)
+
+    def __getitem__(self, index):
+        return self.X[index], self.Y[index]
+
+    def __len__(self):
+        return self.n_samples
+import pandas as pd
+import numpy as np
+import torch
+from torch.utils.data import Dataset
+from sklearn.preprocessing import StandardScaler
+
+class Dataset_Tabular(Dataset):
+    def __init__(self, root_path=None, flag='train', size=None, data_path='', data_name=''):
+        self.flag = flag
+        self.data_name = data_name if data_name else data_path
+        self.n_samples_per_split = 1500
+        
+        type_map = {'train': 0, 'val': 1, 'test': 2}
+        self.set_type = type_map[flag]
+        
+        self.scaler = StandardScaler()
+        self.__read_data__()
+
+    def __read_data__(self):
+        try:
+            from ucimlrepo import fetch_ucirepo
+        except ImportError:
+            raise ImportError("Please install ucimlrepo package: pip install ucimlrepo")
+
+        if 'bike' in self.data_name.lower():
+            if self.set_type == 0:
+                print("Downloading Bike Sharing dataset from UCI...")
+            dataset = fetch_ucirepo(id=275) 
+            X_df = dataset.data.features
+            Y_df = dataset.data.targets
+            
+            if 'dteday' in X_df.columns:
+                X_df = X_df.drop(columns=['dteday'])
+                
+            X = X_df.values
+            Y = Y_df['cnt'].values.reshape(-1, 1)
+
+        elif 'temperature' in self.data_name.lower() or 'bias' in self.data_name.lower():
+            if self.set_type == 0:
+                print("Downloading Temperature dataset from UCI...")
+            dataset = fetch_ucirepo(id=514)
+            X_df = dataset.data.features
+            Y_df = dataset.data.targets
+            
+            df = pd.concat([X_df, Y_df], axis=1)
+            cols_to_drop = ['station', 'Date', 'Next_Tmax']
+            df = df.drop(columns=[c for c in cols_to_drop if c in df.columns])
+            df = df.dropna()
+            
+            Y = df.pop('Next_Tmin').values.reshape(-1, 1)
+            X = df.values
+            
+        else:
+            raise ValueError(f"Unknown tabular dataset: {self.data_name}")
+
+        start_idx = self.set_type * self.n_samples_per_split
+        end_idx = start_idx + self.n_samples_per_split
+        
+        if end_idx > len(X):
+            end_idx = len(X)
+            
+        X_split = X[start_idx:end_idx]
+        Y_split = Y[start_idx:end_idx]
+
+        if self.set_type == 0:
+            self.scaler.fit(X_split)
+        
+        X_split = self.scaler.transform(X_split)
+        
+        self.X = torch.tensor(X_split, dtype=torch.float32)
+        self.Y = torch.tensor(Y_split, dtype=torch.float32)
+
+    def __getitem__(self, index):
+        return self.X[index], self.Y[index]
+
+    def __len__(self):
+        return len(self.X)

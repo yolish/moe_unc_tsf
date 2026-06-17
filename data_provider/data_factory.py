@@ -1,5 +1,5 @@
 from data_provider.data_loader import Dataset_ETT_hour, Dataset_ETT_minute, Dataset_Custom, Dataset_M4, PSMSegLoader, \
-    MSLSegLoader, SMAPSegLoader, SMDSegLoader, SWATSegLoader, UEAloader
+    MSLSegLoader, SMAPSegLoader, SMDSegLoader, SWATSegLoader, UEAloader, Dataset_Synthetic, Dataset_Tabular
 from data_provider.uea import collate_fn
 from torch.utils.data import DataLoader
 
@@ -15,7 +15,10 @@ data_dict = {
     'SMAP': SMAPSegLoader,
     'SMD': SMDSegLoader,
     'SWAT': SWATSegLoader,
-    'UEA': UEAloader
+    'UEA': UEAloader,
+    'Synthetic': Dataset_Synthetic,
+    'Bike': Dataset_Tabular,
+    'Temperature': Dataset_Tabular
 }
 
 
@@ -28,7 +31,28 @@ def data_provider(args, flag):
     batch_size = args.batch_size
     freq = args.freq
 
-    if args.task_name == 'anomaly_detection':
+    if args.task_name == 'tabular_regression':
+        dataset = Data(
+            root_path=args.root_path,
+            data_path=args.data_path,
+            data_name=args.data,
+            flag=flag,
+            size=[args.n_samples] if hasattr(args, 'n_samples') else None
+        )
+
+        shuffle_flag = True if flag == 'train' else False
+        drop_last = True if flag == 'train' else False
+        batch_size = args.batch_size
+        
+        data_loader = DataLoader(
+            dataset, 
+            batch_size=batch_size, 
+            shuffle=shuffle_flag, 
+            num_workers=args.num_workers, 
+            drop_last=drop_last
+        )
+        return dataset, data_loader
+    elif args.task_name == 'anomaly_detection':
         drop_last = False
         data_set = Data(
             args = args,

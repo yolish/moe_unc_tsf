@@ -2,7 +2,9 @@ import argparse
 import os
 import torch
 import torch.backends
+from exp import exp_long_term_forecasting
 from exp.exp_long_term_forecasting import Exp_Long_Term_Forecast
+from exp.exp_tabular_regression import Exp_Tabular_Regression
 from utils.print_args import print_args
 import random
 import numpy as np
@@ -146,8 +148,10 @@ if __name__ == '__main__':
     parser.add_argument('--do_cqr_calibration', default=False, action='store_true', help='Whether to perform CQR calibration')
     parser.add_argument('--do_cp_calibration', default=False, action='store_true', help='Whether to perform CP calibration')
     
-    # Pinball loss
-    parser.add_argument('--use_quantile_loss', action='store_true', help='Use Pinball loss for quantile regression instead of MSE', default=False)
+
+    # Regression specific args
+    parser.add_argument('--use_reg_moecp', action='store_true', default=False, help='Use MoECP calibration for regression')
+    parser.add_argument('--use_reg_cp_vs', action='store_true', default=False, help='Use CP_VS calibration for regression')
 
     args = parser.parse_args()
 
@@ -188,6 +192,15 @@ if __name__ == '__main__':
     np.random.seed(fix_seed)
 
     Exp = Exp_Long_Term_Forecast # only supporting this task for now
+
+    if args.task_name == 'long_term_forecast':
+        Exp = Exp_Long_Term_Forecast
+    elif args.task_name == 'tabular_regression':
+        Exp = Exp_Tabular_Regression
+    # --------------------------
+    else:
+        Exp = Exp_Long_Term_Forecast # fallback
+
     dataset_name = args.data_path.replace(".csv","").replace("_","-")
     if args.is_training:
         for ii in range(args.itr):
@@ -230,17 +243,26 @@ if __name__ == '__main__':
                 print('>>>>>>>analyze_and_save_weights : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
 
                 print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-                if args.moe and args.prob_expert and args.do_cpvs_calibration:
-                    exp.calibrate_cpvs(setting)
-                if args.use_quantile_loss and args.do_cqr_calibration:
-                    if args.prob_expert:
-                        print(f"Skipping CQR for setting {setting}: Pinball loss is incompatible with prob experts")
-                    else:
-                        print(f"Running CQR calibration for {setting}...")
-                        exp.calibrate_cqr(setting)
-                if args.do_cp_calibration:
-                    print(f"Running CP calibration for {setting}...")
-                    exp.calibrate_cp(setting)
+                if isinstance(exp, Exp_Long_Term_Forecast):
+                    if args.moe and args.prob_expert and args.do_cpvs_calibration:
+                        exp.calibrate_cpvs(setting)
+                    if args.use_quantile_loss and args.do_cqr_calibration:
+                        if args.prob_expert:
+                            print(f"Skipping CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                        else:
+                            print(f"Running CQR calibration for {setting}...")
+                            exp.calibrate_cqr(setting)
+                    if args.do_cp_calibration:
+                        print(f"Running CP calibration for {setting}...")
+                        exp.calibrate_cp(setting)
+                        
+                elif isinstance(exp, Exp_Tabular_Regression):
+                    if args.use_reg_moecp:
+                        print(f"Running MoECP calibration for regression for setting {setting}...")
+                        exp.calibrate_moecp(setting)
+                    if args.use_reg_cp_vs:
+                        print(f"Running CP_VS calibration for regression for setting {setting}...")
+                        exp.calibrate_cp_vs(setting)
 
             if args.gpu_type == 'mps':
                 torch.backends.mps.empty_cache()

@@ -8,6 +8,8 @@ from exp.exp_basic import Exp_Basic
 from utils.tools import EarlyStopping, adjust_learning_rate
 from calibration.tabular_regression.MoECP_Calibrator import MoECP_Calibrator
 from calibration.tabular_regression.CPVS_regression import CP_VS_Static_Calibrator
+from calibration.tabular_regression.Aleatoric_CPVS_Calibrator import AleatoricCPVSCalibrator
+from calibration.tabular_regression.Aleatoric_Scale_Calibrator import AleatoricScaleCalibrator
 
 
 class Exp_Tabular_Regression(Exp_Basic):
@@ -36,13 +38,10 @@ class Exp_Tabular_Regression(Exp_Basic):
         else:
             criterion = nn.MSELoss()
         return criterion
-
     def _collect_predictions(self, dataloader):
         self.model.eval()
-        all_preds = []
-        all_trues = []
-        all_weights = []
-        all_stds = []
+        all_preds, all_trues, all_weights = [], [], []
+        all_stds_total, all_stds_aleat, all_stds_epist = [], [], []
 
         with torch.no_grad():
             for i, (batch_x, batch_y) in enumerate(dataloader):
@@ -54,18 +53,26 @@ class Exp_Tabular_Regression(Exp_Basic):
                 if isinstance(outputs, tuple):
                     pred = outputs[0]
                     weights = outputs[1]
-                    std = outputs[2] if len(outputs) > 2 else torch.ones_like(pred)
+                    std_total = outputs[2] if len(outputs) > 2 else torch.ones_like(pred)
+                    std_aleat = outputs[3] if len(outputs) > 3 else std_total
+                    std_epist = outputs[4] if len(outputs) > 4 else torch.zeros_like(pred)
                 else:
                     pred = outputs
                     weights = torch.ones((pred.shape[0], 1)).to(self.device)
-                    std = torch.ones_like(pred)
+                    std_total = torch.ones_like(pred)
+                    std_aleat = torch.ones_like(pred)
+                    std_epist = torch.zeros_like(pred)
 
                 all_preds.append(pred.detach().cpu())
                 all_trues.append(batch_y.detach().cpu())
                 all_weights.append(weights.detach().cpu())
-                all_stds.append(std.detach().cpu())
+                all_stds_total.append(std_total.detach().cpu())
+                all_stds_aleat.append(std_aleat.detach().cpu())
+                all_stds_epist.append(std_epist.detach().cpu())
 
-        return torch.cat(all_preds), torch.cat(all_trues), torch.cat(all_weights), torch.cat(all_stds)
+        # Returns 6 tensors now
+        return (torch.cat(all_preds), torch.cat(all_trues), torch.cat(all_weights), 
+                torch.cat(all_stds_total), torch.cat(all_stds_aleat), torch.cat(all_stds_epist))
 
     def vali(self, vali_data, vali_loader, criterion):
         self.model.eval()
@@ -162,7 +169,7 @@ class Exp_Tabular_Regression(Exp_Basic):
             print('loading model')
             self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth')))
 
-        test_preds, test_trues, _, _ = self._collect_predictions(test_loader)
+        test_preds, test_trues, _, _, _, _ = self._collect_predictions(test_loader)
 
         test_preds = test_preds.numpy()
         test_trues = test_trues.numpy()
@@ -189,8 +196,9 @@ class Exp_Tabular_Regression(Exp_Basic):
         cal_data, cal_loader = self._get_data(flag='val')
         test_data, test_loader = self._get_data(flag='test')
 
-        cal_preds, cal_trues, cal_weights, _ = self._collect_predictions(cal_loader)
-        test_preds, test_trues, test_weights, _ = self._collect_predictions(test_loader)
+        cal_preds, cal_trues, cal_weights, _, _, _ = self._collect_predictions(cal_loader)
+        test_preds, test_trues, test_weights, _, _, _ = self._collect_predictions(test_loader)
+        
 
         calibrator = MoECP_Calibrator(alpha=0.1, temperature=self.args.tau)
         calibrator.fit(cal_preds, cal_trues, cal_weights)
@@ -214,7 +222,7 @@ class Exp_Tabular_Regression(Exp_Basic):
             f.write(f"{setting} (MoECP)\n")
             f.write(f"Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
 
-        np.save(folder_path + 'intervals.npy', intervals)
+        np.save(folder_path + 'intervals_moecp.npy', intervals)
         return coverage, width
 
     def calibrate_cpvs(self, setting):
@@ -226,15 +234,17 @@ class Exp_Tabular_Regression(Exp_Basic):
         cal_data, cal_loader = self._get_data(flag='val')
         test_data, test_loader = self._get_data(flag='test')
 
-        cal_preds, cal_trues, _, cal_stds = self._collect_predictions(cal_loader)
-        test_preds, test_trues, _, test_stds = self._collect_predictions(test_loader)
+        # חילוץ 6 הערכים: אנחנו שומרים את השונות הכוללת במשתנה ייעודי
+        cal_preds, cal_trues, _, cal_stds_total, _, _ = self._collect_predictions(cal_loader)
+        test_preds, test_trues, _, test_stds_total, _, _ = self._collect_predictions(test_loader)
 
+        # שימוש בשונות הכוללת (Total Std) עבור כיול CP_VS קלאסי
         calibrator = CP_VS_Static_Calibrator(alpha=0.1)
-        calibrator.fit(cal_preds, cal_trues, cal_stds)
-        intervals = calibrator.predict(test_preds, test_stds)
+        calibrator.fit(cal_preds, cal_trues, cal_stds_total)
+        intervals = calibrator.predict(test_preds, test_stds_total)
 
         intervals = intervals.numpy()
-        test_trues = test_trues.numpy()
+        test_trues = test_trues.squeeze().numpy()
 
         coverage = np.mean((test_trues >= intervals[:, 0]) & (test_trues <= intervals[:, 1]))
         width = np.mean(intervals[:, 1] - intervals[:, 0])
@@ -251,5 +261,83 @@ class Exp_Tabular_Regression(Exp_Basic):
             f.write(f"{setting} (CP_VS Static)\n")
             f.write(f"Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
 
-        np.save(folder_path + 'intervals.npy', intervals)
+        np.save(folder_path + 'intervals_cpvs.npy', intervals)
+        return coverage, width
+    
+    def calibrate_cpvs_aleatoric(self, setting):
+        path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
+        if os.path.exists(path):
+            self.model.load_state_dict(torch.load(path))
+        self.model.eval()
+
+        cal_data, cal_loader = self._get_data(flag='val')
+        test_data, test_loader = self._get_data(flag='test')
+
+        # Extract predictions and isolate aleatoric uncertainty
+        cal_preds, cal_trues, _, _, cal_stds_aleat, _ = self._collect_predictions(cal_loader)
+        test_preds, test_trues, _, _, test_stds_aleat, _ = self._collect_predictions(test_loader)
+
+        # Deploy the dedicated Aleatoric CP-VS calibrator
+        calibrator = AleatoricCPVSCalibrator(alpha=0.1)
+        calibrator.fit(cal_preds, cal_trues, cal_stds_aleat)
+        intervals = calibrator.predict(test_preds, test_stds_aleat)
+
+        intervals = intervals.numpy()
+        test_trues = test_trues.squeeze().numpy()
+
+        coverage = np.mean((test_trues >= intervals[:, 0]) & (test_trues <= intervals[:, 1]))
+        width = np.mean(intervals[:, 1] - intervals[:, 0])
+        
+        print(f"\nCP_VS Aleatoric Results:")
+        print(f"Coverage: {coverage:.4f}")
+        print(f"Avg Width: {width:.4f}")
+
+        folder_path = './results/' + setting + '/'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        with open("result_calibration_cpvs_aleatoric.txt", 'a') as f:
+            f.write(f"{setting} (CP_VS Aleatoric)\n")
+            f.write(f"Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
+
+        np.save(folder_path + 'intervals_cpvs_aleatoric.npy', intervals)
+        return coverage, width
+
+    def calibrate_cp_aleatoric_scale(self, setting):
+        path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
+        if os.path.exists(path):
+            self.model.load_state_dict(torch.load(path))
+        self.model.eval()
+
+        cal_data, cal_loader = self._get_data(flag='val')
+        test_data, test_loader = self._get_data(flag='test')
+
+        # Collect complete predictions and uncertainty profiles
+        cal_preds, cal_trues, _, _, cal_stds_aleat, cal_stds_epist = self._collect_predictions(cal_loader)
+        test_preds, test_trues, _, _, test_stds_aleat, test_stds_epist = self._collect_predictions(test_loader)
+
+        # Deploy the new standalone AleatoricScaleCalibrator
+        calibrator = AleatoricScaleCalibrator(alpha=0.1)
+        calibrator.fit(cal_preds, cal_trues, cal_stds_aleat, cal_stds_epist)
+        intervals = calibrator.predict(test_preds, test_stds_aleat, test_stds_epist)
+
+        intervals = intervals.numpy()
+        test_trues = test_trues.squeeze().numpy()
+
+        coverage = np.mean((test_trues >= intervals[:, 0]) & (test_trues <= intervals[:, 1]))
+        width = np.mean(intervals[:, 1] - intervals[:, 0])
+        
+        print(f"\nCP Aleatoric Scale Results (Learned q^2 = {calibrator.q_sq:.4f}):")
+        print(f"Coverage: {coverage:.4f}")
+        print(f"Avg Width: {width:.4f}")
+
+        folder_path = './results/' + setting + '/'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        with open("result_calibration_cp_aleatoric_scale.txt", 'a') as f:
+            f.write(f"{setting} (CP Aleatoric Scale)\n")
+            f.write(f"Coverage: {coverage:.4f}, Width: {width:.4f}, q_sq: {calibrator.q_sq:.4f}\n\n")
+
+        np.save(folder_path + 'intervals_cp_aleatoric_scale.npy', intervals)
         return coverage, width

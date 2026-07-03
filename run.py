@@ -152,12 +152,13 @@ if __name__ == '__main__':
     # Regression specific args
     parser.add_argument('--use_reg_moecp', action='store_true', default=False, help='Use MoECP calibration for regression')
     parser.add_argument('--use_reg_cp_vs', action='store_true', default=False, help='Use CP_VS calibration for regression')
+    parser.add_argument('--use_reg_cp_aleatoric', action='store_true', default=False, help='Use CP_VS Aleatoric calibration')
+    parser.add_argument('--use_reg_cp_aleat_scale', action='store_true', default=False, help='Scale only aleatoric uncertainty by learned q')
+    parser.add_argument('--tau', type=int, default=100)
 
     args = parser.parse_args()
 
-
-    # MOE and uncertainty currently supported only for time long term forecasting
-    assert(args.task_name =='long_term_forecast'), "Current supporting only time series forecasting"
+    assert args.task_name in ['long_term_forecast', 'tabular_regression'], "Task not supported"
     args.moe = (args.num_experts > 1) or (args.prob_expert) 
 
     if args.unc_gating and args.num_experts == 1:
@@ -190,8 +191,6 @@ if __name__ == '__main__':
     random.seed(fix_seed)
     torch.manual_seed(fix_seed)
     np.random.seed(fix_seed)
-
-    Exp = Exp_Long_Term_Forecast # only supporting this task for now
 
     if args.task_name == 'long_term_forecast':
         Exp = Exp_Long_Term_Forecast
@@ -255,14 +254,20 @@ if __name__ == '__main__':
                     if args.do_cp_calibration:
                         print(f"Running CP calibration for {setting}...")
                         exp.calibrate_cp(setting)
-                        
+
                 elif isinstance(exp, Exp_Tabular_Regression):
                     if args.use_reg_moecp:
                         print(f"Running MoECP calibration for regression for setting {setting}...")
                         exp.calibrate_moecp(setting)
                     if args.use_reg_cp_vs:
                         print(f"Running CP_VS calibration for regression for setting {setting}...")
-                        exp.calibrate_cp_vs(setting)
+                        exp.calibrate_cpvs(setting)
+                    if args.use_reg_cp_aleatoric:
+                        print(f"Running CP_VS aleatoric calibration for regression for setting {setting}...")
+                        exp.calibrate_cpvs_aleatoric(setting)
+                    if args.use_reg_cp_aleat_scale:
+                        print(f"Running CP Aleatoric Scaling calibration for setting {setting}...")
+                        exp.calibrate_cp_aleatoric_scale(setting)
 
             if args.gpu_type == 'mps':
                 torch.backends.mps.empty_cache()
@@ -299,18 +304,32 @@ if __name__ == '__main__':
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
         exp.test(setting, test=1)
         print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-        if args.moe and args.prob_expert and args.do_cpvs_calibration:
-            exp.calibrate_cpvs(setting)
+        if isinstance(exp, Exp_Long_Term_Forecast):
+            if args.moe and args.prob_expert and args.do_cpvs_calibration:
+                exp.calibrate_cpvs(setting)
+            if args.use_quantile_loss and args.do_cqr_calibration:
+                if args.prob_expert:
+                    print(f"Skipping CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                else:
+                    print(f"Running CQR calibration for {setting}...")
+                    exp.calibrate_cqr(setting)
+            if args.do_cp_calibration:
+                print(f"Running CP calibration for {setting}...")
+                exp.calibrate_cp(setting)
 
-        if args.use_quantile_loss and args.do_cqr_calibration:
-            if args.prob_expert:
-                print(f"Skipping CQR for setting {setting}: Pinball loss is incompatible with prob experts")
-            else:
-                print(f"Running CQR calibration for {setting}...")
-                exp.calibrate_cqr(setting)
-        if args.do_cp_calibration:
-            print(f"Running CP calibration for {setting}...")
-            exp.calibrate_cp(setting)
+        elif isinstance(exp, Exp_Tabular_Regression):
+            if args.use_reg_moecp:
+                print(f"Running MoECP calibration for regression for setting {setting}...")
+                exp.calibrate_moecp(setting)
+            if args.use_reg_cp_vs:
+                print(f"Running CP_VS calibration for regression for setting {setting}...")
+                exp.calibrate_cpvs(setting)
+            if args.use_reg_cp_aleatoric:
+                print(f"Running CP_VS aleatoric calibration for regression for setting {setting}...")
+                exp.calibrate_cpvs_aleatoric(setting)
+            if args.use_reg_cp_aleat_scale:
+                print(f"Running CP Aleatoric Scaling calibration for setting {setting}...")
+                exp.calibrate_cp_aleatoric_scale(setting)
 
         if args.gpu_type == 'mps':
             torch.backends.mps.empty_cache()

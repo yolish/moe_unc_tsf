@@ -747,9 +747,8 @@ class UEAloader(Dataset):
     def __len__(self):
         return len(self.all_IDs)
 
-
 class Dataset_Synthetic(Dataset):
-    def __init__(self, root_path=None, flag='train', size=None, data_path=None, proportions=[0.2, 0.3, 0.5]):
+    def __init__(self, root_path=None, flag='train', size=None, data_path=None, data_name=None, proportions=[0.2, 0.3, 0.5]):
         self.n_samples = 500 if size is None else size[0]
         self.proportions = proportions
         self.flag = flag
@@ -778,16 +777,20 @@ class Dataset_Synthetic(Dataset):
 
     def __len__(self):
         return self.n_samples
+
 import pandas as pd
 import numpy as np
 import torch
 from torch.utils.data import Dataset
 from sklearn.preprocessing import StandardScaler
+import os
 
 class Dataset_Tabular(Dataset):
     def __init__(self, root_path=None, flag='train', size=None, data_path='', data_name=''):
         self.flag = flag
         self.data_name = data_name if data_name else data_path
+        self.root_path = root_path
+        self.data_path = data_path
         self.n_samples_per_split = 1500
         
         type_map = {'train': 0, 'val': 1, 'test': 2}
@@ -797,12 +800,12 @@ class Dataset_Tabular(Dataset):
         self.__read_data__()
 
     def __read_data__(self):
-        try:
-            from ucimlrepo import fetch_ucirepo
-        except ImportError:
-            raise ImportError("Please install ucimlrepo package: pip install ucimlrepo")
-
         if 'bike' in self.data_name.lower():
+            try:
+                from ucimlrepo import fetch_ucirepo
+            except ImportError:
+                raise ImportError("Please install ucimlrepo package: pip install ucimlrepo")
+            
             if self.set_type == 0:
                 print("Downloading Bike Sharing dataset from UCI...")
             dataset = fetch_ucirepo(id=275) 
@@ -817,15 +820,20 @@ class Dataset_Tabular(Dataset):
 
         elif 'temperature' in self.data_name.lower() or 'bias' in self.data_name.lower():
             if self.set_type == 0:
-                print("Downloading Temperature dataset from UCI...")
-            dataset = fetch_ucirepo(id=514)
-            X_df = dataset.data.features
-            Y_df = dataset.data.targets
+                print("Loading Temperature dataset via pandas...")
             
-            df = pd.concat([X_df, Y_df], axis=1)
+            try:
+                # עקיפת המגבלה של UCI API - קריאה ישירה מהשרת שלהם
+                url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00514/Bias_correction_ucl.csv"
+                df = pd.read_csv(url)
+            except Exception:
+                # למקרה שאין אינטרנט בשרת, נטען מהתיקייה המקומית
+                file_path = os.path.join(self.root_path, self.data_path)
+                df = pd.read_csv(file_path)
+            
+            df = df.dropna()
             cols_to_drop = ['station', 'Date', 'Next_Tmax']
             df = df.drop(columns=[c for c in cols_to_drop if c in df.columns])
-            df = df.dropna()
             
             Y = df.pop('Next_Tmin').values.reshape(-1, 1)
             X = df.values
@@ -842,8 +850,13 @@ class Dataset_Tabular(Dataset):
         X_split = X[start_idx:end_idx]
         Y_split = Y[start_idx:end_idx]
 
-        if self.set_type == 0:
-            self.scaler.fit(X_split)
+        train_start = 0
+        train_end = self.n_samples_per_split
+        if train_end > len(X):
+            train_end = len(X)
+            
+        X_train_split = X[train_start:train_end]
+        self.scaler.fit(X_train_split)
         
         X_split = self.scaler.transform(X_split)
         

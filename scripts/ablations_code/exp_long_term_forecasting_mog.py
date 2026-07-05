@@ -22,7 +22,7 @@ class MoGLoss(nn.Module):
         dist = torch.distributions.Normal(loc=mues, scale=torch.exp(log_sigmas)+eps)
         log_prob = dist.log_prob(targets.unsqueeze(1))
         log_weights = torch.log(weights)
-        log_likelihood_overall = torch.logsumexp(log_weights + log_prob, dim=-1)
+        log_likelihood_overall = torch.logsumexp(log_weights + log_prob, dim=1)
 
         # Calculate negative log-likelihood
         nll_loss = -torch.mean(log_likelihood_overall)

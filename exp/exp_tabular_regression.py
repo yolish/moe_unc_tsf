@@ -10,7 +10,7 @@ from calibration.tabular_regression.MoECP_Calibrator import MoECP_Calibrator
 from calibration.tabular_regression.CPVS_regression import CP_VS_Static_Calibrator
 from calibration.tabular_regression.Aleatoric_CPVS_Calibrator import AleatoricCPVSCalibrator
 from calibration.tabular_regression.Aleatoric_Scale_Calibrator import AleatoricScaleCalibrator
-
+from calibration.tabular_regression.Standard_CP_Calibrator import Standard_CP_Calibrator
 
 class Exp_Tabular_Regression(Exp_Basic):
     def __init__(self, args):
@@ -169,10 +169,47 @@ class Exp_Tabular_Regression(Exp_Basic):
             print('loading model')
             self.model.load_state_dict(torch.load(os.path.join('./checkpoints/' + setting, 'checkpoint.pth')))
 
-        test_preds, test_trues, _, _, _, _ = self._collect_predictions(test_loader)
+        # איסוף כל הנתונים מהמודל (6 משתנים)
+        test_preds, test_trues, test_weights, test_stds_total, test_stds_aleat, test_stds_epist = self._collect_predictions(test_loader)
 
         test_preds = test_preds.numpy()
         test_trues = test_trues.numpy()
+        test_weights = test_weights.numpy()
+        
+        # --- תוספת: ניתוח המומחים וחוסר הוודאות ---
+        if hasattr(self.args, 'prob_expert') and self.args.prob_expert:
+            var_aleat = test_stds_aleat.numpy() ** 2
+            var_epist = test_stds_epist.numpy() ** 2
+            
+            # 1. חישוב יחס השונות (Epistemic / Aleatoric)
+            # כמה מהשגיאה נובעת מחוסר הסכמה בין המומחים לעומת רעש בדאטה
+            ratio = var_epist / (var_aleat + 1e-8)
+            epistemic_contribution = var_epist / (var_aleat + var_epist + 1e-8)
+            
+            print("\n" + "="*40)
+            print("--- Uncertainty & Variance Analysis ---")
+            print(f"Avg Aleatoric Variance: {np.mean(var_aleat):.4f}")
+            print(f"Avg Epistemic Variance: {np.mean(var_epist):.4f}")
+            print(f"Avg Epistemic/Aleatoric Ratio: {np.mean(ratio):.4f}")
+            print(f"Avg Epistemic Contribution to Total Var: {np.mean(epistemic_contribution)*100:.2f}%")
+            
+        print("\n--- MoE Gating Analysis ---")
+        # 2. ניתוח דינמיות המשקלים (האם הנתב באמת מחלק עבודה?)
+        avg_weights = np.mean(test_weights, axis=0)
+        std_weights = np.std(test_weights, axis=0)
+        
+        # מי המומחה שניצח (קיבל את המשקל הגבוה ביותר) בכל דגימה?
+        winning_expert = np.argmax(test_weights, axis=1)
+        unique, counts = np.unique(winning_expert, return_counts=True)
+        expert_counts = dict(zip(unique, counts))
+        
+        print(f"Average Gating Weights per expert: {avg_weights}")
+        print(f"Std of Gating Weights per expert: {std_weights}")
+        print(f"Winning expert distribution (Count of samples each expert 'won'):")
+        for exp_idx, count in expert_counts.items():
+            print(f"  Expert {exp_idx}: {count} samples ({(count/len(test_preds))*100:.1f}%)")
+        print("="*40 + "\n")
+        # ----------------------------------------
 
         mse = np.mean((test_preds - test_trues) ** 2)
         mae = np.mean(np.abs(test_preds - test_trues))
@@ -340,4 +377,43 @@ class Exp_Tabular_Regression(Exp_Basic):
             f.write(f"Coverage: {coverage:.4f}, Width: {width:.4f}, q_sq: {calibrator.q_sq:.4f}\n\n")
 
         np.save(folder_path + 'intervals_cp_aleatoric_scale.npy', intervals)
+        return coverage, width
+    
+    def calibrate_standard_cp(self, setting):
+        path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
+        if os.path.exists(path):
+            self.model.load_state_dict(torch.load(path))
+        self.model.eval()
+
+        cal_data, cal_loader = self._get_data(flag='val')
+        test_data, test_loader = self._get_data(flag='test')
+
+        # חילוץ נתונים (שים לב שאנחנו מתעלמים מכל מדדי השונות עם _, כי CP רגיל לא צריך אותם)
+        cal_preds, cal_trues, _, _, _, _ = self._collect_predictions(cal_loader)
+        test_preds, test_trues, _, _, _, _ = self._collect_predictions(test_loader)
+
+        # הפעלת הכיול הסטנדרטי
+        calibrator = Standard_CP_Calibrator(alpha=0.1)
+        calibrator.fit(cal_preds, cal_trues)
+        intervals = calibrator.predict(test_preds)
+
+        intervals = intervals if isinstance(intervals, np.ndarray) else intervals.numpy()
+        test_trues = test_trues.squeeze().numpy() if torch.is_tensor(test_trues) else test_trues.squeeze()
+
+        coverage = np.mean((test_trues >= intervals[:, 0]) & (test_trues <= intervals[:, 1]))
+        width = np.mean(intervals[:, 1] - intervals[:, 0])
+        
+        print(f"\nStandard CP Results:")
+        print(f"Coverage: {coverage:.4f}")
+        print(f"Avg Width: {width:.4f}")
+
+        folder_path = './results/' + setting + '/'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        with open("result_calibration_standard_cp.txt", 'a') as f:
+            f.write(f"{setting} (Standard CP)\n")
+            f.write(f"Coverage: {coverage:.4f}, Width: {width:.4f}\n\n")
+
+        np.save(folder_path + 'intervals_standard_cp.npy', intervals)
         return coverage, width

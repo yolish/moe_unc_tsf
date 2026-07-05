@@ -1,6 +1,13 @@
 #!/bin/bash
 export CUDA_VISIBLE_DEVICES=$1
 
+echo "Cleaning up old logs in logs/tabular/..."
+rm -f ./logs/tabular/*.log
+# ------------------------------------
+rm -f ./logs/tabular/final_calibration_summary.csv
+
+mkdir -p ./logs/tabular
+
 if [ ! -d "./logs/tabular" ]; then
     mkdir -p ./logs/tabular
 fi
@@ -22,7 +29,7 @@ do
             enc_in=12
             num_experts=2
             tau=100
-            epochs=2000
+            epochs=500
         elif [ "$data" == "Temperature" ]; then
             enc_in=21
             num_experts=2
@@ -30,25 +37,25 @@ do
             epochs=500
         fi
 
-        # Run MOG with the 4 specified calibration methods
-        python -u run.py --task_name tabular_regression --is_training 0 \
+        # Run MOG with the 5 specified calibration methods
+        python -u run.py --task_name tabular_regression --is_training 1 \
         --root_path ./dataset/ --data_path "${data}.csv" --data "$data" \
         --model MoE --model_id "${model_id}_MOG_${data}" \
         --enc_in $enc_in --c_out 1 --num_experts $num_experts --batch_size 64 \
         --train_epochs $epochs --learning_rate 0.0001 --patience 5 --seed $seed \
         --prob_expert --tau $tau \
         --use_reg_moecp --use_reg_cp_vs --use_reg_cp_aleatoric \
-        --use_reg_cp_aleat_scale > "logs/tabular/${data}_MOG.log" 2>&1 &
+        --use_reg_cp_aleat_scale --use_reg_standard_cp --overwrite > "logs/tabular/${data}_MOG.log" 2>&1 &
 
-        # Run MOGU with the 4 specified calibration methods
-        python -u run.py --task_name tabular_regression --is_training 0 \
+        # Run MOGU with the 5 specified calibration methods
+        python -u run.py --task_name tabular_regression --is_training 1 \
         --root_path ./dataset/ --data_path "${data}.csv" --data "$data" \
         --model MoE --model_id "${model_id}_MOGU_${data}" \
         --enc_in $enc_in --c_out 1 --num_experts $num_experts --batch_size 64 \
         --train_epochs $epochs --learning_rate 0.0001 --patience 5 --seed $seed \
         --prob_expert --unc_gating --tau $tau \
         --use_reg_moecp --use_reg_cp_vs --use_reg_cp_aleatoric \
-        --use_reg_cp_aleat_scale > "logs/tabular/${data}_MOGU.log" 2>&1 &
+        --use_reg_cp_aleat_scale --use_reg_standard_cp --overwrite> "logs/tabular/${data}_MOGU.log" 2>&1 &
         
         wait
     done
@@ -59,66 +66,93 @@ echo "All training and calibration finished! Generating CSV..."
 echo "========================================================="
 
 # Embedded Python script to parse logs and generate the summary CSV
+# Generating CSV - Extended with MoE Analysis
 python3 << 'EOF'
-import os, re
+import os, re, csv
 
-datasets = ['Synthetic', 'Bike', 'Temperature']
+data_sets = ['Synthetic', 'Bike', 'Temperature']
 models = ['MOG', 'MOGU']
-
-csv_lines = []
-csv_lines.append("Dataset,Backbone,Calibration Method,Coverage,Avg Width,Is_Best")
-
-# Mapping the 4 selected calibration methods to their respective log signatures
 methods = {
     'MoECP': r'MoECP Results:',
+    'Standard CP': r'Standard CP Results:',
     'CPVS': r'CP_VS Static Results:',
     'CPVS Aleatoric': r'CP_VS Aleatoric Results:',
     'CP Aleatoric Scale': r'CP Aleatoric Scale Results'
 }
 
-for data in datasets:
-    for model in models:
-        log_file = f'logs/tabular/{data}_{model}.log'
-        if not os.path.exists(log_file):
-            continue
+csv_file = 'logs/tabular/final_calibration_summary.csv'
+print(f"Attempting to create extended CSV: {csv_file}")
+
+with open(csv_file, 'w', newline='') as f:
+    writer = csv.writer(f)
+    # הוספנו את העמודות MSE ו-MAE יחד עם מדדי ה-MoE
+    writer.writerow(["Dataset", "Backbone", "Calibration", "Coverage", "Width", "MSE", "MAE", "Is_Best", 
+                     "Epistemic_Ratio", "Gating_Std", "Expert_Win_Dist"])
+
+    for data in data_sets:
+        for model in models:
+            log_path = f'logs/tabular/{data}_{model}.log'
+            if not os.path.exists(log_path):
+                print(f"Warning: {log_path} not found.")
+                continue
             
-        with open(log_file, 'r') as f:
-            content = f.read()
+            with open(log_path, 'r') as log:
+                content = log.read()
             
-        results = {}
-        for m_name, m_str in methods.items():
-            cov_match = re.search(m_str + r'.*?Coverage:\s*([0-9\.]+)', content, re.DOTALL)
-            wid_match = re.search(m_str + r'.*?Width:\s*([0-9\.]+)', content, re.DOTALL)
-            if cov_match and wid_match:
-                results[m_name] = {
-                    'cov': float(cov_match.group(1)),
-                    'wid': float(wid_match.group(1))
-                }
+            # --- שליפת ה-MSE וה-MAE מהלוג ---
+            # תופס גם הדפסה ישנה וגם חדשה, שולף את שני המספרים בצורה בטוחה
+            metrics_match = re.search(r'(?:Final Test Metrics \| MSE:|Test Results - MSE:)\s*([0-9\.]+).*?MAE:\s*([0-9\.]+)', content)
+            if metrics_match:
+                mse = metrics_match.group(1)
+                mae = metrics_match.group(2)
+            else:
+                mse = "N/A"
+                mae = "N/A"
+
+            # --- חילוץ מדדי ה-MoE מהלוג ---
+            # 1. יחס השונות האפיסטמית
+            epi_ratio_match = re.search(r'Avg Epistemic/Aleatoric Ratio:\s*([0-9\.]+)', content)
+            epistemic_ratio = epi_ratio_match.group(1) if epi_ratio_match else "N/A"
+            
+            # 2. סטיית תקן של הניתוב (מחיקת רווחים כפולים כדי שייראה טוב ב-CSV)
+            gating_std_match = re.search(r'Std of Gating Weights per expert:\s*\[(.*?)\]', content)
+            if gating_std_match:
+                # הופך "[0.15   0.20]" ל-"0.15, 0.20"
+                gating_std = re.sub(r'\s+', ', ', gating_std_match.group(1).strip())
+            else:
+                gating_std = "N/A"
                 
-        if not results:
-            continue
+            # 3. חילוץ חלוקת המנצחים (אחוזים בלבד)
+            experts_matches = re.findall(r'Expert\s+\d+:\s+\d+\s+samples\s+\(([\d\.]+)%\)', content)
+            if experts_matches:
+                # מייצר מחרוזת בסגנון: "E0: 60.5%, E1: 39.5%"
+                win_dist = ", ".join([f"E{i}: {pct}%" for i, pct in enumerate(experts_matches)])
+            else:
+                win_dist = "N/A"
+            # -------------------------------
+                
+            res_dict = {}
+            for m_key, m_pattern in methods.items():
+                c = re.search(m_pattern + r'.*?Coverage:\s*([0-9\.]+)', content, re.DOTALL)
+                w = re.search(m_pattern + r'.*?Width:\s*([0-9\.]+)', content, re.DOTALL)
+                if c and w:
+                    res_dict[m_key] = {'cov': float(c.group(1)), 'wid': float(w.group(1))}
             
-        # Determine the best method based on valid coverage (>= 90%) and minimum width
-        valid_methods = {k: v for k, v in results.items() if v['cov'] >= 0.895}
-        if valid_methods:
-            best_method = min(valid_methods.items(), key=lambda x: x[1]['wid'])[0]
-        else:
-            best_method = max(results.items(), key=lambda x: x[1]['cov'])[0]
+            if not res_dict:
+                print(f"No calibration results found in {log_path}")
+                continue
             
-        for m_name, res in results.items():
-            cov_str = f"{res['cov']:.4f}"
-            wid_str = f"{res['wid']:.4f}"
-            is_best = "Yes" if m_name == best_method else "No"
+            valid = {k: v for k, v in res_dict.items() if v['cov'] >= 0.89}
+            best = min(valid.items(), key=lambda x: x[1]['wid'])[0] if valid else max(res_dict.items(), key=lambda x: x[1]['cov'])[0]
             
-            csv_lines.append(f"{data},{model},{m_name},{cov_str},{wid_str},{is_best}")
-
-output_text = '\n'.join(csv_lines)
-
-# Save the final table to a CSV file
-csv_path = 'logs/tabular/final_calibration_summary.csv'
-with open(csv_path, 'w') as f:
-    f.write(output_text)
-    
-print(output_text)
-print(f"\n[!] The CSV file has been saved to: {csv_path}")
+            for m_key, val in res_dict.items():
+                # הוספתי כאן את ה-mse וה-mae לתוך מערך הכתיבה! 
+                writer.writerow([
+                    data, model, m_key, f"{val['cov']:.4f}", f"{val['wid']:.4f}", 
+                    mse, mae, "Yes" if m_key == best else "No",
+                    epistemic_ratio, gating_std, win_dist
+                ])
+                
+print("Extended CSV generation completed!")
 EOF
+# ------------------------------------

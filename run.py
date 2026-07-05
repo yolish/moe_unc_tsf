@@ -148,12 +148,15 @@ if __name__ == '__main__':
     parser.add_argument('--do_cqr_calibration', default=False, action='store_true', help='Whether to perform CQR calibration')
     parser.add_argument('--do_cp_calibration', default=False, action='store_true', help='Whether to perform CP calibration')
     
+    # Overwrite existing checkpoints and force retraining
+    parser.add_argument('--overwrite', action='store_true', default=False, help='Overwrite existing checkpoints and force retraining')
 
     # Regression specific args
     parser.add_argument('--use_reg_moecp', action='store_true', default=False, help='Use MoECP calibration for regression')
     parser.add_argument('--use_reg_cp_vs', action='store_true', default=False, help='Use CP_VS calibration for regression')
     parser.add_argument('--use_reg_cp_aleatoric', action='store_true', default=False, help='Use CP_VS Aleatoric calibration')
     parser.add_argument('--use_reg_cp_aleat_scale', action='store_true', default=False, help='Scale only aleatoric uncertainty by learned q')
+    parser.add_argument('--use_reg_standard_cp', action='store_true', default=False, help='Use standard CP calibration')
     parser.add_argument('--tau', type=int, default=100)
 
     args = parser.parse_args()
@@ -230,7 +233,7 @@ if __name__ == '__main__':
                 args.des, ii,
                 args.seed)
             
-            if os.path.isdir("results/{}".format(setting)):
+            if os.path.isdir("results/{}".format(setting)) and not args.overwrite:
                 print("Already run this experiment! skip training and testing for: {}".format(setting))
             else:
 
@@ -268,6 +271,9 @@ if __name__ == '__main__':
                     if args.use_reg_cp_aleat_scale:
                         print(f"Running CP Aleatoric Scaling calibration for setting {setting}...")
                         exp.calibrate_cp_aleatoric_scale(setting)
+                    if args.use_reg_standard_cp:
+                        print(f"Running Standard CP calibration for setting {setting}...")
+                        exp.calibrate_standard_cp(setting)
 
             if args.gpu_type == 'mps':
                 torch.backends.mps.empty_cache()
@@ -330,6 +336,9 @@ if __name__ == '__main__':
             if args.use_reg_cp_aleat_scale:
                 print(f"Running CP Aleatoric Scaling calibration for setting {setting}...")
                 exp.calibrate_cp_aleatoric_scale(setting)
+            if args.use_reg_standard_cp:
+                print(f"Running Standard CP calibration for setting {setting}...")
+                exp.calibrate_standard_cp(setting)
 
         if args.gpu_type == 'mps':
             torch.backends.mps.empty_cache()

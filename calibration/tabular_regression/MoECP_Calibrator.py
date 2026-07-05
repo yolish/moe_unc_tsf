@@ -21,14 +21,30 @@ class MoECP_Calibrator:
         for i in range(len(test_preds)):
             pi_test = test_gating_weights[i]
             
+            # --- שלב הרנדומיזציה (לפי משוואה 3 במאמר) ---
+            tau = int(self.temperature)
+            if tau > 0:
+                # הבטחה שההסתברויות חיוביות לחלוטין ומסתכמות ל-1 עבור דגימה מולטינומית
+                pi_test_probs = torch.clamp(pi_test, min=1e-8)
+                pi_test_probs = pi_test_probs / pi_test_probs.sum()
+                
+                # דגימה מתוך התפלגות מולטינומית
+                L = torch.distributions.Multinomial(total_count=tau, probs=pi_test_probs).sample()
+                pi_tilde = L / tau
+            else:
+                pi_tilde = pi_test
+            # ---------------------------------------------
+            
+            # חישוב KL Divergence מול נקודת הטסט המורעשת (pi_tilde)
             kl_div = F.kl_div(
                 torch.log(self.cal_gating_weights + 1e-8), 
-                pi_test.unsqueeze(0).expand_as(self.cal_gating_weights), 
+                pi_tilde.unsqueeze(0).expand_as(self.cal_gating_weights), 
                 reduction='none'
             ).sum(dim=1)
             
             weights = torch.exp(-self.temperature * kl_div)
-            weights = weights / (weights.sum() + 1.0)
+            # נרמול: הפלוס 1.0 מייצג את משקל נקודת הטסט עצמה (משוואה 5)
+            weights = weights / (weights.sum() + 1.0) 
             
             sorted_residuals, indices = torch.sort(self.cal_residuals)
             sorted_weights = weights[indices]
@@ -36,12 +52,13 @@ class MoECP_Calibrator:
             cumulative_weights = torch.cumsum(sorted_weights, dim=0)
             
             target_prob = 1.0 - self.alpha
-            quantile_idx = torch.searchsorted(cumulative_weights, target_prob)
+            quantile_idx = torch.searchsorted(cumulative_weights, target_prob).item()
             
+            # מניעת חריגה ממערך השאריות אם ההסתברות נופלת בדיוק על נקודת הטסט
             if quantile_idx >= len(sorted_residuals):
-                quantile_idx = len(sorted_residuals) - 1
-                
-            q_val = sorted_residuals[quantile_idx]
+                q_val = sorted_residuals[-1]
+            else:
+                q_val = sorted_residuals[quantile_idx]
             
             intervals.append([test_preds[i] - q_val, test_preds[i] + q_val])
             

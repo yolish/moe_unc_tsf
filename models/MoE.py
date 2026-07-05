@@ -108,10 +108,8 @@ class Model(nn.Module):
             if self.prob_expert:
                 # 1. Aleatoric variance (data noise - expected value of variances)
                 aleatoric_var = torch.sum(gating_weights.unsqueeze(-1) * expert_unc, dim=1)
-                
                 # 2. Epistemic variance (model uncertainty - variance of expected values)
                 epistemic_var = torch.sum(gating_weights.unsqueeze(-1) * (expert_outputs - output.unsqueeze(1))**2, dim=1)
-                
                 # 3. Total variance
                 total_std = torch.sqrt(aleatoric_var + epistemic_var).squeeze(-1)
                 aleatoric_std = torch.sqrt(aleatoric_var).squeeze(-1)
@@ -119,12 +117,10 @@ class Model(nn.Module):
             else:
                 total_std = torch.std(expert_outputs, dim=1).squeeze(-1) if self.num_experts > 1 else torch.ones_like(output).squeeze(-1)
                 aleatoric_std = total_std
-                # If experts are not probabilistic, epistemic is represented by total_std (ensemble variance)
-                # Alternatively, you can set it to zero depending on definitions, but usually ensemble var = epistemic
                 epistemic_std = total_std 
+                expert_unc = None
                 
-            # The model now returns 5 values!
-            return output, gating_weights, total_std, aleatoric_std, epistemic_std
+            return output, gating_weights, total_std, aleatoric_std, epistemic_std, expert_outputs, expert_unc
 
         elif self.task_name == 'long_term_forecast':
             expert_out = []

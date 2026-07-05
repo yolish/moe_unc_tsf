@@ -74,6 +74,37 @@ class Exp_Tabular_Regression(Exp_Basic):
         return (torch.cat(all_preds), torch.cat(all_trues), torch.cat(all_weights), 
                 torch.cat(all_stds_total), torch.cat(all_stds_aleat), torch.cat(all_stds_epist))
 
+    def _select_criterion(self):
+        # שינוי חשוב: reduction='none' מאפשר חישוב נפרד לכל מומחה
+        if hasattr(self.args, 'prob_expert') and self.args.prob_expert:
+            criterion = nn.GaussianNLLLoss(reduction='none') 
+        else:
+            criterion = nn.MSELoss(reduction='none')
+        return criterion
+
+    def moe_loss(self, expert_outputs, expert_unc, gating_weights, batch_y, criterion):
+        if hasattr(self.args, 'prob_expert') and self.args.prob_expert:
+            eps = 1e-8
+            # Mixture of Gaussians (MoG) NLL
+            dist = torch.distributions.Normal(loc=expert_outputs, scale=torch.sqrt(expert_unc + eps))
+            log_prob = dist.log_prob(batch_y.unsqueeze(1)) 
+            log_weights = torch.log(gating_weights + eps).unsqueeze(-1) 
+            
+            # חיבור הסתברויות לוגריתמי מונע קריסה מעודד גיוון מומחים
+            log_likelihood = torch.logsumexp(log_weights + log_prob, dim=1)
+            loss = -torch.mean(log_likelihood)
+        else:
+            # Weighted MSE Loss
+            expert_loss = criterion(expert_outputs, batch_y.unsqueeze(1)) 
+            loss = torch.sum(gating_weights.unsqueeze(-1) * expert_loss, dim=1).mean()
+            
+            # הוספת Load Balancing למומחים לא-הסתברותיים כדי למנוע קריסה למומחה יחיד
+            if not self.args.unc_gating:
+                avg_weight = gating_weights.mean(dim=0)
+                load_balance_loss = self.args.num_experts * torch.sum(avg_weight * avg_weight)
+                loss += 0.05 * load_balance_loss
+        return loss
+
     def vali(self, vali_data, vali_loader, criterion):
         self.model.eval()
         total_loss = []
@@ -84,17 +115,20 @@ class Exp_Tabular_Regression(Exp_Basic):
 
                 outputs = self.model(batch_x)
                 
-                if isinstance(outputs, tuple):
+                if isinstance(outputs, tuple) and len(outputs) >= 7:
+                    # הפירוק החדש שכולל את תפוקות המומחים
+                    pred, gating_weights, total_std, aleat_std, epist_std, expert_outputs, expert_unc = outputs
+                    loss = self.moe_loss(expert_outputs, expert_unc, gating_weights, batch_y, criterion)
+                elif isinstance(outputs, tuple):
                     pred = outputs[0]
                     std = outputs[2] if len(outputs) > 2 else None
+                    if hasattr(self.args, 'prob_expert') and self.args.prob_expert and std is not None:
+                        loss = criterion(pred, batch_y, std ** 2).mean()
+                    else:
+                        loss = criterion(pred, batch_y).mean()
                 else:
                     pred = outputs
-                    std = None
-                
-                if hasattr(self.args, 'prob_expert') and self.args.prob_expert and std is not None:
-                    loss = criterion(pred, batch_y, std ** 2)
-                else:
-                    loss = criterion(pred, batch_y)
+                    loss = criterion(pred, batch_y).mean()
                     
                 total_loss.append(loss.item())
         return np.average(total_loss)
@@ -125,17 +159,19 @@ class Exp_Tabular_Regression(Exp_Basic):
 
                 outputs = self.model(batch_x)
                 
-                if isinstance(outputs, tuple):
+                if isinstance(outputs, tuple) and len(outputs) >= 7:
+                    pred, gating_weights, total_std, aleat_std, epist_std, expert_outputs, expert_unc = outputs
+                    loss = self.moe_loss(expert_outputs, expert_unc, gating_weights, batch_y, criterion)
+                elif isinstance(outputs, tuple):
                     pred = outputs[0]
                     std = outputs[2] if len(outputs) > 2 else None
+                    if hasattr(self.args, 'prob_expert') and self.args.prob_expert and std is not None:
+                        loss = criterion(pred, batch_y, std ** 2).mean()
+                    else:
+                        loss = criterion(pred, batch_y).mean()
                 else:
                     pred = outputs
-                    std = None
-                
-                if hasattr(self.args, 'prob_expert') and self.args.prob_expert and std is not None:
-                    loss = criterion(pred, batch_y, std ** 2)
-                else:
-                    loss = criterion(pred, batch_y)
+                    loss = criterion(pred, batch_y).mean()
                     
                 train_loss.append(loss.item())
                 loss.backward()

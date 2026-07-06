@@ -43,8 +43,20 @@ class MoECP_Calibrator:
             ).sum(dim=1)
             
             weights = torch.exp(-self.temperature * kl_div)
-            # נרמול: הפלוס 1.0 מייצג את משקל נקודת הטסט עצמה (משוואה 5)
-            weights = weights / (weights.sum() + 1.0) 
+            
+            # --- תחילת התיקון ---
+            # חישוב ה-KL Divergence בין ההסתברות המורעשת (pi_tilde) להסתברות המקורית של הטסט (pi_test)
+            test_kl_div = F.kl_div(
+                torch.log(pi_test + 1e-8), 
+                pi_tilde, 
+                reduction='sum'
+            )
+            # חישוב המשקל האמיתי של נקודת הטסט
+            test_weight = torch.exp(-self.temperature * test_kl_div)
+            
+            # נרמול עם המשקל האמיתי במקום 1.0 קשיח
+            weights = weights / (weights.sum() + test_weight) 
+            # --- סוף התיקון ---
             
             sorted_residuals, indices = torch.sort(self.cal_residuals)
             sorted_weights = weights[indices]

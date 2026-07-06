@@ -32,12 +32,6 @@ class Exp_Tabular_Regression(Exp_Basic):
         model_optim = optim.Adam(self.model.parameters(), lr=self.args.learning_rate)
         return model_optim
 
-    def _select_criterion(self):
-        if hasattr(self.args, 'prob_expert') and self.args.prob_expert:
-            criterion = nn.GaussianNLLLoss()
-        else:
-            criterion = nn.MSELoss()
-        return criterion
     def _collect_predictions(self, dataloader):
         self.model.eval()
         all_preds, all_trues, all_weights = [], [], []
@@ -118,7 +112,16 @@ class Exp_Tabular_Regression(Exp_Basic):
                 if isinstance(outputs, tuple) and len(outputs) >= 7:
                     # הפירוק החדש שכולל את תפוקות המומחים
                     pred, gating_weights, total_std, aleat_std, epist_std, expert_outputs, expert_unc = outputs
-                    loss = self.moe_loss(expert_outputs, expert_unc, gating_weights, batch_y, criterion)
+                    
+                    # --- תחילת התיקון: ניתוב פונקציית ה-Loss ---
+                    if not (hasattr(self.args, 'prob_expert') and self.args.prob_expert):
+                        # עבור ClassicMoE (הבייסליין של המאמר): אימון על התחזית הסופית נטו (pred) עם MSE
+                        loss = criterion(pred, batch_y).mean()
+                    else:
+                        # עבור המודלים ההסתברותיים שלך (MOG/MOGU): שימוש בפונקציה הייעודית
+                        loss = self.moe_loss(expert_outputs, expert_unc, gating_weights, batch_y, criterion)
+                    # --- סוף התיקון ---
+                    
                 elif isinstance(outputs, tuple):
                     pred = outputs[0]
                     std = outputs[2] if len(outputs) > 2 else None
@@ -161,7 +164,16 @@ class Exp_Tabular_Regression(Exp_Basic):
                 
                 if isinstance(outputs, tuple) and len(outputs) >= 7:
                     pred, gating_weights, total_std, aleat_std, epist_std, expert_outputs, expert_unc = outputs
-                    loss = self.moe_loss(expert_outputs, expert_unc, gating_weights, batch_y, criterion)
+                    
+                    # --- תחילת התיקון: ניתוב פונקציית ה-Loss ---
+                    if not (hasattr(self.args, 'prob_expert') and self.args.prob_expert):
+                        # עבור ClassicMoE (הבייסליין של המאמר): אימון משותף ללא עונש Load Balancing
+                        loss = criterion(pred, batch_y).mean()
+                    else:
+                        # עבור המודלים ההסתברותיים שלך (MOG/MOGU)
+                        loss = self.moe_loss(expert_outputs, expert_unc, gating_weights, batch_y, criterion)
+                    # --- סוף התיקון ---
+                    
                 elif isinstance(outputs, tuple):
                     pred = outputs[0]
                     std = outputs[2] if len(outputs) > 2 else None

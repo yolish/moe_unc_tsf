@@ -749,34 +749,66 @@ class UEAloader(Dataset):
 
 class Dataset_Synthetic(Dataset):
     def __init__(self, root_path=None, flag='train', size=None, data_path=None, data_name=None, proportions=[0.2, 0.3, 0.5]):
-        self.n_samples = 500 if size is None else size[0]
+        # במאמר השתמשו ב-500 דגימות לכל סט בניסוי הסינתטי
+        self.n_samples_per_split = 500 if size is None else size[0]
         self.proportions = proportions
         self.flag = flag
         
-        seed_map = {'train': 42, 'val': 43, 'test': 44}
-        np.random.seed(seed_map.get(flag, 42))
+        type_map = {'train': 0, 'val': 1, 'test': 2}
+        self.set_type = type_map[flag]
+        
+        # סקיילרים ל-X ול-Y בדומה לדאטה הטבלאי
+        self.scaler_x = StandardScaler()
+        self.scaler_y = StandardScaler()
         
         self.__read_data__()
 
     def __read_data__(self):
-        X = np.random.uniform(-3, 3, self.n_samples)
-        eps = np.random.normal(0, 1, self.n_samples)
+        # נייצר את כלל הדגימות (1500) עם Seed קבוע כדי שהסטים יהיו עקביים זה מול זה
+        total_samples = self.n_samples_per_split * 3
+        np.random.seed(42)
         
-        domains = np.random.choice([0, 1, 2], p=self.proportions, size=self.n_samples)
-        Y = np.zeros(self.n_samples)
+        X = np.random.uniform(-3, 3, total_samples)
+        eps = np.random.normal(0, 1, total_samples)
+        
+        domains = np.random.choice([0, 1, 2], p=self.proportions, size=total_samples)
+        Y = np.zeros(total_samples)
         
         Y[domains == 0] = X[domains == 0] + eps[domains == 0]
         Y[domains == 1] = X[domains == 1]**2 + eps[domains == 1]
         Y[domains == 2] = X[domains == 2]**3 + eps[domains == 2]
         
-        self.X = torch.tensor(X, dtype=torch.float32).unsqueeze(1)
-        self.Y = torch.tensor(Y, dtype=torch.float32).unsqueeze(1)
+        X = X.reshape(-1, 1)
+        Y = Y.reshape(-1, 1)
+
+        # --- נרמול מבוסס על סט האימון בלבד ---
+        train_start = 0
+        train_end = self.n_samples_per_split
+        X_train = X[train_start:train_end]
+        Y_train = Y[train_start:train_end]
+        
+        self.scaler_x.fit(X_train)
+        self.scaler_y.fit(Y_train)
+
+        # --- חיתוך הסט הרלוונטי (Train / Val / Test) ---
+        start_idx = self.set_type * self.n_samples_per_split
+        end_idx = start_idx + self.n_samples_per_split
+        
+        X_split = X[start_idx:end_idx]
+        Y_split = Y[start_idx:end_idx]
+
+        # ביצוע הנרמול על הסט החתוך
+        X_split = self.scaler_x.transform(X_split)
+        Y_split = self.scaler_y.transform(Y_split)
+
+        self.X = torch.tensor(X_split, dtype=torch.float32)
+        self.Y = torch.tensor(Y_split, dtype=torch.float32)
 
     def __getitem__(self, index):
         return self.X[index], self.Y[index]
 
     def __len__(self):
-        return self.n_samples
+        return len(self.X)
 
 import pandas as pd
 import numpy as np
@@ -791,15 +823,20 @@ class Dataset_Tabular(Dataset):
         self.data_name = data_name if data_name else data_path
         self.root_path = root_path
         self.data_path = data_path
+        
+        # כמות דגימות מקסימלית לכל סט לפי המאמר (1500)
         self.n_samples_per_split = 1500
         
         type_map = {'train': 0, 'val': 1, 'test': 2}
         self.set_type = type_map[flag]
         
-        self.scaler = StandardScaler()
+        # הוספת סקיילר נפרד למשתנה המטרה (Y) בנוסף לפיצ'רים (X)
+        self.scaler_x = StandardScaler()
+        self.scaler_y = StandardScaler()
         self.__read_data__()
 
     def __read_data__(self):
+        # --- 1. טעינת נתונים וקידוד קטגורי ---
         if 'bike' in self.data_name.lower():
             try:
                 from ucimlrepo import fetch_ucirepo
@@ -814,20 +851,21 @@ class Dataset_Tabular(Dataset):
             
             if 'dteday' in X_df.columns:
                 X_df = X_df.drop(columns=['dteday'])
+            
+            # ביצוע One-Hot Encoding למשתנים קטגוריים כמו שהמאמר דורש
+            categorical_cols = ['season', 'mnth', 'hr', 'holiday', 'weekday', 'workingday', 'weathersit']
+            X_df = pd.get_dummies(X_df, columns=[c for c in categorical_cols if c in X_df.columns])
                 
-            X = X_df.values
-            Y = Y_df['cnt'].values.reshape(-1, 1)
+            X = X_df.astype(float).values
+            Y = Y_df['cnt'].values.reshape(-1, 1).astype(float)
 
         elif 'temperature' in self.data_name.lower() or 'bias' in self.data_name.lower():
             if self.set_type == 0:
                 print("Loading Temperature dataset via pandas...")
-            
             try:
-                # עקיפת המגבלה של UCI API - קריאה ישירה מהשרת שלהם
                 url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00514/Bias_correction_ucl.csv"
                 df = pd.read_csv(url)
             except Exception:
-                # למקרה שאין אינטרנט בשרת, נטען מהתיקייה המקומית
                 file_path = os.path.join(self.root_path, self.data_path)
                 df = pd.read_csv(file_path)
             
@@ -835,30 +873,39 @@ class Dataset_Tabular(Dataset):
             cols_to_drop = ['station', 'Date', 'Next_Tmax']
             df = df.drop(columns=[c for c in cols_to_drop if c in df.columns])
             
-            Y = df.pop('Next_Tmin').values.reshape(-1, 1)
-            X = df.values
-            
+            Y = df.pop('Next_Tmin').values.reshape(-1, 1).astype(float)
+            X = df.astype(float).values
         else:
             raise ValueError(f"Unknown tabular dataset: {self.data_name}")
 
-        start_idx = self.set_type * self.n_samples_per_split
-        end_idx = start_idx + self.n_samples_per_split
-        
-        if end_idx > len(X):
-            end_idx = len(X)
-            
-        X_split = X[start_idx:end_idx]
-        Y_split = Y[start_idx:end_idx]
+        # --- 2. יצירת סביבה i.i.d על ידי ערבוב (Shuffle) כדי להתאים להנחות המאמר ---
+        # שימוש ב-Seed קבוע כדי שכל הסטים (Train, Val, Test) יראו את אותו הערבוב
+        np.random.seed(42)
+        indices = np.random.permutation(len(X))
+        X_shuffled = X[indices]
+        Y_shuffled = Y[indices]
 
-        train_start = 0
-        train_end = self.n_samples_per_split
-        if train_end > len(X):
-            train_end = len(X)
-            
-        X_train_split = X[train_start:train_end]
-        self.scaler.fit(X_train_split)
+        # חיתוך המדגמים מתוך כלל הנתונים המעורבבים (1500 לכל חלק כפי שהוגדר)
+        max_split_size = len(X_shuffled) // 3
+        split_size = min(self.n_samples_per_split, max_split_size)
         
-        X_split = self.scaler.transform(X_split)
+        start_idx = self.set_type * split_size
+        end_idx = start_idx + split_size
+            
+        X_split = X_shuffled[start_idx:end_idx]
+        Y_split = Y_shuffled[start_idx:end_idx]
+
+        # --- 3. נרמול (מבוסס רק על האימון) ---
+        train_start = 0
+        train_end = split_size
+        X_train_split = X_shuffled[train_start:train_end]
+        Y_train_split = Y_shuffled[train_start:train_end]
+        
+        self.scaler_x.fit(X_train_split)
+        self.scaler_y.fit(Y_train_split)
+        
+        X_split = self.scaler_x.transform(X_split)
+        Y_split = self.scaler_y.transform(Y_split)
         
         self.X = torch.tensor(X_split, dtype=torch.float32)
         self.Y = torch.tensor(Y_split, dtype=torch.float32)

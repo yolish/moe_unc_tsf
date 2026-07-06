@@ -9,20 +9,29 @@ class MLP_Expert(nn.Module):
         super(MLP_Expert, self).__init__()
         self.prob_expert = configs.prob_expert
         hidden_dim = configs.d_model if hasattr(configs, 'd_model') else 64
+        dropout_rate = configs.dropout if hasattr(configs, 'dropout') else 0.1
         
+        # בניית 3 שכבות חבויות בגודל זהה עם ReLU ו-Dropout לפי המאמר [cite: 581, 583]
         self.feature_extractor = nn.Sequential(
             nn.Linear(configs.enc_in, hidden_dim),
             nn.ReLU(),
-            nn.Dropout(configs.dropout if hasattr(configs, 'dropout') else 0.1),
-            nn.Linear(hidden_dim, hidden_dim // 2),
-            nn.ReLU()
+            nn.Dropout(dropout_rate),
+            
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout_rate),
+            
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(dropout_rate)
         )
         
-        self.mean_head = nn.Linear(hidden_dim // 2, configs.c_out)
+        # שכבת הפלט מחוברת ישירות לשכבה החבויה השלישית
+        self.mean_head = nn.Linear(hidden_dim, configs.c_out)
         
         if self.prob_expert:
             self.var_head = nn.Sequential(
-                nn.Linear(hidden_dim // 2, configs.c_out),
+                nn.Linear(hidden_dim, configs.c_out),
                 nn.Softplus()
             )
 
@@ -66,10 +75,24 @@ class Model(nn.Module):
         if self.task_name == 'tabular_regression':
             self.experts = nn.ModuleList([MLP_Expert(configs).float() for _ in range(self.num_experts)])
             if not self.unc_gating:
+                hidden_dim = configs.d_model if hasattr(configs, 'd_model') else 64
+                dropout_rate = configs.dropout if hasattr(configs, 'dropout') else 0.1
+                
+                # התאמת הנתב למבנה של 3 שכבות חבויות זהות למומחה 
                 self.tabular_router = nn.Sequential(
-                    nn.Linear(configs.enc_in, 32),
+                    nn.Linear(configs.enc_in, hidden_dim),
                     nn.ReLU(),
-                    nn.Linear(32, self.num_experts)
+                    nn.Dropout(dropout_rate),
+                    
+                    nn.Linear(hidden_dim, hidden_dim),
+                    nn.ReLU(),
+                    nn.Dropout(dropout_rate),
+                    
+                    nn.Linear(hidden_dim, hidden_dim),
+                    nn.ReLU(),
+                    nn.Dropout(dropout_rate),
+                    
+                    nn.Linear(hidden_dim, self.num_experts)
                 )
         else:
             self.experts = nn.ModuleList([expert_model(configs).float() for _ in range(self.num_experts)])

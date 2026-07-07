@@ -25,37 +25,50 @@ do
             num_experts=3
             tau=150
             epochs=600
+            d_model=32  # התאמה למאמר - 32 נוירונים בשכבות לדאטה סינתטי
         elif [ "$data" == "Bike" ]; then
-            enc_in=12
+            enc_in=60       # <--- שינוי מ-12 ל-60 בגלל הקידוד הקטגוריאלי
             num_experts=2
             tau=100
-            epochs=500
+            epochs=2000     # כפי שסדרנו קודם כדי לחקות את המאמר
+            d_model=64
+            d_model=64  # התאמה למאמר - 64 נוירונים לדאטה אמיתי
         elif [ "$data" == "Temperature" ]; then
             enc_in=21
             num_experts=2
             tau=100
             epochs=500
+            d_model=64  # התאמה למאמר - 64 נוירונים לדאטה אמיתי
         fi
 
-        # Run MOG with the 5 specified calibration methods
+        # 1. Run Classic MoE (The EXACT baseline from the MoECP paper: deterministic, MSE, Softmax Gate)
+        python -u run.py --task_name tabular_regression --is_training 1 \
+        --root_path ./dataset/ --data_path "${data}.csv" --data "$data" \
+        --model MoE --model_id "${model_id}_ClassicMoE_${data}" \
+        --enc_in $enc_in --c_out 1 --d_model $d_model --num_experts $num_experts --batch_size 64 \
+        --train_epochs $epochs --learning_rate 0.0001 --patience 5 --seed $seed \
+        --tau $tau \
+        --use_reg_moecp --use_reg_standard_cp --overwrite > "logs/tabular/${data}_ClassicMoE.log" 2>&1 &
+
+        # 2. Run MOG with the specified calibration methods
         python -u run.py --task_name tabular_regression --is_training 1 \
         --root_path ./dataset/ --data_path "${data}.csv" --data "$data" \
         --model MoE --model_id "${model_id}_MOG_${data}" \
-        --enc_in $enc_in --c_out 1 --num_experts $num_experts --batch_size 64 \
+        --enc_in $enc_in --c_out 1 --d_model $d_model --num_experts $num_experts --batch_size 64 \
         --train_epochs $epochs --learning_rate 0.0001 --patience 5 --seed $seed \
         --prob_expert --tau $tau \
         --use_reg_moecp --use_reg_cp_vs --use_reg_cp_aleatoric \
         --use_reg_cp_aleat_scale --use_reg_standard_cp --overwrite > "logs/tabular/${data}_MOG.log" 2>&1 &
 
-        # Run MOGU with the 5 specified calibration methods
+        # 3. Run MOGU with the specified calibration methods
         python -u run.py --task_name tabular_regression --is_training 1 \
         --root_path ./dataset/ --data_path "${data}.csv" --data "$data" \
         --model MoE --model_id "${model_id}_MOGU_${data}" \
-        --enc_in $enc_in --c_out 1 --num_experts $num_experts --batch_size 64 \
+        --enc_in $enc_in --c_out 1 --d_model $d_model --num_experts $num_experts --batch_size 64 \
         --train_epochs $epochs --learning_rate 0.0001 --patience 5 --seed $seed \
         --prob_expert --unc_gating --tau $tau \
         --use_reg_moecp --use_reg_cp_vs --use_reg_cp_aleatoric \
-        --use_reg_cp_aleat_scale --use_reg_standard_cp --overwrite> "logs/tabular/${data}_MOGU.log" 2>&1 &
+        --use_reg_cp_aleat_scale --use_reg_standard_cp --overwrite > "logs/tabular/${data}_MOGU.log" 2>&1 &
         
         wait
     done
@@ -71,7 +84,8 @@ python3 << 'EOF'
 import os, re, csv
 
 data_sets = ['Synthetic', 'Bike', 'Temperature']
-models = ['MOG', 'MOGU']
+# הוספנו את ClassicMoE כדי שהפייתון יחלץ גם את תוצאות הרפרנס
+models = ['ClassicMoE', 'MOG', 'MOGU']
 methods = {
     'MoECP': r'MoECP Results:',
     'Standard CP': r'Standard CP Results:',

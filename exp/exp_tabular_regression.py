@@ -199,12 +199,12 @@ class Exp_Tabular_Regression(Exp_Basic):
 
             print(f"Epoch: {epoch + 1}, Steps: {train_steps} | Train Loss: {train_loss:.7f} Vali Loss: {vali_loss:.7f} Test Loss: {test_loss:.7f}")
 
-            early_stopping(vali_loss, self.model, path)
+            early_stopping(train_loss, self.model, path)
             if early_stopping.early_stop:
                 print("Early stopping")
                 break
 
-            adjust_learning_rate(model_optim, epoch + 1, self.args)
+            #adjust_learning_rate(model_optim, epoch + 1, self.args)
 
         best_model_path = path + '/' + 'checkpoint.pth'
         self.model.load_state_dict(torch.load(best_model_path))

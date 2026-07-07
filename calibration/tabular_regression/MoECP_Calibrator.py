@@ -42,7 +42,7 @@ class MoECP_Calibrator:
                 reduction='none'
             ).sum(dim=1)
             
-            weights = torch.exp(-self.temperature * kl_div)
+            weights = torch.exp(-kl_div * tau)
             
             # --- תחילת התיקון ---
             # חישוב ה-KL Divergence בין ההסתברות המורעשת (pi_tilde) להסתברות המקורית של הטסט (pi_test)
@@ -52,7 +52,8 @@ class MoECP_Calibrator:
                 reduction='sum'
             )
             # חישוב המשקל האמיתי של נקודת הטסט
-            test_weight = torch.exp(-self.temperature * test_kl_div)
+            test_weight = torch.exp(-test_kl_div * tau)
+
             
             # נרמול עם המשקל האמיתי במקום 1.0 קשיח
             weights = weights / (weights.sum() + test_weight) 

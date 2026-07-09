@@ -1,22 +1,33 @@
 import torch
-import numpy as np
-import torch.nn.functional as F
+from torch.distributions import Multinomial
+import torch
+
 
 class MoECP_Calibrator:
-    def __init__(self, alpha=0.1, temperature=1.0):
+    def __init__(self, alpha=0.1, temperature=100.0):
         self.alpha = alpha
-        self.temperature = temperature
+        self.temperature = float(temperature)
         self.cal_residuals = None
         self.cal_gating_weights = None
 
     def fit(self, cal_preds, cal_trues, cal_gating_weights):
-        self.cal_residuals = torch.abs(cal_trues.cpu() - cal_preds.cpu()).squeeze()
+        cal_preds = cal_preds.cpu().squeeze()
+        cal_trues = cal_trues.cpu().squeeze()
         self.cal_gating_weights = cal_gating_weights.cpu()
+        
+        self.cal_residuals = torch.abs(cal_trues - cal_preds)
 
     def predict(self, test_preds, test_gating_weights):
         test_preds = test_preds.cpu().squeeze()
         test_gating_weights = test_gating_weights.cpu()
         intervals = []
+        
+        # --- תחילת קוד הלוגים: משתני מעקב ---
+        import numpy as np
+        log_effective_samples = []
+        log_min_kl = []
+        log_routing_confidence = []
+        # --- סוף קוד הלוגים ---
         
         for i in range(len(test_preds)):
             pi_test = test_gating_weights[i]
@@ -36,7 +47,7 @@ class MoECP_Calibrator:
             # ---------------------------------------------
             
             # חישוב KL Divergence מול נקודת הטסט המורעשת (pi_tilde)
-            kl_div = F.kl_div(
+            kl_div = torch.nn.functional.kl_div(
                 torch.log(self.cal_gating_weights + 1e-8), 
                 pi_tilde.unsqueeze(0).expand_as(self.cal_gating_weights), 
                 reduction='none'
@@ -46,7 +57,7 @@ class MoECP_Calibrator:
             
             # --- תחילת התיקון ---
             # חישוב ה-KL Divergence בין ההסתברות המורעשת (pi_tilde) להסתברות המקורית של הטסט (pi_test)
-            test_kl_div = F.kl_div(
+            test_kl_div = torch.nn.functional.kl_div(
                 torch.log(pi_test + 1e-8), 
                 pi_tilde, 
                 reduction='sum'
@@ -58,6 +69,13 @@ class MoECP_Calibrator:
             # נרמול עם המשקל האמיתי במקום 1.0 קשיח
             weights = weights / (weights.sum() + test_weight) 
             # --- סוף התיקון ---
+            
+            # --- תחילת קוד הלוגים: איסוף נתונים לכל דגימה ---
+            effective_points = torch.sum(weights > 0.01).item()
+            log_effective_samples.append(effective_points)
+            log_min_kl.append(torch.min(kl_div).item())
+            log_routing_confidence.append(torch.max(pi_test).item())
+            # --- סוף קוד הלוגים ---
             
             sorted_residuals, indices = torch.sort(self.cal_residuals)
             sorted_weights = weights[indices]
@@ -74,5 +92,19 @@ class MoECP_Calibrator:
                 q_val = sorted_residuals[quantile_idx]
             
             intervals.append([test_preds[i] - q_val, test_preds[i] + q_val])
+            
+        # --- תחילת קוד הלוגים: הדפסת דוח ניתוח ---
+        avg_effective = np.mean(log_effective_samples)
+        median_effective = np.median(log_effective_samples)
+        avg_confidence = np.mean(log_routing_confidence)
+        
+        print("\n" + "="*40)
+        print("🔍 MoECP Inner Mechanics Analysis 🔍")
+        print(f"Routing Confidence (Max Weight Avg): {avg_confidence:.4f}")
+        print(f"Avg Effective Calib Points Used (weight > 1%): {avg_effective:.1f} out of {len(self.cal_residuals)}")
+        print(f"Median Effective Calib Points: {median_effective:.1f}")
+        print(f"Avg Minimum KL Divergence: {np.mean(log_min_kl):.4f}")
+        print("="*40 + "\n")
+        # --- סוף קוד הלוגים ---
             
         return torch.tensor(intervals)

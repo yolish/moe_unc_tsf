@@ -31,7 +31,6 @@ do
             num_experts=2
             tau=100
             epochs=2000     # כפי שסדרנו קודם כדי לחקות את המאמר
-            d_model=64
             d_model=64  # התאמה למאמר - 64 נוירונים לדאטה אמיתי
         elif [ "$data" == "Temperature" ]; then
             enc_in=21
@@ -74,17 +73,17 @@ do
     done
 done
 
+
 echo "========================================================="
 echo "All training and calibration finished! Generating CSV..."
 echo "========================================================="
 
 # Embedded Python script to parse logs and generate the summary CSV
-# Generating CSV - Extended with MoE Analysis
+# Generating CSV - Extended with exact requested columns
 python3 << 'EOF'
 import os, re, csv
 
 data_sets = ['Synthetic', 'Bike', 'Temperature']
-# הוספנו את ClassicMoE כדי שהפייתון יחלץ גם את תוצאות הרפרנס
 models = ['ClassicMoE', 'MOG', 'MOGU']
 methods = {
     'MoECP': r'MoECP Results:',
@@ -99,9 +98,13 @@ print(f"Attempting to create extended CSV: {csv_file}")
 
 with open(csv_file, 'w', newline='') as f:
     writer = csv.writer(f)
-    # הוספנו את העמודות MSE ו-MAE יחד עם מדדי ה-MoE
-    writer.writerow(["Dataset", "Backbone", "Calibration", "Coverage", "Width", "MSE", "MAE", "Is_Best", 
-                     "Epistemic_Ratio", "Gating_Std", "Expert_Win_Dist"])
+    # הגדרת העמודות בדיוק לפי הבקשה
+    writer.writerow([
+        "dataset", "architecture", "calibration model", "coverage", "width", 
+        "mse", "mae", "Avg Epistemic/Aleatoric Ratio", 
+        "Avg Epistemic Contribution to Total Var", 
+        "Average Gating Weights per expert", "Std of Gating Weights per expert"
+    ])
 
     for data in data_sets:
         for model in models:
@@ -114,7 +117,6 @@ with open(csv_file, 'w', newline='') as f:
                 content = log.read()
             
             # --- שליפת ה-MSE וה-MAE מהלוג ---
-            # תופס גם הדפסה ישנה וגם חדשה, שולף את שני המספרים בצורה בטוחה
             metrics_match = re.search(r'(?:Final Test Metrics \| MSE:|Test Results - MSE:)\s*([0-9\.]+).*?MAE:\s*([0-9\.]+)', content)
             if metrics_match:
                 mse = metrics_match.group(1)
@@ -123,28 +125,28 @@ with open(csv_file, 'w', newline='') as f:
                 mse = "N/A"
                 mae = "N/A"
 
-            # --- חילוץ מדדי ה-MoE מהלוג ---
-            # 1. יחס השונות האפיסטמית
+            # --- שליפת מדדי Uncertainty (אפיסטמי / אליאטורי) ---
             epi_ratio_match = re.search(r'Avg Epistemic/Aleatoric Ratio:\s*([0-9\.]+)', content)
             epistemic_ratio = epi_ratio_match.group(1) if epi_ratio_match else "N/A"
             
-            # 2. סטיית תקן של הניתוב (מחיקת רווחים כפולים כדי שייראה טוב ב-CSV)
+            epi_contrib_match = re.search(r'Avg Epistemic Contribution to Total Var:\s*([0-9\.]+%?)', content)
+            epistemic_contrib = epi_contrib_match.group(1) if epi_contrib_match else "N/A"
+
+            # --- שליפת מדדי ה-MoE Gating ---
+            avg_gating_match = re.search(r'Average Gating Weights per expert:\s*\[(.*?)\]', content)
+            if avg_gating_match:
+                # הפיכת רווחים לפסיקים כדי שיוצג יפה (לדוגמה: "0.5, 0.5")
+                avg_gating = re.sub(r'\s+', ', ', avg_gating_match.group(1).strip())
+            else:
+                avg_gating = "N/A"
+
             gating_std_match = re.search(r'Std of Gating Weights per expert:\s*\[(.*?)\]', content)
             if gating_std_match:
-                # הופך "[0.15   0.20]" ל-"0.15, 0.20"
                 gating_std = re.sub(r'\s+', ', ', gating_std_match.group(1).strip())
             else:
                 gating_std = "N/A"
-                
-            # 3. חילוץ חלוקת המנצחים (אחוזים בלבד)
-            experts_matches = re.findall(r'Expert\s+\d+:\s+\d+\s+samples\s+\(([\d\.]+)%\)', content)
-            if experts_matches:
-                # מייצר מחרוזת בסגנון: "E0: 60.5%, E1: 39.5%"
-                win_dist = ", ".join([f"E{i}: {pct}%" for i, pct in enumerate(experts_matches)])
-            else:
-                win_dist = "N/A"
-            # -------------------------------
-                
+
+            # --- חילוץ תוצאות הכיול ---
             res_dict = {}
             for m_key, m_pattern in methods.items():
                 c = re.search(m_pattern + r'.*?Coverage:\s*([0-9\.]+)', content, re.DOTALL)
@@ -156,17 +158,21 @@ with open(csv_file, 'w', newline='') as f:
                 print(f"No calibration results found in {log_path}")
                 continue
             
-            valid = {k: v for k, v in res_dict.items() if v['cov'] >= 0.89}
-            best = min(valid.items(), key=lambda x: x[1]['wid'])[0] if valid else max(res_dict.items(), key=lambda x: x[1]['cov'])[0]
-            
+            # כתיבת השורות לקובץ ה-CSV
             for m_key, val in res_dict.items():
-                # הוספתי כאן את ה-mse וה-mae לתוך מערך הכתיבה! 
                 writer.writerow([
-                    data, model, m_key, f"{val['cov']:.4f}", f"{val['wid']:.4f}", 
-                    mse, mae, "Yes" if m_key == best else "No",
-                    epistemic_ratio, gating_std, win_dist
+                    data, 
+                    model, 
+                    m_key, 
+                    f"{val['cov']:.4f}", 
+                    f"{val['wid']:.4f}", 
+                    mse, 
+                    mae, 
+                    epistemic_ratio, 
+                    epistemic_contrib, 
+                    avg_gating, 
+                    gating_std
                 ])
                 
 print("Extended CSV generation completed!")
 EOF
-# ------------------------------------

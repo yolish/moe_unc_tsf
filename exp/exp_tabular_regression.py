@@ -92,11 +92,11 @@ class Exp_Tabular_Regression(Exp_Basic):
             expert_loss = criterion(expert_outputs, batch_y.unsqueeze(1)) 
             loss = torch.sum(gating_weights.unsqueeze(-1) * expert_loss, dim=1).mean()
             
-            # הוספת Load Balancing למומחים לא-הסתברותיים כדי למנוע קריסה למומחה יחיד
-            if not self.args.unc_gating:
-                avg_weight = gating_weights.mean(dim=0)
-                load_balance_loss = self.args.num_experts * torch.sum(avg_weight * avg_weight)
-                loss += 0.05 * load_balance_loss
+            # # הוספת Load Balancing למומחים לא-הסתברותיים כדי למנוע קריסה למומחה יחיד
+            # if not self.args.unc_gating:
+            #     avg_weight = gating_weights.mean(dim=0)
+            #     load_balance_loss = self.args.num_experts * torch.sum(avg_weight * avg_weight)
+            #     loss += 0.05 * load_balance_loss
         return loss
 
     def vali(self, vali_data, vali_loader, criterion):

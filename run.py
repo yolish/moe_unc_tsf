@@ -25,7 +25,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_experts', type=int, default=1, help="value > 1 indicates MoE")
     parser.add_argument('--prob_expert', action='store_true', help='construct probabilistic experts', default=False)
     parser.add_argument('--unc_gating', action='store_true', help='use uncertainty derived gating', default=False)
-    parser.add_argument('--max_grad_norm',type=int, help='value for max grad norm for prob MoE only, ignored if <=0 ', default=0)
+    parser.add_argument('--max_grad_norm',type=float, help='value for max grad norm for prob MoE only, ignored if <=0 ', default=0)
     parser.add_argument('--save_expert_outputs', action='store_true', help='save weights and per expert outputs', default=False)
     parser.add_argument('--save_unc', action='store_true', help='save moe uncertainties', default=False)
     parser.add_argument('--save_outputs', action='store_true', help='save predictions and ground truth', default=False)
@@ -158,6 +158,8 @@ if __name__ == '__main__':
     parser.add_argument('--use_reg_cp_aleat_scale', action='store_true', default=False, help='Scale only aleatoric uncertainty by learned q')
     parser.add_argument('--use_reg_standard_cp', action='store_true', default=False, help='Use standard CP calibration')
     parser.add_argument('--tau', type=int, default=100)
+    parser.add_argument('--n_samples', type=int, default=None,
+                        help='override per-split sample count for Dataset_Synthetic (tabular_regression only)')
 
     args = parser.parse_args()
 

@@ -7,7 +7,7 @@ class CP_VS_Static_Calibrator:
         self.q_val = None
 
     def fit(self, cal_preds, cal_trues, cal_stds):
-        residuals = torch.abs(cal_trues.cpu() - cal_preds.cpu()).squeeze()
+        residuals = torch.abs(cal_trues.cpu().squeeze() - cal_preds.cpu().squeeze())
         normalized_residuals = residuals / (cal_stds.cpu() + 1e-8)
         
         scores = normalized_residuals.numpy()

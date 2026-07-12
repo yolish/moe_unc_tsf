@@ -21,7 +21,7 @@ class AleatoricCPVSCalibrator:
         q_level = np.ceil((n + 1) * (1 - self.alpha)) / n
         q_level = min(max(q_level, 0.0), 1.0)
         
-        self.q_hat = np.quantile(scores, q_level)
+        self.q_hat = np.quantile(scores, q_level, method='higher')
 
     def predict(self, test_preds, test_stds_aleat):
         """

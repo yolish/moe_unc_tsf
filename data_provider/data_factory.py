@@ -37,7 +37,7 @@ def data_provider(args, flag):
             data_path=args.data_path,
             data_name=args.data,
             flag=flag,
-            size=[args.n_samples] if hasattr(args, 'n_samples') else None
+            size=[args.n_samples] if getattr(args, 'n_samples', None) is not None else None
         )
 
         shuffle_flag = True if flag == 'train' else False

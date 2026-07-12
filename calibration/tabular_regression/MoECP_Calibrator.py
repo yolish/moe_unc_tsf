@@ -85,9 +85,11 @@ class MoECP_Calibrator:
             target_prob = 1.0 - self.alpha
             quantile_idx = torch.searchsorted(cumulative_weights, target_prob).item()
             
-            # מניעת חריגה ממערך השאריות אם ההסתברות נופלת בדיוק על נקודת הטסט
+            # Target quantile falls on the calibration weights' point mass at delta_{+inf}
+            # (Algorithm 1 / Theorem 1): the interval must be unbounded here, not clipped to
+            # the max observed residual, otherwise the finite-sample coverage guarantee can fail.
             if quantile_idx >= len(sorted_residuals):
-                q_val = sorted_residuals[-1]
+                q_val = torch.tensor(float('inf'))
             else:
                 q_val = sorted_residuals[quantile_idx]
             

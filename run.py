@@ -25,6 +25,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_experts', type=int, default=1, help="value > 1 indicates MoE")
     parser.add_argument('--prob_expert', action='store_true', help='construct probabilistic experts', default=False)
     parser.add_argument('--unc_gating', action='store_true', help='use uncertainty derived gating', default=False)
+    parser.add_argument('--use_quantile_loss', action='store_true', default=False, help='train a true quantile-regression head via pinball loss (mutually exclusive with prob_expert)')
     parser.add_argument('--max_grad_norm',type=float, help='value for max grad norm for prob MoE only, ignored if <=0 ', default=0)
     parser.add_argument('--save_expert_outputs', action='store_true', help='save weights and per expert outputs', default=False)
     parser.add_argument('--save_unc', action='store_true', help='save moe uncertainties', default=False)
@@ -157,6 +158,8 @@ if __name__ == '__main__':
     parser.add_argument('--use_reg_cp_aleatoric', action='store_true', default=False, help='Use CP_VS Aleatoric calibration')
     parser.add_argument('--use_reg_cp_aleat_scale', action='store_true', default=False, help='Scale only aleatoric uncertainty by learned q')
     parser.add_argument('--use_reg_standard_cp', action='store_true', default=False, help='Use standard CP calibration')
+    parser.add_argument('--use_reg_cqr', action='store_true', default=False, help='Use CQR (conformalized quantile regression) calibration for regression')
+    parser.add_argument('--use_reg_adaptive_variance', action='store_true', default=False, help='Adaptive aleatoric/epistemic variance-ratio CP with width-minimizing r search')
     parser.add_argument('--tau', type=int, default=100)
     parser.add_argument('--n_samples', type=int, default=None,
                         help='override per-split sample count for Dataset_Synthetic (tabular_regression only)')
@@ -171,7 +174,11 @@ if __name__ == '__main__':
         exit()
     if args.unc_gating:
         assert(args.prob_expert), "uncertainty based gating required probabilstic experts"
-        
+
+    if getattr(args, 'use_quantile_loss', False) and args.prob_expert:
+        print(">> SKIPPING: Incompatible experiment (Quantile Loss + Probabilistic Experts).")
+        exit()
+
 
     if torch.cuda.is_available() and args.use_gpu:
         args.device = torch.device('cuda:{}'.format(args.gpu))
@@ -276,6 +283,12 @@ if __name__ == '__main__':
                     if args.use_reg_standard_cp:
                         print(f"Running Standard CP calibration for setting {setting}...")
                         exp.calibrate_standard_cp(setting)
+                    if args.use_reg_cqr:
+                        print(f"Running CQR calibration for setting {setting}...")
+                        exp.calibrate_cqr(setting)
+                    if args.use_reg_adaptive_variance:
+                        print(f"Running Adaptive Variance-Ratio calibration for setting {setting}...")
+                        exp.calibrate_adaptive_variance(setting)
 
             if args.gpu_type == 'mps':
                 torch.backends.mps.empty_cache()
@@ -341,6 +354,12 @@ if __name__ == '__main__':
             if args.use_reg_standard_cp:
                 print(f"Running Standard CP calibration for setting {setting}...")
                 exp.calibrate_standard_cp(setting)
+            if args.use_reg_cqr:
+                print(f"Running CQR calibration for setting {setting}...")
+                exp.calibrate_cqr(setting)
+            if args.use_reg_adaptive_variance:
+                print(f"Running Adaptive Variance-Ratio calibration for setting {setting}...")
+                exp.calibrate_adaptive_variance(setting)
 
         if args.gpu_type == 'mps':
             torch.backends.mps.empty_cache()

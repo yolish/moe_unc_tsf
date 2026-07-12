@@ -1,0 +1,309 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\title{Calibration Methods for Tabular Regression Uncertainty Quantification}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Setup and shared notation}
+
+Let $\mathcal{D}_{\mathrm{cal}} = \{(\bm{x}_i, y_i)\}_{i=1}^{n}$ be a calibration (held-out validation) set and $\mathcal{D}_{\mathrm{test}}$ the test set, drawn exchangeably. For a point $\bm{x}$, the trained model produces a point prediction $\hat{y}(\bm{x})$ and, when it is a Mixture-of-Experts (MoE) model with $K$ experts, per-expert means $\mu_k(\bm{x})$, per-expert predictive variances $\sigma_k^2(\bm{x})$ (when the expert has a probabilistic head), and gating weights $w_k(\bm{x})$ with $\sum_k w_k(\bm{x}) = 1$. The aggregate prediction is
+\begin{equation}
+\hat{y}(\bm{x}) = \sum_{k=1}^{K} w_k(\bm{x})\,\mu_k(\bm{x}).
+\end{equation}
+
+\subsection{Aleatoric/epistemic variance decomposition}
+\label{sec:decomposition}
+
+Several methods below use a law-of-total-variance decomposition of the MoE's predictive variance into an \emph{aleatoric} part (expected within-expert noise) and an \emph{epistemic} part (disagreement between experts):
+\begin{align}
+\sigma_a^2(\bm{x}) &= \sum_{k=1}^{K} w_k(\bm{x})\,\sigma_k^2(\bm{x}) &&\text{(aleatoric variance)}, \label{eq:aleat}\\
+\sigma_e^2(\bm{x}) &= \sum_{k=1}^{K} w_k(\bm{x})\,\big(\mu_k(\bm{x}) - \hat{y}(\bm{x})\big)^2 &&\text{(epistemic variance)}, \label{eq:epist}\\
+\sigma_{\mathrm{tot}}^2(\bm{x}) &= \sigma_a^2(\bm{x}) + \sigma_e^2(\bm{x}). \label{eq:total}
+\end{align}
+
+\subsection{Finite-sample conformal quantile}
+\label{sec:quantile}
+
+Every method below is an instance of \emph{split conformal prediction}: a nonconformity score $S_i$ is computed for each calibration point, and a threshold is set to the finite-sample-corrected empirical quantile
+\begin{equation}
+\hat{q} = \operatorname{Quantile}_{q_{\mathrm{level}}}\big(\{S_i\}_{i=1}^n\big), \qquad
+q_{\mathrm{level}} = \min\!\left(1,\ \frac{\lceil (n+1)(1-\alpha)\rceil}{n}\right),
+\label{eq:qlevel}
+\end{equation}
+using the \emph{upper} (``higher'') empirical quantile convention. This choice of $q_{\mathrm{level}}$ is what gives split conformal prediction its distribution-free, finite-sample marginal coverage guarantee
+\begin{equation}
+P\big(y_{\mathrm{test}} \in \hat{C}(\bm{x}_{\mathrm{test}})\big) \ge 1-\alpha,
+\end{equation}
+for any exchangeable calibration/test split, regardless of the base model's correctness.
+
+\bigskip
+The methods differ only in (a) what nonconformity score $S_i$ they conformalize, and (b) how the learned threshold is converted back into an interval $\hat{C}(\bm{x}) = [\hat{y}(\bm{x}) - s(\bm{x}),\ \hat{y}(\bm{x}) + s(\bm{x})]$.
+
+\section{Standard split conformal prediction}
+\textbf{File:} \texttt{Standard\_CP\_Calibrator.py}
+
+Ignores all uncertainty estimates and conformalizes the raw absolute residual:
+\begin{equation}
+S_i = |y_i - \hat{y}(\bm{x}_i)|, \qquad \hat{q} = \operatorname{Quantile}_{q_{\mathrm{level}}}(\{S_i\}).
+\end{equation}
+The interval has a single fixed half-width for every test point:
+\begin{equation}
+s(\bm{x}) = \hat{q} \quad \text{(constant, independent of } \bm{x}\text{)}.
+\end{equation}
+This is the classical baseline: valid coverage, but no adaptivity to heteroscedasticity.
+
+\section{CP with variance scaling (CP-VS, total uncertainty)}
+\textbf{File:} \texttt{CPVS\_regression.py} (\texttt{CP\_VS\_Static\_Calibrator})
+
+Normalizes the residual by the model's \emph{total} predictive standard deviation $\sigma_{\mathrm{tot}}(\bm{x}) = \sqrt{\sigma_a^2(\bm{x}) + \sigma_e^2(\bm{x})}$ before conformalizing:
+\begin{equation}
+S_i = \frac{|y_i - \hat{y}(\bm{x}_i)|}{\sigma_{\mathrm{tot}}(\bm{x}_i) + \epsilon}, \qquad \hat{q} = \operatorname{Quantile}_{q_{\mathrm{level}}}(\{S_i\}).
+\end{equation}
+The calibrated half-width scales with the model's own uncertainty estimate:
+\begin{equation}
+s(\bm{x}) = \hat{q}\cdot \sigma_{\mathrm{tot}}(\bm{x}).
+\end{equation}
+Intervals are now heteroscedastic (wider where the model reports more total uncertainty), while still retaining the marginal coverage guarantee.
+
+\section{CP with variance scaling (aleatoric-only)}
+\textbf{File:} \texttt{Aleatoric\_CPVS\_Calibrator.py} (\texttt{AleatoricCPVSCalibrator})
+
+Identical construction to CP-VS, but normalizes only by the aleatoric standard deviation $\sigma_a(\bm{x})$ instead of the total:
+\begin{equation}
+S_i = \frac{|y_i - \hat{y}(\bm{x}_i)|}{\sigma_a(\bm{x}_i) + \epsilon}, \qquad
+s(\bm{x}) = \hat{q}\cdot \sigma_a(\bm{x}).
+\end{equation}
+This isolates the data-noise component of uncertainty as the sole driver of interval shape, discarding the epistemic signal entirely.
+
+\section{Aleatoric-scale calibration}
+\textbf{File:} \texttt{Aleatoric\_Scale\_Calibrator.py} (\texttt{AleatoricScaleCalibrator})
+
+Rather than a multiplicative scale on the standard deviation, this method learns a multiplicative correction $q^2$ on the \emph{aleatoric variance only}, while the epistemic variance passes through with a fixed (implicit) coefficient of $1$. The target relation is
+\begin{equation}
+(y_i - \hat{y}(\bm{x}_i))^2 \ \approx\ q^2\,\sigma_a^2(\bm{x}_i) + \sigma_e^2(\bm{x}_i),
+\end{equation}
+which, solved for $q^2$ and clipped at zero, gives the conformity score
+\begin{equation}
+S_i = \max\!\left(0,\ \frac{(y_i - \hat{y}(\bm{x}_i))^2 - \sigma_e^2(\bm{x}_i)}{\sigma_a^2(\bm{x}_i) + \epsilon}\right), \qquad
+q^2 = \operatorname{Quantile}_{q_{\mathrm{level}}}(\{S_i\}).
+\end{equation}
+The calibrated interval half-width is
+\begin{equation}
+s(\bm{x}) = \sqrt{q^2\,\sigma_a^2(\bm{x}) + \sigma_e^2(\bm{x})}.
+\end{equation}
+Intuition: if the model's epistemic variance already explains most of the residual, no aleatoric inflation is needed for that point ($S_i \approx 0$); the quantile step finds the smallest uniform inflation of the aleatoric term that achieves nominal coverage.
+
+\section{Adaptive aleatoric/epistemic variance-ratio calibration (proposed)}
+\textbf{File:} \texttt{Adaptive\_Variance\_Calibrator.py} (\texttt{AdaptiveVarianceCalibrator})
+
+Generalizes the previous method by not fixing the epistemic coefficient at $1$. Introduce a free ratio $r \ge 0$:
+\begin{equation}
+(y_i - \hat{y}(\bm{x}_i))^2 \ \approx\ q^2(r)\,\sigma_a^2(\bm{x}_i) + r\,\sigma_e^2(\bm{x}_i),
+\end{equation}
+giving, for each fixed $r$, the conformity score and calibrated threshold
+\begin{equation}
+S_i(r) = \max\!\left(0,\ \frac{(y_i - \hat{y}(\bm{x}_i))^2 - r\,\sigma_e^2(\bm{x}_i)}{\sigma_a^2(\bm{x}_i) + \epsilon}\right), \qquad
+q^2(r) = \operatorname{Quantile}_{q_{\mathrm{level}}}(\{S_i(r)\}),
+\end{equation}
+\begin{equation}
+s(\bm{x}; r) = \sqrt{q^2(r)\,\sigma_a^2(\bm{x}) + r\,\sigma_e^2(\bm{x})}.
+\end{equation}
+Note that $q^2$ multiplies only the aleatoric term; $r$ multiplies the epistemic term directly (not through $q^2$), which guarantees a coverage floor of $\sqrt{r\,\sigma_e^2(\bm{x})}$ for every $r>0$ and prevents the interval from collapsing to zero width.
+
+\paragraph{Width-optimal choice of $r$.} For every fixed $r$, the construction above is a valid split-conformal procedure with the guarantee of Section~\ref{sec:quantile}. Since coverage is guaranteed for \emph{any} $r$, $r$ itself is chosen empirically to minimize the mean interval width:
+\begin{equation}
+r^\star = \operatorname*{arg\,min}_{r \in \mathcal{R}} \ \frac{1}{|\mathcal{D}_{\mathrm{tune}}|}\sum_{i \in \mathcal{D}_{\mathrm{tune}}} s(\bm{x}_i; r),
+\end{equation}
+searched over a log-spaced grid $\mathcal{R} = \{0\} \cup \{10^{-2}, \dots, 10^{2}\}$ ($25$ points), which contains $r=1$ (recovering the previous method) as a special case.
+
+\paragraph{Split-conformal validity of the search.} Choosing $r$ by minimizing width \emph{on the same fold} that supplies the final quantile $\hat{q}^2$ would break exchangeability and invalidate the coverage guarantee. The calibration set is therefore partitioned into two disjoint halves,
+\begin{equation}
+\mathcal{D}_{\mathrm{cal}} = \mathcal{D}_{\mathrm{tune}} \ \sqcup\ \mathcal{D}_{\mathrm{calib}}, \qquad |\mathcal{D}_{\mathrm{tune}}| \approx |\mathcal{D}_{\mathrm{calib}}| \approx n/2,
+\end{equation}
+$r^\star$ is selected using only $\mathcal{D}_{\mathrm{tune}}$, and the final threshold is fit on the disjoint fold:
+\begin{equation}
+q^2(r^\star) = \operatorname{Quantile}_{q_{\mathrm{level}}}\big(\{S_i(r^\star)\}_{i \in \mathcal{D}_{\mathrm{calib}}}\big).
+\end{equation}
+Because $r^\star$ depends only on $\mathcal{D}_{\mathrm{tune}}$, which is disjoint from $\mathcal{D}_{\mathrm{calib}}$, the scores $\{S_i(r^\star)\}_{i\in \mathcal{D}_{\mathrm{calib}}}$ remain exchangeable with the test score, and the marginal coverage guarantee of Section~\ref{sec:quantile} is preserved on the test set. (For small calibration sets, a single-fold fallback that reuses all of $\mathcal{D}_{\mathrm{cal}}$ for both steps is also supported, trading rigor for calibration-set size.)
+
+\section{MoE-localized conformal prediction (MoECP)}
+\textbf{File:} \texttt{MoECP\_Calibrator.py}
+
+Rather than reweighting by a variance decomposition, this method performs a form of \emph{weighted split conformal prediction} (in the spirit of covariate-shift-weighted conformal prediction), where calibration points are reweighted by their similarity — in gating-weight space — to the test point, using the raw absolute residual $S_i = |y_i - \hat{y}(\bm{x}_i)|$ as the base nonconformity score.
+
+For a test point with gating distribution $\bm{\pi}_{\mathrm{test}} = (w_1(\bm{x}_{\mathrm{test}}), \dots, w_K(\bm{x}_{\mathrm{test}}))$, a randomized smoothing step first draws
+\begin{equation}
+\bm{L} \sim \operatorname{Multinomial}(\tau, \bm{\pi}_{\mathrm{test}}), \qquad \tilde{\bm{\pi}} = \bm{L}/\tau,
+\end{equation}
+where $\tau$ is a temperature/precision hyperparameter. Each calibration point $j$ with gating distribution $\bm{\pi}_j$ is then assigned a similarity weight based on its KL-divergence to the smoothed test gate:
+\begin{equation}
+\omega_j = \exp\!\big(-\tau \cdot \mathrm{KL}(\bm{\pi}_j \,\|\, \tilde{\bm{\pi}})\big),
+\end{equation}
+and the (unobserved) test point itself is assigned the analogous self-weight
+\begin{equation}
+\omega_{\mathrm{test}} = \exp\!\big(-\tau \cdot \mathrm{KL}(\bm{\pi}_{\mathrm{test}} \,\|\, \tilde{\bm{\pi}})\big).
+\end{equation}
+Weights are normalized, $\hat{\omega}_j = \omega_j / \big(\sum_{j'} \omega_{j'} + \omega_{\mathrm{test}}\big)$, and the calibrated half-width is the weighted empirical quantile of the calibration residuals at level $1-\alpha$:
+\begin{equation}
+s(\bm{x}_{\mathrm{test}}) = \inf\left\{ t : \sum_{j:\, S_j \le t} \hat{\omega}_j \ \ge\ 1-\alpha \right\}.
+\end{equation}
+If the target probability mass $1-\alpha$ falls beyond the point mass carried by all observed calibration residuals (i.e.\ it would have to be satisfied by the reserved test self-weight $\hat{\omega}_{\mathrm{test}}$), the interval is returned as unbounded, $s(\bm{x}_{\mathrm{test}}) = \infty$, rather than clipped to the largest observed residual — this is required by the underlying weighted-conformal theorem to preserve exact finite-sample coverage.
+
+\section{Conformalized quantile regression (CQR)}
+\textbf{File:} \texttt{CQR\_Calibrator.py}
+
+Assumes the model has a dedicated quantile-regression head producing raw lower/upper quantile estimates $\hat{q}_{\mathrm{lo}}(\bm{x})$, $\hat{q}_{\mathrm{hi}}(\bm{x})$ (targeting quantile levels $\alpha/2$ and $1-\alpha/2$, trained with a pinball/quantile loss). The CQR conformity score (Romano et al., \emph{Conformalized Quantile Regression}) measures how far outside the raw quantile band the true value falls:
+\begin{equation}
+S_i = \max\big(\hat{q}_{\mathrm{lo}}(\bm{x}_i) - y_i,\ \ y_i - \hat{q}_{\mathrm{hi}}(\bm{x}_i)\big), \qquad
+\hat{q} = \operatorname{Quantile}_{q_{\mathrm{level}}}(\{S_i\}).
+\end{equation}
+Note $S_i$ can be negative (if $y_i$ already lies inside the raw band), which is what allows CQR to \emph{shrink} overly conservative raw quantile bands, not just inflate them. The calibrated interval directly adjusts the raw quantile band by the learned constant:
+\begin{equation}
+\hat{C}(\bm{x}) = \big[\hat{q}_{\mathrm{lo}}(\bm{x}) - \hat{q},\ \ \hat{q}_{\mathrm{hi}}(\bm{x}) + \hat{q}\big].
+\end{equation}
+Unlike the other methods, this interval is not of the symmetric form $\hat{y}(\bm{x}) \pm s(\bm{x})$: its shape (including asymmetry and heteroscedasticity) comes entirely from the underlying quantile regressor, and conformalization only adds a single global additive correction.
+
+\section{Summary table}
+
+\begin{center}
+\begin{tabular}{@{}p{4.1cm}p{5.3cm}p{5.3cm}@{}}
+\toprule
+\textbf{Method} & \textbf{Nonconformity score $S_i$} & \textbf{Interval half-width $s(\bm{x})$} \\
+\midrule
+Standard CP & $|y_i - \hat{y}_i|$ & $\hat{q}$ (constant) \\
+CP-VS (total) & $|y_i-\hat{y}_i|/\sigma_{\mathrm{tot},i}$ & $\hat{q}\,\sigma_{\mathrm{tot}}(\bm{x})$ \\
+CP-VS (aleatoric) & $|y_i-\hat{y}_i|/\sigma_{a,i}$ & $\hat{q}\,\sigma_a(\bm{x})$ \\
+Aleatoric-scale & $\max(0, (y_i-\hat{y}_i)^2 - \sigma_{e,i}^2)/\sigma_{a,i}^2$ & $\sqrt{q^2\sigma_a^2(\bm{x}) + \sigma_e^2(\bm{x})}$ \\
+Adaptive variance-ratio & $\max(0, (y_i-\hat{y}_i)^2 - r\sigma_{e,i}^2)/\sigma_{a,i}^2$ & $\sqrt{q^2(r^\star)\sigma_a^2(\bm{x}) + r^\star\sigma_e^2(\bm{x})}$ \\
+MoECP & $|y_i - \hat{y}_i|$, weighted by gate similarity & weighted quantile (localized, non-parametric) \\
+CQR & $\max(\hat{q}_{\mathrm{lo},i}-y_i,\ y_i-\hat{q}_{\mathrm{hi},i})$ & asymmetric: $[\hat{q}_{\mathrm{lo}}(\bm{x})-\hat q,\ \hat{q}_{\mathrm{hi}}(\bm{x})+\hat q]$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+All methods share the same finite-sample quantile correction (Eq.~\ref{eq:qlevel}) and hence the same distribution-free marginal coverage guarantee; they differ purely in how much of the model's own uncertainty structure (none, total variance, aleatoric variance, aleatoric+epistemic decomposition, MoE routing structure, or a learned quantile function) is used to shape the nonconformity score before conformalizing.
+
+\section{Empirical Results on Tabular Datasets}
+\label{sec:results}
+
+All methods target nominal coverage $1-\alpha = 90\%$. Results below are reported for three tabular datasets (Synthetic, Bike, Temperature/Bias-correction) and three MoE training configurations: \textbf{ClassicMoE} (deterministic experts, no probabilistic head — only \emph{Standard CP} and \emph{MoECP} apply, since there is no aleatoric/epistemic decomposition to exploit), \textbf{MOG} (probabilistic experts with a softmax gate), and \textbf{MOGU} (probabilistic experts with uncertainty-weighted/inverse-variance gating). A separate \textbf{CQR} configuration trains a dedicated quantile-regression head and is calibrated only with the CQR method of Section~7. In each table, the narrowest average width achieved among methods that use the aleatoric/epistemic decomposition (MOG/MOGU rows) is shown in \textbf{bold}.
+
+\subsection{Synthetic}
+\begin{center}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+\textbf{Architecture} & \textbf{Calibration method} & \textbf{Coverage} & \textbf{Avg.\ width} & \textbf{MSE} & \textbf{MAE} \\
+\midrule
+ClassicMoE & MoECP              & 90.33\% & 1.6504 & 0.4431 & 0.4311 \\
+ClassicMoE & Standard CP        & 90.73\% & 2.6261 & 0.4431 & 0.4311 \\
+\midrule
+MOG & MoECP                     & 89.27\% & 1.6170 & 0.4489 & 0.4337 \\
+MOG & Standard CP               & 90.07\% & 2.3652 & 0.4489 & 0.4337 \\
+MOG & CP-VS (total)             & 88.53\% & 1.3743 & 0.4489 & 0.4337 \\
+MOG & CP-VS (aleatoric)         & 90.33\% & 1.5494 & 0.4489 & 0.4337 \\
+MOG & Aleatoric-scale           & 89.27\% & 1.3390 & 0.4489 & 0.4337 \\
+MOG & \textbf{Adaptive variance-ratio} & 89.20\% & \textbf{1.3359} & 0.4489 & 0.4337 \\
+\midrule
+MOGU & MoECP                    & 89.00\% & 1.4869 & 0.4495 & 0.4314 \\
+MOGU & Standard CP              & 90.67\% & 2.6859 & 0.4495 & 0.4314 \\
+MOGU & CP-VS (total)            & 89.40\% & 1.4151 & 0.4495 & 0.4314 \\
+MOGU & CP-VS (aleatoric)        & 89.27\% & 1.4180 & 0.4495 & 0.4314 \\
+MOGU & Aleatoric-scale          & 89.33\% & 1.4154 & 0.4495 & 0.4314 \\
+MOGU & \textbf{Adaptive variance-ratio} & 89.00\% & \textbf{1.3905} & 0.4495 & 0.4314 \\
+\midrule
+CQR & CQR                       & 88.93\% & 1.4475 & 0.4507 & 0.4369 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Bike}
+\begin{center}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+\textbf{Architecture} & \textbf{Calibration method} & \textbf{Coverage} & \textbf{Avg.\ width} & \textbf{MSE} & \textbf{MAE} \\
+\midrule
+ClassicMoE & MoECP              & 90.87\% & 1.1565 & 0.1029 & 0.2139 \\
+ClassicMoE & Standard CP        & 91.20\% & 1.1174 & 0.1029 & 0.2139 \\
+\midrule
+MOG & MoECP                     & 90.47\% & 1.0905 & 0.1386 & 0.2402 \\
+MOG & Standard CP               & 90.33\% & 1.2040 & 0.1386 & 0.2402 \\
+MOG & \textbf{CP-VS (total)}    & 90.27\% & \textbf{0.9150} & 0.1386 & 0.2402 \\
+MOG & CP-VS (aleatoric)         & 91.07\% & 0.9285 & 0.1386 & 0.2402 \\
+MOG & Aleatoric-scale           & 90.87\% & 0.9262 & 0.1386 & 0.2402 \\
+MOG & Adaptive variance-ratio   & 92.27\% & 0.9815 & 0.1386 & 0.2402 \\
+\midrule
+MOGU & MoECP                    & 89.47\% & 1.2230 & 0.1487 & 0.2589 \\
+MOGU & Standard CP              & 89.20\% & 1.2117 & 0.1487 & 0.2589 \\
+MOGU & CP-VS (total)            & 89.27\% & 0.9528 & 0.1487 & 0.2589 \\
+MOGU & CP-VS (aleatoric)        & 89.47\% & 0.9536 & 0.1487 & 0.2589 \\
+MOGU & Aleatoric-scale          & 89.20\% & 0.9476 & 0.1487 & 0.2589 \\
+MOGU & \textbf{Adaptive variance-ratio} & 89.13\% & \textbf{0.9381} & 0.1487 & 0.2589 \\
+\midrule
+CQR & CQR                       & 90.87\% & 1.1295 & 0.2034 & 0.3046 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Temperature (Bias-correction)}
+\begin{center}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+\textbf{Architecture} & \textbf{Calibration method} & \textbf{Coverage} & \textbf{Avg.\ width} & \textbf{MSE} & \textbf{MAE} \\
+\midrule
+ClassicMoE & MoECP              & 91.27\% & 1.1947 & 0.1258 & 0.2738 \\
+ClassicMoE & Standard CP        & 91.20\% & 1.1902 & 0.1258 & 0.2738 \\
+\midrule
+MOG & MoECP                     & 91.13\% & 1.2699 & 0.1397 & 0.2868 \\
+MOG & Standard CP               & 90.87\% & 1.2409 & 0.1397 & 0.2868 \\
+MOG & CP-VS (total)             & 91.00\% & 1.2208 & 0.1397 & 0.2868 \\
+MOG & CP-VS (aleatoric)         & 91.00\% & 1.2411 & 0.1397 & 0.2868 \\
+MOG & Aleatoric-scale           & 91.27\% & 1.2424 & 0.1397 & 0.2868 \\
+MOG & \textbf{Adaptive variance-ratio} & 90.73\% & \textbf{1.1987} & 0.1397 & 0.2868 \\
+\midrule
+MOGU & MoECP                    & 90.20\% & 1.2500 & 0.1366 & 0.2849 \\
+MOGU & Standard CP              & 90.00\% & 1.2072 & 0.1366 & 0.2849 \\
+MOGU & CP-VS (total)            & 90.80\% & 1.1930 & 0.1366 & 0.2849 \\
+MOGU & CP-VS (aleatoric)        & 90.67\% & 1.1920 & 0.1366 & 0.2849 \\
+MOGU & Aleatoric-scale          & 90.73\% & 1.1924 & 0.1366 & 0.2849 \\
+MOGU & \textbf{Adaptive variance-ratio} & 90.40\% & \textbf{1.1693} & 0.1366 & 0.2849 \\
+\midrule
+CQR & CQR                       & 90.87\% & 1.2776 & 0.1422 & 0.2956 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Discussion}
+
+\paragraph{What $r^\star$ was actually learned.} The proposed method (Section~6) is a strict generalization of aleatoric-scale calibration (Section~5): fixing $r=1$ recovers it exactly. The learned ratios (from \texttt{result\_calibration\_adaptive\_variance.txt}) show the search using its full range rather than collapsing back to the baseline:
+\begin{center}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Dataset / Arch.} & \textbf{$r^\star$} & \textbf{Aleatoric-scale width} & \textbf{Adaptive width} & \textbf{Width change} \\
+\midrule
+Synthetic / MOG    & $1.0000$  & 1.3390 & 1.3359 & $-0.23\%$ \\
+Synthetic / MOGU   & $21.5443$ & 1.4154 & 1.3905 & $-1.76\%$ \\
+Bike / MOG         & $1.4678$  & 0.9262 & 0.9815 & $+5.97\%$ \\
+Bike / MOGU        & $0.0000$  & 0.9476 & 0.9381 & $-1.00\%$ \\
+Temperature / MOG  & $3.1623$  & 1.2424 & 1.1987 & $-3.52\%$ \\
+Temperature / MOGU & $3.1623$  & 1.1924 & 1.1693 & $-1.94\%$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Two extremes are notable: on Bike/MOGU the search selected $r^\star=0$ — i.e.\ it found the epistemic term uninformative enough for this residual distribution that ignoring it entirely and relying on a pure aleatoric-scale (with a re-fit $q^2$) gave the narrowest tune-fold width — and still improved on the $r=1$ baseline. On Synthetic/MOGU the search moved to the opposite extreme, $r^\star \approx 21.5$, strongly up-weighting the epistemic term, also with a net width reduction. Only on Synthetic/MOG did the search land back exactly on $r^\star=1$; the small width difference there ($1.3390 \to 1.3359$) is attributable to the final $q^2$ being fit on the disjoint calib half ($n\approx750$) rather than the full calibration set aleatoric-scale calibration uses ($n\approx1500$), not to any reweighting effect.
+
+\paragraph{The one regression: Bike/MOG.} This is the only configuration where the adaptive method's width is \emph{larger} than aleatoric-scale calibration's ($0.9815$ vs.\ $0.9262$, $+5.97\%$), and it is also the one case where its coverage clearly overshoots the $90\%$ target ($92.27\%$ vs.\ $90.87\%$). This is consistent with the tune/calib sample-splitting cost described in Section~6: $r^\star=1.4678$ was chosen by minimizing width on the tune half, but the corresponding $q^2$ had to be re-estimated on only the disjoint calib half, and for this particular dataset/architecture that re-estimated threshold happened to be more conservative than the one aleatoric-scale calibration obtains from fitting $q^2$ on the entire calibration set at once. This is the expected price of preserving the split-conformal validity argument (Section~6, ``Split-conformal validity of the search''): the width-optimality of $r^\star$ is a tune-fold-local property, not a per-run guarantee, and the effective calibration sample is halved relative to the non-nested baseline.
+
+\paragraph{Comparison to all other calibration methods.} Considering every method together, \emph{CP-VS (total)} is occasionally narrowest (Bike/MOG, $0.9150$) when the total-variance estimate is already well-scaled, but it is also the method most prone to undercoverage (e.g.\ Synthetic/MOG at $88.53\%$, below the $90\%$ target) since it applies a single global scale to both variance components jointly rather than allowing them to be corrected independently. \emph{Standard CP} and \emph{MoECP} are consistently among the widest intervals whenever a variance decomposition is available (MOG/MOGU rows), confirming that exploiting the model's own heteroscedastic uncertainty — in any of the forms in Sections~2–7 — meaningfully tightens intervals relative to ignoring it (Standard CP) or relying purely on routing-similarity reweighting without a variance model (MoECP). \emph{CQR} is competitive on Bike and Temperature (comparable width to the variance-scaled methods) but is not directly comparable to the others since its interval shape comes from a separately trained quantile head rather than the shared MoE point predictor.
+
+\paragraph{Overall.} In five of six MOG/MOGU configurations, adaptive variance-ratio calibration matches or narrows the interval relative to its direct baseline (aleatoric-scale calibration), and in the same five of six it is also the narrowest method overall among those that exploit the aleatoric/epistemic decomposition (the sole exception in both counts being Bike/MOG, where CP-VS (total) is narrowest) — at the cost of a data-splitting overhead that can occasionally produce a wider, more conservative interval than the baseline on a given run, as seen on Bike/MOG.
+
+\end{document}

@@ -9,6 +9,7 @@ import numpy as np
 
 from exp.exp_basic import Exp_Basic
 from utils.tools import EarlyStopping
+from utils.losses import QuantileLoss
 from models import SimpleMLP, RegressionMoE
 
 from calibration.tabular_regression.MoECP_Calibrator import MoECP_Calibrator
@@ -16,6 +17,8 @@ from calibration.tabular_regression.CPVS_regression import CP_VS_Static_Calibrat
 from calibration.tabular_regression.Aleatoric_CPVS_Calibrator import AleatoricCPVSCalibrator
 from calibration.tabular_regression.Aleatoric_Scale_Calibrator import AleatoricScaleCalibrator
 from calibration.tabular_regression.Standard_CP_Calibrator import Standard_CP_Calibrator
+from calibration.tabular_regression.CQR_Calibrator import CQR_Calibrator
+from calibration.tabular_regression.Adaptive_Variance_Calibrator import AdaptiveVarianceCalibrator
 
 def set_seed(seed=45):
     """קיבוע אקראיות מוחלט כדי להבטיח הוגנות באתחול בין המודלים, בדיוק כמו בסינתטי"""
@@ -60,7 +63,23 @@ class Exp_Tabular_Regression(Exp_Basic):
         # הבטחה ש-batch_y הוא לפחות [batch_size, 1] כדי שיתאים לפלט המומחים
         if batch_y.dim() == 1:
             batch_y = batch_y.view(-1, 1)
-            
+
+        if getattr(self.args, 'use_quantile_loss', False):
+            # Aggregates per-expert (lower, upper) predictions via the gate FIRST, then computes
+            # one pinball loss on the aggregate -- unlike the MoE branches below (which weight
+            # per-expert *losses*), because QuantileLoss.forward() always reduces to a scalar
+            # and has no per-sample mode to multiply by gate weights before summing.
+            if self.args.num_experts > 1:
+                expert_out, _, weights = self.model(batch_x)
+                avg_weight = weights.squeeze(-1).mean(dim=0)
+                load_balance_loss = 0.05 * self.args.num_experts * torch.sum(avg_weight * avg_weight)
+                pred = torch.sum(expert_out * weights, dim=1)
+                loss = QuantileLoss(quantiles=[0.05, 0.95])(pred, batch_y) + load_balance_loss
+            else:
+                pred = self.model(batch_x)
+                loss = QuantileLoss(quantiles=[0.05, 0.95])(pred, batch_y)
+            return loss
+
         if self.args.num_experts > 1:
             expert_out, expert_unc, weights = self.model(batch_x)
             
@@ -139,15 +158,23 @@ class Exp_Tabular_Regression(Exp_Basic):
 
                 if self.args.num_experts > 1:
                     expert_out, expert_unc, weights = self.model(batch_x)
-                    
+
                     # חישוב התחזית המצטברת בדיוק כמו ב-synthetic
                     pred = torch.sum(expert_out * weights, dim=1)
-                    
-                    if self.args.prob_expert:
+
+                    if getattr(self.args, 'use_quantile_loss', False):
+                        # pred is [B,2] = (lower, upper); derive a proxy point/std so this
+                        # shared method stays usable by test() without shape errors.
+                        pred_lower, pred_upper = pred[:, 0:1], pred[:, 1:2]
+                        pred = (pred_lower + pred_upper) / 2
+                        std_total = (pred_upper - pred_lower) / 2
+                        std_aleat = std_total
+                        std_epist = torch.zeros_like(std_total)
+                    elif self.args.prob_expert:
                         # פירוק שונות (Law of Total Variance)
                         aleat_var = torch.sum(weights * expert_unc, dim=1)
                         epist_var = torch.sum(weights * (expert_out - pred.unsqueeze(1))**2, dim=1)
-                        
+
                         std_total = torch.sqrt(aleat_var + epist_var)
                         std_aleat = torch.sqrt(aleat_var)
                         std_epist = torch.sqrt(epist_var)
@@ -155,11 +182,18 @@ class Exp_Tabular_Regression(Exp_Basic):
                         std_total = torch.std(expert_out, dim=1)
                         std_aleat = std_total
                         std_epist = torch.zeros_like(std_total)
-                        
+
                     weights = weights.squeeze(-1)
                 else:
                     # מומחה יחיד
-                    if self.args.prob_expert:
+                    if getattr(self.args, 'use_quantile_loss', False):
+                        pred = self.model(batch_x)  # [B,2] = (lower, upper)
+                        pred_lower, pred_upper = pred[:, 0:1], pred[:, 1:2]
+                        pred = (pred_lower + pred_upper) / 2
+                        std_total = (pred_upper - pred_lower) / 2
+                        std_aleat = std_total
+                        std_epist = torch.zeros_like(std_total)
+                    elif self.args.prob_expert:
                         pred, var = self.model(batch_x)
                         std_total = torch.sqrt(var + 1e-8)
                         std_aleat = std_total
@@ -169,7 +203,7 @@ class Exp_Tabular_Regression(Exp_Basic):
                         std_total = torch.ones_like(pred)
                         std_aleat = std_total
                         std_epist = torch.zeros_like(std_total)
-                        
+
                     weights = torch.ones((pred.shape[0], 1)).to(self.device)
 
                 all_preds.append(pred.squeeze(-1).detach().cpu())
@@ -179,8 +213,35 @@ class Exp_Tabular_Regression(Exp_Basic):
                 all_stds_aleat.append(std_aleat.squeeze(-1).detach().cpu())
                 all_stds_epist.append(std_epist.squeeze(-1).detach().cpu())
 
-        return (torch.cat(all_preds), torch.cat(all_trues), torch.cat(all_weights), 
+        return (torch.cat(all_preds), torch.cat(all_trues), torch.cat(all_weights),
                 torch.cat(all_stds_total), torch.cat(all_stds_aleat), torch.cat(all_stds_epist))
+
+    def _collect_quantile_predictions(self, dataloader):
+        """
+        Raw (lower, upper) quantile-head outputs for CQR conformalization, used only by
+        calibrate_cqr. Requires args.use_quantile_loss=True.
+        """
+        assert getattr(self.args, 'use_quantile_loss', False), \
+            "_collect_quantile_predictions requires --use_quantile_loss"
+        self.model.eval()
+        all_lower, all_upper, all_trues = [], [], []
+
+        with torch.no_grad():
+            for i, (batch_x, batch_y) in enumerate(dataloader):
+                batch_x = batch_x.float().to(self.device)
+                batch_y = batch_y.float().to(self.device)
+
+                if self.args.num_experts > 1:
+                    expert_out, _, weights = self.model(batch_x)
+                    pred = torch.sum(expert_out * weights, dim=1)  # [B,2] = (lower, upper)
+                else:
+                    pred = self.model(batch_x)  # [B,2] = (lower, upper)
+
+                all_lower.append(pred[:, 0].detach().cpu())
+                all_upper.append(pred[:, 1].detach().cpu())
+                all_trues.append(batch_y.detach().cpu())
+
+        return torch.cat(all_lower), torch.cat(all_upper), torch.cat(all_trues)
 
     def vali(self, vali_data, vali_loader):
         self.model.eval()
@@ -455,7 +516,48 @@ class Exp_Tabular_Regression(Exp_Basic):
 
         np.save(folder_path + 'intervals_cp_aleatoric_scale.npy', intervals)
         return coverage, width
-    
+
+    def calibrate_adaptive_variance(self, setting):
+        path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
+        if os.path.exists(path):
+            self.model.load_state_dict(torch.load(path))
+        self.model.eval()
+
+        cal_data, cal_loader = self._get_data(flag='val')
+        test_data, test_loader = self._get_data(flag='test')
+
+        cal_preds, cal_trues, _, _, cal_stds_aleat, cal_stds_epist = self._collect_predictions(cal_loader)
+        test_preds, test_trues, _, _, test_stds_aleat, test_stds_epist = self._collect_predictions(test_loader)
+
+        calibrator = AdaptiveVarianceCalibrator(alpha=0.1)
+        calibrator.fit(cal_preds, cal_trues, cal_stds_aleat, cal_stds_epist)
+        intervals = calibrator.predict(test_preds, test_stds_aleat, test_stds_epist)
+
+        intervals = intervals.numpy()
+        test_trues = test_trues.squeeze().numpy()
+
+        coverage = np.mean((test_trues >= intervals[:, 0]) & (test_trues <= intervals[:, 1]))
+        width = np.mean(intervals[:, 1] - intervals[:, 0])
+        median_width = np.median(intervals[:, 1] - intervals[:, 0])
+
+        print(f"\nAdaptive Variance-Ratio Results (Learned r = {calibrator.r:.4f}, q^2 = {calibrator.q_sq:.4f}, "
+              f"n_tune={calibrator.n_tune_}, n_calib={calibrator.n_calib_}):")
+        print(f"Coverage: {coverage:.4f}")
+        print(f"Avg Width: {width:.4f}")
+        print(f"Median Width: {median_width:.4f}")
+
+        folder_path = './results/' + setting + '/'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        with open("result_calibration_adaptive_variance.txt", 'a') as f:
+            f.write(f"{setting} (Adaptive Variance-Ratio)\n")
+            f.write(f"Coverage: {coverage:.4f}, Width: {width:.4f}, Median Width: {median_width:.4f}, "
+                    f"r: {calibrator.r:.4f}, q_sq: {calibrator.q_sq:.4f}\n\n")
+
+        np.save(folder_path + 'intervals_adaptive_variance.npy', intervals)
+        return coverage, width
+
     def calibrate_standard_cp(self, setting):
         path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
         if os.path.exists(path):
@@ -493,4 +595,42 @@ class Exp_Tabular_Regression(Exp_Basic):
             f.write(f"Coverage: {coverage:.4f}, Width: {width:.4f}, Median Width: {median_width:.4f}\n\n")
 
         np.save(folder_path + 'intervals_standard_cp.npy', intervals)
+        return coverage, width
+
+    def calibrate_cqr(self, setting):
+        path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
+        if os.path.exists(path):
+            self.model.load_state_dict(torch.load(path))
+        self.model.eval()
+
+        cal_data, cal_loader = self._get_data(flag='val')
+        test_data, test_loader = self._get_data(flag='test')
+
+        cal_lower, cal_upper, cal_trues = self._collect_quantile_predictions(cal_loader)
+        test_lower, test_upper, test_trues = self._collect_quantile_predictions(test_loader)
+
+        calibrator = CQR_Calibrator(alpha=0.1)
+        calibrator.fit(cal_lower, cal_upper, cal_trues)
+        intervals = calibrator.predict(test_lower, test_upper)
+
+        test_trues = test_trues.squeeze().numpy()
+
+        coverage = np.mean((test_trues >= intervals[:, 0]) & (test_trues <= intervals[:, 1]))
+        width = np.mean(intervals[:, 1] - intervals[:, 0])
+        median_width = np.median(intervals[:, 1] - intervals[:, 0])
+
+        print(f"\nCQR Results:")
+        print(f"Coverage: {coverage:.4f}")
+        print(f"Avg Width: {width:.4f}")
+        print(f"Median Width: {median_width:.4f}")
+
+        folder_path = './results/' + setting + '/'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        with open("result_calibration_cqr.txt", 'a') as f:
+            f.write(f"{setting} (CQR)\n")
+            f.write(f"Coverage: {coverage:.4f}, Width: {width:.4f}, Median Width: {median_width:.4f}\n\n")
+
+        np.save(folder_path + 'intervals_cqr.npy', intervals)
         return coverage, width

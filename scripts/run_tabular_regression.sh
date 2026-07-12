@@ -13,30 +13,37 @@ if [ ! -d "./logs/tabular" ]; then
 fi
 
 data_sets=("Synthetic" "Bike" "Temperature")
-seeds=(4021)
+seeds=(4022)
 model_id="tabular_exp"
 
 for seed in "${seeds[@]}"
 do
     for data in "${data_sets[@]}"
     do
+        n_samples_args=()
         if [ "$data" == "Synthetic" ]; then
             enc_in=1
             num_experts=3
             tau=150
-            epochs=600
+            epochs=600 # 150
             d_model=32  # התאמה למאמר - 32 נוירונים בשכבות לדאטה סינתטי
+            # Deliberate deviation from the paper's n=500: bumped to 1500 (matching
+            # Bike/Temperature's scale) so ambiguous/ low-confidence gating regions have
+            # enough nearby calibration points to avoid MoECP's delta_{+inf} tail-mass
+            # edge case (see MoECP_Calibrator.py; Theorem 1 requires an unbounded interval
+            # whenever a test point's own randomized self-weight exceeds alpha).
+            n_samples_args=(--n_samples 1500)
         elif [ "$data" == "Bike" ]; then
             enc_in=60       # <--- שינוי מ-12 ל-60 בגלל הקידוד הקטגוריאלי
             num_experts=2
             tau=100
-            epochs=2000     # כפי שסדרנו קודם כדי לחקות את המאמר
+            epochs=2000 # 200     # כפי שסדרנו קודם כדי לחקות את המאמר
             d_model=64  # התאמה למאמר - 64 נוירונים לדאטה אמיתי
         elif [ "$data" == "Temperature" ]; then
             enc_in=21
             num_experts=2
             tau=100
-            epochs=500
+            epochs=2000 # 200
             d_model=64  # התאמה למאמר - 64 נוירונים לדאטה אמיתי
         fi
 
@@ -46,7 +53,7 @@ do
         --model MoE --model_id "${model_id}_ClassicMoE_${data}" \
         --enc_in $enc_in --c_out 1 --d_model $d_model --num_experts $num_experts --batch_size 64 \
         --train_epochs $epochs --learning_rate 0.0001 --patience 5 --seed $seed \
-        --tau $tau \
+        --tau $tau --max_grad_norm 1.0 "${n_samples_args[@]}" \
         --use_reg_moecp --use_reg_standard_cp --overwrite > "logs/tabular/${data}_ClassicMoE.log" 2>&1 &
 
         # 2. Run MOG with the specified calibration methods
@@ -55,9 +62,9 @@ do
         --model MoE --model_id "${model_id}_MOG_${data}" \
         --enc_in $enc_in --c_out 1 --d_model $d_model --num_experts $num_experts --batch_size 64 \
         --train_epochs $epochs --learning_rate 0.0001 --patience 5 --seed $seed \
-        --prob_expert --tau $tau \
+        --prob_expert --tau $tau --max_grad_norm 1.0 "${n_samples_args[@]}" \
         --use_reg_moecp --use_reg_cp_vs --use_reg_cp_aleatoric \
-        --use_reg_cp_aleat_scale --use_reg_standard_cp --overwrite > "logs/tabular/${data}_MOG.log" 2>&1 &
+        --use_reg_cp_aleat_scale --use_reg_adaptive_variance --use_reg_standard_cp --overwrite > "logs/tabular/${data}_MOG.log" 2>&1 &
 
         # 3. Run MOGU with the specified calibration methods
         python -u run.py --task_name tabular_regression --is_training 1 \
@@ -65,10 +72,19 @@ do
         --model MoE --model_id "${model_id}_MOGU_${data}" \
         --enc_in $enc_in --c_out 1 --d_model $d_model --num_experts $num_experts --batch_size 64 \
         --train_epochs $epochs --learning_rate 0.0001 --patience 5 --seed $seed \
-        --prob_expert --unc_gating --tau $tau \
+        --prob_expert --unc_gating --tau $tau --max_grad_norm 1.0 "${n_samples_args[@]}" \
         --use_reg_moecp --use_reg_cp_vs --use_reg_cp_aleatoric \
-        --use_reg_cp_aleat_scale --use_reg_standard_cp --overwrite > "logs/tabular/${data}_MOGU.log" 2>&1 &
-        
+        --use_reg_cp_aleat_scale --use_reg_adaptive_variance --use_reg_standard_cp --overwrite > "logs/tabular/${data}_MOGU.log" 2>&1 &
+
+        # 4. Run CQR (true quantile-regression head + conformalized quantile regression calibration)
+        python -u run.py --task_name tabular_regression --is_training 1 \
+        --root_path ./dataset/ --data_path "${data}.csv" --data "$data" \
+        --model MoE --model_id "${model_id}_CQR_${data}" \
+        --enc_in $enc_in --c_out 1 --d_model $d_model --num_experts $num_experts --batch_size 64 \
+        --train_epochs $epochs --learning_rate 0.0001 --patience 5 --seed $seed \
+        --tau $tau --max_grad_norm 1.0 "${n_samples_args[@]}" \
+        --use_quantile_loss --use_reg_cqr --overwrite > "logs/tabular/${data}_CQR.log" 2>&1 &
+
         wait
     done
 done
@@ -84,13 +100,15 @@ python3 << 'EOF'
 import os, re, csv
 
 data_sets = ['Synthetic', 'Bike', 'Temperature']
-models = ['ClassicMoE', 'MOG', 'MOGU']
+models = ['ClassicMoE', 'MOG', 'MOGU', 'CQR']
 methods = {
     'MoECP': r'MoECP Results:',
     'Standard CP': r'Standard CP Results:',
     'CPVS': r'CP_VS Static Results:',
     'CPVS Aleatoric': r'CP_VS Aleatoric Results:',
-    'CP Aleatoric Scale': r'CP Aleatoric Scale Results'
+    'CP Aleatoric Scale': r'CP Aleatoric Scale Results',
+    'Adaptive Variance-Ratio': r'Adaptive Variance-Ratio Results',
+    'CQR': r'CQR Results:'
 }
 
 csv_file = 'logs/tabular/final_calibration_summary.csv'

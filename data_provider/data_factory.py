@@ -18,7 +18,8 @@ data_dict = {
     'UEA': UEAloader,
     'Synthetic': Dataset_Synthetic,
     'Bike': Dataset_Tabular,
-    'Temperature': Dataset_Tabular
+    'Temperature': Dataset_Tabular,
+    'Superconductivity': Dataset_Tabular
 }
 
 
@@ -37,7 +38,8 @@ def data_provider(args, flag):
             data_path=args.data_path,
             data_name=args.data,
             flag=flag,
-            size=[args.n_samples] if getattr(args, 'n_samples', None) is not None else None
+            size=[args.n_samples] if getattr(args, 'n_samples', None) is not None else None,
+            seed=getattr(args, 'seed', 42)
         )
 
         shuffle_flag = True if flag == 'train' else False

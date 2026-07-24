@@ -1,6 +1,4 @@
 import torch
-from torch.distributions import Multinomial
-import torch
 
 
 class MoECP_Calibrator:
@@ -21,14 +19,7 @@ class MoECP_Calibrator:
         test_preds = test_preds.cpu().squeeze()
         test_gating_weights = test_gating_weights.cpu()
         intervals = []
-        
-        # --- תחילת קוד הלוגים: משתני מעקב ---
-        import numpy as np
-        log_effective_samples = []
-        log_min_kl = []
-        log_routing_confidence = []
-        # --- סוף קוד הלוגים ---
-        
+
         for i in range(len(test_preds)):
             pi_test = test_gating_weights[i]
             
@@ -54,29 +45,21 @@ class MoECP_Calibrator:
             ).sum(dim=1)
             
             weights = torch.exp(-kl_div * tau)
-            
-            # --- תחילת התיקון ---
-            # חישוב ה-KL Divergence בין ההסתברות המורעשת (pi_tilde) להסתברות המקורית של הטסט (pi_test)
+
+            # Test point's own weight w_{n+1} = exp(-tau * D(pi_tilde, pi_test)):
             test_kl_div = torch.nn.functional.kl_div(
-                torch.log(pi_test + 1e-8), 
-                pi_tilde, 
+                torch.log(pi_test + 1e-8),
+                pi_tilde,
                 reduction='sum'
             )
-            # חישוב המשקל האמיתי של נקודת הטסט
             test_weight = torch.exp(-test_kl_div * tau)
 
-            
-            # נרמול עם המשקל האמיתי במקום 1.0 קשיח
-            weights = weights / (weights.sum() + test_weight) 
-            # --- סוף התיקון ---
-            
-            # --- תחילת קוד הלוגים: איסוף נתונים לכל דגימה ---
-            effective_points = torch.sum(weights > 0.01).item()
-            log_effective_samples.append(effective_points)
-            log_min_kl.append(torch.min(kl_div).item())
-            log_routing_confidence.append(torch.max(pi_test).item())
-            # --- סוף קוד הלוגים ---
-            
+            # π(X_{n+1}) is the *original* (non-randomized) test gate here, distinct
+            # from π̃ above - Algorithm 1 step 4 defines w_{n+1}=exp(-τD(π̃,π(X_{n+1})))
+            # for i=n+1 the same way as for calibration points, so this is generally
+            # != 1 (see Theorem 1's proof, not a special-cased constant).
+            weights = weights / (weights.sum() + test_weight)
+
             sorted_residuals, indices = torch.sort(self.cal_residuals)
             sorted_weights = weights[indices]
             
@@ -94,19 +77,5 @@ class MoECP_Calibrator:
                 q_val = sorted_residuals[quantile_idx]
             
             intervals.append([test_preds[i] - q_val, test_preds[i] + q_val])
-            
-        # --- תחילת קוד הלוגים: הדפסת דוח ניתוח ---
-        avg_effective = np.mean(log_effective_samples)
-        median_effective = np.median(log_effective_samples)
-        avg_confidence = np.mean(log_routing_confidence)
-        
-        print("\n" + "="*40)
-        print("🔍 MoECP Inner Mechanics Analysis 🔍")
-        print(f"Routing Confidence (Max Weight Avg): {avg_confidence:.4f}")
-        print(f"Avg Effective Calib Points Used (weight > 1%): {avg_effective:.1f} out of {len(self.cal_residuals)}")
-        print(f"Median Effective Calib Points: {median_effective:.1f}")
-        print(f"Avg Minimum KL Divergence: {np.mean(log_min_kl):.4f}")
-        print("="*40 + "\n")
-        # --- סוף קוד הלוגים ---
-            
+
         return torch.tensor(intervals)

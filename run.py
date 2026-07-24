@@ -27,6 +27,9 @@ if __name__ == '__main__':
     parser.add_argument('--unc_gating', action='store_true', help='use uncertainty derived gating', default=False)
     parser.add_argument('--use_quantile_loss', action='store_true', default=False, help='train a true quantile-regression head via pinball loss (mutually exclusive with prob_expert)')
     parser.add_argument('--max_grad_norm',type=float, help='value for max grad norm for prob MoE only, ignored if <=0 ', default=0)
+    parser.add_argument('--load_balance_weight', type=float, default=0.05,
+                        help='coefficient for the MoE load-balancing penalty (Shazeer et al. 2017 importance '
+                             'loss) applied when num_experts>1; 0.05 preserves the original/current behavior.')
     parser.add_argument('--save_expert_outputs', action='store_true', help='save weights and per expert outputs', default=False)
     parser.add_argument('--save_unc', action='store_true', help='save moe uncertainties', default=False)
     parser.add_argument('--save_outputs', action='store_true', help='save predictions and ground truth', default=False)
@@ -154,13 +157,19 @@ if __name__ == '__main__':
 
     # Regression specific args
     parser.add_argument('--use_reg_moecp', action='store_true', default=False, help='Use MoECP calibration for regression')
+    parser.add_argument('--use_reg_moce', action='store_true', default=False, help='Use MoCE (Mixture of Conformal Experts) calibration for regression')
     parser.add_argument('--use_reg_cp_vs', action='store_true', default=False, help='Use CP_VS calibration for regression')
     parser.add_argument('--use_reg_cp_aleatoric', action='store_true', default=False, help='Use CP_VS Aleatoric calibration')
     parser.add_argument('--use_reg_cp_aleat_scale', action='store_true', default=False, help='Scale only aleatoric uncertainty by learned q')
     parser.add_argument('--use_reg_standard_cp', action='store_true', default=False, help='Use standard CP calibration')
     parser.add_argument('--use_reg_cqr', action='store_true', default=False, help='Use CQR (conformalized quantile regression) calibration for regression')
     parser.add_argument('--use_reg_adaptive_variance', action='store_true', default=False, help='Adaptive aleatoric/epistemic variance-ratio CP with width-minimizing r search')
+    parser.add_argument('--use_reg_mog_hpd', action='store_true', default=False, help='Highest-density-region (HPD) conformal calibration using the closed-form Gaussian-mixture density; supports disjoint multi-interval prediction sets (MOG/MOGU only, requires --prob_expert)')
+    parser.add_argument('--use_reg_sta_hpd', action='store_true', default=False, help='Shape-Threshold Adaptive HPD: MoG-HPD generalized with a shape exponent c on the per-expert sigmas and a threshold-field exponent theta on log sigma_tot, both chosen by majority vote over repeated tune/calib splits. (c=1,theta=0) is MoG-HPD and (c=1,theta=1) is CP-VS, so it cannot be worse than either on the tuning objective (MOG/MOGU only, requires --prob_expert)')
+    parser.add_argument('--use_reg_seta_hpd', action='store_true', default=False, help='SETA-HPD (Shape-Epistemic-Threshold Adaptive HPD): STA-HPD additionally reshaping the between-component (epistemic) MoG variance by a tuned exponent rho via the mean-shift tilde_mu_k=yhat+sqrt(rho)(mu_k-yhat), i.e. a 3-D (c,rho,theta) grid search. rho=1 recovers STA-HPD; runs independently of it. Only affects K>1 (multi-expert) models (MOG/MOGU only, requires --prob_expert)')
     parser.add_argument('--tau', type=int, default=100)
+    parser.add_argument('--moce_epsilon', type=float, default=1e-3,
+                        help='gating-regularization smoothing constant for MoCE calibration (Eq. 2)')
     parser.add_argument('--n_samples', type=int, default=None,
                         help='override per-split sample count for Dataset_Synthetic (tabular_regression only)')
 
@@ -271,6 +280,9 @@ if __name__ == '__main__':
                     if args.use_reg_moecp:
                         print(f"Running MoECP calibration for regression for setting {setting}...")
                         exp.calibrate_moecp(setting)
+                    if args.use_reg_moce:
+                        print(f"Running MoCE calibration for regression for setting {setting}...")
+                        exp.calibrate_moce(setting)
                     if args.use_reg_cp_vs:
                         print(f"Running CP_VS calibration for regression for setting {setting}...")
                         exp.calibrate_cpvs(setting)
@@ -289,6 +301,27 @@ if __name__ == '__main__':
                     if args.use_reg_adaptive_variance:
                         print(f"Running Adaptive Variance-Ratio calibration for setting {setting}...")
                         exp.calibrate_adaptive_variance(setting)
+                    if args.use_reg_mog_hpd:
+                        if not args.prob_expert:
+                            print(f"Skipping MoG-HPD calibration for setting {setting}: requires --prob_expert "
+                                  f"(MOG/MOGU); ClassicMoE has no per-expert variance.")
+                        else:
+                            print(f"Running MoG-HPD calibration for setting {setting}...")
+                            exp.calibrate_mog_hpd(setting)
+                    if args.use_reg_sta_hpd:
+                        if not args.prob_expert:
+                            print(f"Skipping STA-HPD calibration for setting {setting}: requires "
+                                  f"--prob_expert (MOG/MOGU); ClassicMoE has no per-expert variance.")
+                        else:
+                            print(f"Running STA-HPD calibration for setting {setting}...")
+                            exp.calibrate_sta_hpd(setting)
+                    if args.use_reg_seta_hpd:
+                        if not args.prob_expert:
+                            print(f"Skipping SETA-HPD calibration for setting {setting}: requires "
+                                  f"--prob_expert (MOG/MOGU); ClassicMoE has no per-expert variance.")
+                        else:
+                            print(f"Running SETA-HPD calibration for setting {setting}...")
+                            exp.calibrate_seta_hpd(setting)
 
             if args.gpu_type == 'mps':
                 torch.backends.mps.empty_cache()
@@ -342,6 +375,9 @@ if __name__ == '__main__':
             if args.use_reg_moecp:
                 print(f"Running MoECP calibration for regression for setting {setting}...")
                 exp.calibrate_moecp(setting)
+            if args.use_reg_moce:
+                print(f"Running MoCE calibration for regression for setting {setting}...")
+                exp.calibrate_moce(setting)
             if args.use_reg_cp_vs:
                 print(f"Running CP_VS calibration for regression for setting {setting}...")
                 exp.calibrate_cpvs(setting)
@@ -360,6 +396,27 @@ if __name__ == '__main__':
             if args.use_reg_adaptive_variance:
                 print(f"Running Adaptive Variance-Ratio calibration for setting {setting}...")
                 exp.calibrate_adaptive_variance(setting)
+            if args.use_reg_mog_hpd:
+                if not args.prob_expert:
+                    print(f"Skipping MoG-HPD calibration for setting {setting}: requires --prob_expert "
+                          f"(MOG/MOGU); ClassicMoE has no per-expert variance.")
+                else:
+                    print(f"Running MoG-HPD calibration for setting {setting}...")
+                    exp.calibrate_mog_hpd(setting)
+            if args.use_reg_sta_hpd:
+                if not args.prob_expert:
+                    print(f"Skipping STA-HPD calibration for setting {setting}: requires "
+                          f"--prob_expert (MOG/MOGU); ClassicMoE has no per-expert variance.")
+                else:
+                    print(f"Running STA-HPD calibration for setting {setting}...")
+                    exp.calibrate_sta_hpd(setting)
+            if args.use_reg_seta_hpd:
+                if not args.prob_expert:
+                    print(f"Skipping SETA-HPD calibration for setting {setting}: requires "
+                          f"--prob_expert (MOG/MOGU); ClassicMoE has no per-expert variance.")
+                else:
+                    print(f"Running SETA-HPD calibration for setting {setting}...")
+                    exp.calibrate_seta_hpd(setting)
 
         if args.gpu_type == 'mps':
             torch.backends.mps.empty_cache()

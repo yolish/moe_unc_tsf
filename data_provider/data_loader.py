@@ -906,7 +906,7 @@ class Dataset_Tabular(Dataset):
         X_shuffled = X[indices]
         Y_shuffled = Y[indices]
 
-        # חיתוך המדגמים לפי יחס 70/15/15 מתוך כלל הנתונים המעורבבים
+        # חיתוך המדגמים לפי יחס 60/20/20 מתוך כלל הנתונים המעורבבים
         n_total = len(X_shuffled)
         train_size = int(round(self.split_proportions[0] * n_total))
         val_size = int(round(self.split_proportions[1] * n_total))

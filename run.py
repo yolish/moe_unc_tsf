@@ -167,6 +167,8 @@ if __name__ == '__main__':
     parser.add_argument('--use_reg_mog_hpd', action='store_true', default=False, help='Highest-density-region (HPD) conformal calibration using the closed-form Gaussian-mixture density; supports disjoint multi-interval prediction sets (MOG/MOGU only, requires --prob_expert)')
     parser.add_argument('--use_reg_sta_hpd', action='store_true', default=False, help='Shape-Threshold Adaptive HPD: MoG-HPD generalized with a shape exponent c on the per-expert sigmas and a threshold-field exponent theta on log sigma_tot, both chosen by majority vote over repeated tune/calib splits. (c=1,theta=0) is MoG-HPD and (c=1,theta=1) is CP-VS, so it cannot be worse than either on the tuning objective (MOG/MOGU only, requires --prob_expert)')
     parser.add_argument('--use_reg_seta_hpd', action='store_true', default=False, help='SETA-HPD (Shape-Epistemic-Threshold Adaptive HPD): STA-HPD additionally reshaping the between-component (epistemic) MoG variance by a tuned exponent rho via the mean-shift tilde_mu_k=yhat+sqrt(rho)(mu_k-yhat), i.e. a 3-D (c,rho,theta) grid search. rho=1 recovers STA-HPD; runs independently of it. Only affects K>1 (multi-expert) models (MOG/MOGU only, requires --prob_expert)')
+    parser.add_argument('--use_reg_meld_hpd', action='store_true', default=False, help='MELD-HPD (Maximum-likelihood Epistemic-aLeatoric Decomposition HPD): same (c,rho,theta) surrogate family as SETA-HPD, but the shape exponents (c,rho) are selected by MAXIMIZING mean calibration log predictive density (a proper scoring rule -> best density match -> narrowest valid HPD) instead of by argmin tune-fold width, while theta is still chosen by width. Runs independently of STA-HPD/SETA-HPD. Only affects K>1 (multi-expert) models (MOG/MOGU only, requires --prob_expert)')
+    parser.add_argument('--use_reg_ease_hpd', action='store_true', default=False, help='EASE-HPD (Epistemic-Aleatoric Share-adaptive threshold HPD): same (c,rho,theta) surrogate family as SETA-HPD, plus a fourth exponent phi tilting the threshold field by the point epistemic SHARE E(x)/(A(x)+E(x)) (deviation from its calibration-set mean) instead of only the total scale theta already sees. Selected by the same width-argmin + majority-vote machinery as STA-HPD/SETA-HPD (phi=0 always on the grid), so its tuning objective can never be worse than SETA-HPD. Runs independently of STA-HPD/SETA-HPD/MELD-HPD. Only affects K>1 (multi-expert) models (MOG/MOGU only, requires --prob_expert)')
     parser.add_argument('--tau', type=int, default=100)
     parser.add_argument('--moce_epsilon', type=float, default=1e-3,
                         help='gating-regularization smoothing constant for MoCE calibration (Eq. 2)')
@@ -322,6 +324,20 @@ if __name__ == '__main__':
                         else:
                             print(f"Running SETA-HPD calibration for setting {setting}...")
                             exp.calibrate_seta_hpd(setting)
+                    if args.use_reg_meld_hpd:
+                        if not args.prob_expert:
+                            print(f"Skipping MELD-HPD calibration for setting {setting}: requires "
+                                  f"--prob_expert (MOG/MOGU); ClassicMoE has no per-expert variance.")
+                        else:
+                            print(f"Running MELD-HPD calibration for setting {setting}...")
+                            exp.calibrate_meld_hpd(setting)
+                    if args.use_reg_ease_hpd:
+                        if not args.prob_expert:
+                            print(f"Skipping EASE-HPD calibration for setting {setting}: requires "
+                                  f"--prob_expert (MOG/MOGU); ClassicMoE has no per-expert variance.")
+                        else:
+                            print(f"Running EASE-HPD calibration for setting {setting}...")
+                            exp.calibrate_ease_hpd(setting)
 
             if args.gpu_type == 'mps':
                 torch.backends.mps.empty_cache()
@@ -417,6 +433,20 @@ if __name__ == '__main__':
                 else:
                     print(f"Running SETA-HPD calibration for setting {setting}...")
                     exp.calibrate_seta_hpd(setting)
+            if args.use_reg_meld_hpd:
+                if not args.prob_expert:
+                    print(f"Skipping MELD-HPD calibration for setting {setting}: requires "
+                          f"--prob_expert (MOG/MOGU); ClassicMoE has no per-expert variance.")
+                else:
+                    print(f"Running MELD-HPD calibration for setting {setting}...")
+                    exp.calibrate_meld_hpd(setting)
+            if args.use_reg_ease_hpd:
+                if not args.prob_expert:
+                    print(f"Skipping EASE-HPD calibration for setting {setting}: requires "
+                          f"--prob_expert (MOG/MOGU); ClassicMoE has no per-expert variance.")
+                else:
+                    print(f"Running EASE-HPD calibration for setting {setting}...")
+                    exp.calibrate_ease_hpd(setting)
 
         if args.gpu_type == 'mps':
             torch.backends.mps.empty_cache()

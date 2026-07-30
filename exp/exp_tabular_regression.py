@@ -24,6 +24,8 @@ from calibration.tabular_regression.Adaptive_Variance_Calibrator import Adaptive
 from calibration.tabular_regression.MoG_HPD_Calibrator import MoG_HPD_Calibrator
 from calibration.tabular_regression.STA_HPD_Calibrator import STAHPDCalibrator
 from calibration.tabular_regression.SETA_HPD_Calibrator import SETAHPDCalibrator
+from calibration.tabular_regression.MELD_HPD_Calibrator import MELDHPDCalibrator
+from calibration.tabular_regression.EASE_HPD_Calibrator import EASEHPDCalibrator
 
 
 def interval_diagnostics(intervals, trues, bin_key, alpha=0.1, n_bins=10):
@@ -203,7 +205,7 @@ class Exp_Tabular_Regression(Exp_Basic):
             # Single Expert
             if self.args.prob_expert:
                 mean, var = self.model(batch_x)
-                var = var + 1e-8
+                var = torch.clamp(var, min=0.01)
                 loss = 0.5 * (torch.log(var) + ((batch_y - mean)**2) / var).mean()
             else:
                 mean = self.model(batch_x)
@@ -1182,6 +1184,335 @@ class Exp_Tabular_Regression(Exp_Basic):
                 f.write(f"tuning_surface ((c,rho,theta):tune_width): {diag_surface_str}\n\n")
         except Exception as e:
             print(f"[SETA-HPD Diagnostics] skipped due to error: {e}")
+
+        return coverage, width
+
+    def calibrate_meld_hpd(self, setting):
+        """
+        MELD-HPD: same (c, rho, theta) surrogate family as SETA-HPD, but the shape exponents
+        (c, rho) are selected by MAXIMIZING mean calibration log predictive density (a proper
+        scoring rule -> best density match -> Neyman-Pearson-narrowest HPD) instead of by argmin
+        tune-fold width, while theta is still chosen by width. Runs independently of (and
+        alongside) calibrate_sta_hpd / calibrate_seta_hpd -- separate calibrator, separate result
+        file. rho only has effect for K>1.
+        """
+        path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
+        if os.path.exists(path):
+            self.model.load_state_dict(torch.load(path))
+        self.model.eval()
+
+        cal_data, cal_loader = self._get_data(flag='val')
+        test_data, test_loader = self._get_data(flag='test')
+
+        cal_mu, cal_sigma, cal_pi, cal_trues = self._collect_mog_predictions(cal_loader)
+        test_mu, test_sigma, test_pi, test_trues = self._collect_mog_predictions(test_loader)
+
+        mog_decompose = getattr(self.args, 'meld_hpd_mog_decompose', True)
+        calibrator = MELDHPDCalibrator(alpha=0.1, mog_decompose=mog_decompose)
+        calibrator.fit(cal_trues, cal_mu, cal_sigma, cal_pi)
+        intervals = calibrator.predict(test_mu, test_sigma, test_pi)  # list of [m_i,2] arrays
+
+        test_trues_np = test_trues.squeeze().numpy()
+
+        widths = np.array([seg[:, 1].sum() - seg[:, 0].sum() if len(seg) else 0.0 for seg in intervals])
+        covered = np.array([bool(len(seg)) and bool(np.any((seg[:, 0] <= y) & (y <= seg[:, 1])))
+                             for y, seg in zip(test_trues_np, intervals)])
+        n_segments = np.array([len(seg) for seg in intervals])
+
+        coverage = covered.mean()
+        width = widths.mean()
+        median_width = np.median(widths)
+        frac_multi = np.mean(n_segments > 1)
+        frac_empty = np.mean(n_segments == 0)
+        avg_segments = n_segments.mean()
+
+        # Header is "MELD-HPD Results" -- shares no contiguous substring with "MoG-HPD",
+        # "STA-HPD", or "SETA-HPD", so the run_tabular_regression.sh parser patterns cannot
+        # cross-match this method.
+        print(f"\nMELD-HPD Results (c*={calibrator.c_:.4f}, rho*={calibrator.rho_:.4f}, "
+              f"theta*={calibrator.theta_:.4f}, rho_hat_closed={calibrator.rho_hat_closed_:.4f}, "
+              f"mog_decompose={calibrator.mog_decompose}, "
+              f"tune width@best={calibrator.tune_width_at_best_:.4f}, t_hat={calibrator.t_hat:.4f}, "
+              f"G={calibrator.G_:.6g}, avg segments={avg_segments:.3f}, "
+              f"frac multi-segment={frac_multi:.4f}, frac empty={frac_empty:.4f}, "
+              f"n_tune={calibrator.n_tune_}, n_calib={calibrator.n_calib_}, "
+              f"n_repeats={calibrator.n_repeats_}, single_fold={calibrator.single_fold_used_}):")
+        print(f"Coverage: {coverage:.4f}")
+        print(f"Avg Width: {width:.4f}")
+        print(f"Median Width: {median_width:.4f}")
+
+        folder_path = './results/' + setting + '/'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        with open("result_calibration_meld_hpd.txt", 'a') as f:
+            f.write(f"{setting} (MELD-HPD)\n")
+            f.write(f"Coverage: {coverage:.4f}, Width: {width:.4f}, Median Width: {median_width:.4f}, "
+                    f"c: {calibrator.c_:.4f}, rho: {calibrator.rho_:.4f}, "
+                    f"theta: {calibrator.theta_:.4f}, rho_hat_closed: {calibrator.rho_hat_closed_:.4f}, "
+                    f"mog_decompose: {calibrator.mog_decompose}, "
+                    f"t_hat: {calibrator.t_hat:.4f}, avg_segments: {avg_segments:.3f}, "
+                    f"frac_multi: {frac_multi:.4f}, frac_empty: {frac_empty:.4f}, "
+                    f"single_fold: {calibrator.single_fold_used_}\n\n")
+
+        np.save(folder_path + 'intervals_meld_hpd.npy', np.array(intervals, dtype=object), allow_pickle=True)
+
+        # Diagnostics: the (c, rho) LOG-DENSITY surface (the selection objective), a rho-marginal
+        # of it, the (c*,rho*,theta*) tune width, the closed-form rho anchor, and MoG-HPD, STA-HPD
+        # and SETA-HPD on the identical cal/test split -- the three methods MELD-HPD is measured
+        # against.
+        try:
+            ls_keys = sorted(calibrator.logscore_surface_.keys())
+            diag_c_edge = calibrator.c_ in (calibrator.c_grid[0], calibrator.c_grid[-1])
+            diag_rho_edge = calibrator.mog_decompose and \
+                calibrator.rho_ in (calibrator.rho_grid[0], calibrator.rho_grid[-1])
+            diag_th_edge = calibrator.theta_ in (calibrator.theta_grid[0], calibrator.theta_grid[-1])
+            diag_is_boundary = diag_c_edge or diag_rho_edge or diag_th_edge
+            ls_vals = [calibrator.logscore_surface_[k] for k in ls_keys]
+            diag_ls_str = ", ".join(f"({c:g},{rho:g}):{calibrator.logscore_surface_[(c, rho)]:.4f}"
+                                    for c, rho in ls_keys)
+            # rho-marginal of the log-density: best (max) mean log-density over c, per rho.
+            diag_rho_marg = {}
+            for (c, rho), v in calibrator.logscore_surface_.items():
+                diag_rho_marg[rho] = max(diag_rho_marg.get(rho, -np.inf), v)
+            diag_rho_marg_str = ", ".join(f"{rho:g}:{diag_rho_marg[rho]:.4f}"
+                                          for rho in sorted(diag_rho_marg))
+            diag_votes = sorted(calibrator.vote_counts_.items(), key=lambda kv: -kv[1])
+            diag_votes_str = ", ".join(f"({c:g},{rho:g},{th:g}):{v}" for (c, rho, th), v in diag_votes)
+
+            ref_hpd = MoG_HPD_Calibrator(alpha=0.1)
+            ref_hpd.fit(cal_trues, cal_mu, cal_sigma, cal_pi)
+            ref_intervals = ref_hpd.predict(test_mu, test_sigma, test_pi)
+            ref_widths = np.array([seg[:, 1].sum() - seg[:, 0].sum() if len(seg) else 0.0
+                                   for seg in ref_intervals])
+            ref_covered = np.array([bool(len(seg)) and bool(np.any((seg[:, 0] <= y) & (y <= seg[:, 1])))
+                                     for y, seg in zip(test_trues_np, ref_intervals)])
+            ref_width = float(ref_widths.mean())
+            ref_coverage = float(ref_covered.mean())
+
+            ref_sta = STAHPDCalibrator(alpha=0.1, verbose=False)
+            ref_sta.fit(cal_trues, cal_mu, cal_sigma, cal_pi)
+            sta_intervals = ref_sta.predict(test_mu, test_sigma, test_pi)
+            sta_widths = np.array([seg[:, 1].sum() - seg[:, 0].sum() if len(seg) else 0.0
+                                   for seg in sta_intervals])
+            sta_covered = np.array([bool(len(seg)) and bool(np.any((seg[:, 0] <= y) & (y <= seg[:, 1])))
+                                     for y, seg in zip(test_trues_np, sta_intervals)])
+            sta_width = float(sta_widths.mean())
+            sta_coverage = float(sta_covered.mean())
+
+            # SETA-HPD (width-selected rho) on the same split -- the method MELD-HPD's density-based
+            # selection is meant to improve on.
+            ref_seta = SETAHPDCalibrator(alpha=0.1, verbose=False)
+            ref_seta.fit(cal_trues, cal_mu, cal_sigma, cal_pi)
+            seta_intervals = ref_seta.predict(test_mu, test_sigma, test_pi)
+            seta_widths = np.array([seg[:, 1].sum() - seg[:, 0].sum() if len(seg) else 0.0
+                                    for seg in seta_intervals])
+            seta_covered = np.array([bool(len(seg)) and bool(np.any((seg[:, 0] <= y) & (y <= seg[:, 1])))
+                                      for y, seg in zip(test_trues_np, seta_intervals)])
+            seta_width = float(seta_widths.mean())
+            seta_coverage = float(seta_covered.mean())
+
+            print("\n" + "="*40)
+            print("--- MELD-HPD Diagnostics ---")
+            print(f"[1] (c,rho) log-density surface ({len(ls_keys)} cells, mog_decompose={calibrator.mog_decompose}, "
+                  f"{'SINGLE-FOLD (in-sample)' if calibrator.single_fold_used_ else f'{calibrator.n_repeats_} tune/calib splits'}): "
+                  f"chosen (c*,rho*,theta*)=({calibrator.c_:.4f},{calibrator.rho_:.4f},{calibrator.theta_:.4f}) "
+                  f"({'BOUNDARY' if diag_is_boundary else 'interior'} solution), rho_hat_closed={calibrator.rho_hat_closed_:.4f}, "
+                  f"tune width@best={calibrator.tune_width_at_best_:.4f}, "
+                  f"log-density range [{min(ls_vals):.4f}, {max(ls_vals):.4f}]")
+            print(f"    vote spread (cell:n_splits): {diag_votes_str}")
+            print(f"    rho-marginal (best mean log-density over c | rho): {diag_rho_marg_str}")
+            print(f"    full (c,rho) log-density surface: {diag_ls_str}")
+            print(f"[2] Same-split references: MoG-HPD coverage={ref_coverage:.4f} width={ref_width:.4f} "
+                  f"({100.0 * (width - ref_width) / ref_width:+.1f}% vs MELD); "
+                  f"STA-HPD coverage={sta_coverage:.4f} width={sta_width:.4f} "
+                  f"({100.0 * (width - sta_width) / sta_width:+.1f}% vs MELD); "
+                  f"SETA-HPD coverage={seta_coverage:.4f} width={seta_width:.4f} "
+                  f"({100.0 * (width - seta_width) / seta_width:+.1f}% vs MELD)  | "
+                  f"MELD-HPD (this run): coverage={coverage:.4f}, avg width={width:.4f}")
+            print("="*40 + "\n")
+
+            with open("result_calibration_meld_hpd.txt", 'a') as f:
+                f.write(f"{setting} (MELD-HPD Diagnostics)\n")
+                f.write(f"boundary={diag_is_boundary}, chosen_c={calibrator.c_:.4f}, "
+                        f"chosen_rho={calibrator.rho_:.4f}, chosen_theta={calibrator.theta_:.4f}, "
+                        f"rho_hat_closed={calibrator.rho_hat_closed_:.4f}, "
+                        f"mog_decompose={calibrator.mog_decompose}, "
+                        f"single_fold={calibrator.single_fold_used_}, "
+                        f"ref_mog_hpd: coverage={ref_coverage:.4f} width={ref_width:.4f} | "
+                        f"ref_sta_hpd: coverage={sta_coverage:.4f} width={sta_width:.4f} | "
+                        f"ref_seta_hpd: coverage={seta_coverage:.4f} width={seta_width:.4f} | "
+                        f"meld_hpd: coverage={coverage:.4f} width={width:.4f}\n")
+                f.write(f"votes (c,rho,theta):n_splits: {diag_votes_str}\n")
+                f.write(f"rho_marginal (rho:best_mean_logdensity): {diag_rho_marg_str}\n")
+                f.write(f"logdensity_surface ((c,rho):mean_logdensity): {diag_ls_str}\n\n")
+        except Exception as e:
+            print(f"[MELD-HPD Diagnostics] skipped due to error: {e}")
+
+        return coverage, width
+
+    def calibrate_ease_hpd(self, setting):
+        """
+        EASE-HPD: same (c, rho, theta) surrogate family as SETA-HPD, plus a fourth exponent phi
+        tilting the threshold field by the point's EPISTEMIC SHARE E(x)/(A(x)+E(x)) (deviation
+        from its calibration-set mean), instead of only the total scale sigma_tot that theta
+        already sees. Selected by the same width-argmin + majority-vote machinery as STA-HPD /
+        SETA-HPD (NOT a proper scoring rule like MELD-HPD), so phi=0 is always on the grid and
+        EASE-HPD's tuning objective can never be worse than SETA-HPD's. Runs independently of (and
+        alongside) calibrate_sta_hpd / calibrate_seta_hpd / calibrate_meld_hpd -- separate
+        calibrator, separate result file. rho and phi only have effect for K>1.
+        """
+        path = os.path.join(self.args.checkpoints, setting, 'checkpoint.pth')
+        if os.path.exists(path):
+            self.model.load_state_dict(torch.load(path))
+        self.model.eval()
+
+        cal_data, cal_loader = self._get_data(flag='val')
+        test_data, test_loader = self._get_data(flag='test')
+
+        cal_mu, cal_sigma, cal_pi, cal_trues = self._collect_mog_predictions(cal_loader)
+        test_mu, test_sigma, test_pi, test_trues = self._collect_mog_predictions(test_loader)
+
+        mog_decompose = getattr(self.args, 'ease_hpd_mog_decompose', True)
+        calibrator = EASEHPDCalibrator(alpha=0.1, mog_decompose=mog_decompose)
+        calibrator.fit(cal_trues, cal_mu, cal_sigma, cal_pi)
+        intervals = calibrator.predict(test_mu, test_sigma, test_pi)  # list of [m_i,2] arrays
+
+        test_trues_np = test_trues.squeeze().numpy()
+
+        widths = np.array([seg[:, 1].sum() - seg[:, 0].sum() if len(seg) else 0.0 for seg in intervals])
+        covered = np.array([bool(len(seg)) and bool(np.any((seg[:, 0] <= y) & (y <= seg[:, 1])))
+                             for y, seg in zip(test_trues_np, intervals)])
+        n_segments = np.array([len(seg) for seg in intervals])
+
+        coverage = covered.mean()
+        width = widths.mean()
+        median_width = np.median(widths)
+        frac_multi = np.mean(n_segments > 1)
+        frac_empty = np.mean(n_segments == 0)
+        avg_segments = n_segments.mean()
+
+        # Header is "EASE-HPD Results" -- shares no contiguous substring with "MoG-HPD",
+        # "STA-HPD", "SETA-HPD", or "MELD-HPD", so the run_tabular_regression.sh parser patterns
+        # cannot cross-match this method.
+        print(f"\nEASE-HPD Results (c*={calibrator.c_:.4f}, rho*={calibrator.rho_:.4f}, "
+              f"theta*={calibrator.theta_:.4f}, phi*={calibrator.phi_:.4f}, "
+              f"s_bar={calibrator.s_bar_:.4f}, mog_decompose={calibrator.mog_decompose}, "
+              f"tune width@best={calibrator.tune_width_at_best_:.4f}, t_hat={calibrator.t_hat:.4f}, "
+              f"G={calibrator.G_:.6g}, avg segments={avg_segments:.3f}, "
+              f"frac multi-segment={frac_multi:.4f}, frac empty={frac_empty:.4f}, "
+              f"n_tune={calibrator.n_tune_}, n_calib={calibrator.n_calib_}, "
+              f"n_repeats={calibrator.n_repeats_}, single_fold={calibrator.single_fold_used_}):")
+        print(f"Coverage: {coverage:.4f}")
+        print(f"Avg Width: {width:.4f}")
+        print(f"Median Width: {median_width:.4f}")
+
+        folder_path = './results/' + setting + '/'
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        with open("result_calibration_ease_hpd.txt", 'a') as f:
+            f.write(f"{setting} (EASE-HPD)\n")
+            f.write(f"Coverage: {coverage:.4f}, Width: {width:.4f}, Median Width: {median_width:.4f}, "
+                    f"c: {calibrator.c_:.4f}, rho: {calibrator.rho_:.4f}, "
+                    f"theta: {calibrator.theta_:.4f}, phi: {calibrator.phi_:.4f}, "
+                    f"s_bar: {calibrator.s_bar_:.4f}, mog_decompose: {calibrator.mog_decompose}, "
+                    f"t_hat: {calibrator.t_hat:.4f}, avg_segments: {avg_segments:.3f}, "
+                    f"frac_multi: {frac_multi:.4f}, frac_empty: {frac_empty:.4f}, "
+                    f"single_fold: {calibrator.single_fold_used_}\n\n")
+
+        np.save(folder_path + 'intervals_ease_hpd.npy', np.array(intervals, dtype=object), allow_pickle=True)
+
+        # Diagnostics: the chosen (c,rho,theta,phi) cell, a phi-marginal of tune width (does the
+        # epistemic-share knob carry signal at all?), and MoG-HPD, STA-HPD and SETA-HPD on the
+        # identical cal/test split -- the three methods EASE-HPD is measured against (SETA-HPD is
+        # the phi=0 slice EASE-HPD must, by construction, never lose to on the tuning objective).
+        try:
+            diag_c_edge = calibrator.c_ in (calibrator.c_grid[0], calibrator.c_grid[-1])
+            diag_rho_edge = calibrator.mog_decompose and \
+                calibrator.rho_ in (calibrator.rho_grid[0], calibrator.rho_grid[-1])
+            diag_th_edge = calibrator.theta_ in (calibrator.theta_grid[0], calibrator.theta_grid[-1])
+            diag_phi_edge = calibrator.phi_active_ and \
+                calibrator.phi_ in (calibrator.phi_grid[0], calibrator.phi_grid[-1])
+            diag_is_boundary = diag_c_edge or diag_rho_edge or diag_th_edge or diag_phi_edge
+            diag_widths = list(calibrator.tuning_widths_.values())
+            diag_phi_marg = {}
+            for (c, rho, th, ph), w in calibrator.tuning_widths_.items():
+                diag_phi_marg[ph] = min(diag_phi_marg.get(ph, np.inf), w)
+            diag_phi_marg_str = ", ".join(f"{ph:g}:{diag_phi_marg[ph]:.4f}"
+                                          for ph in sorted(diag_phi_marg))
+            diag_votes = sorted(calibrator.vote_counts_.items(), key=lambda kv: -kv[1])[:5]
+            diag_votes_str = ", ".join(f"({c:g},{rho:g},{th:g},{ph:g}):{v}"
+                                       for (c, rho, th, ph), v in diag_votes)
+
+            ref_hpd = MoG_HPD_Calibrator(alpha=0.1)
+            ref_hpd.fit(cal_trues, cal_mu, cal_sigma, cal_pi)
+            ref_intervals = ref_hpd.predict(test_mu, test_sigma, test_pi)
+            ref_widths = np.array([seg[:, 1].sum() - seg[:, 0].sum() if len(seg) else 0.0
+                                   for seg in ref_intervals])
+            ref_covered = np.array([bool(len(seg)) and bool(np.any((seg[:, 0] <= y) & (y <= seg[:, 1])))
+                                     for y, seg in zip(test_trues_np, ref_intervals)])
+            ref_width = float(ref_widths.mean())
+            ref_coverage = float(ref_covered.mean())
+
+            ref_sta = STAHPDCalibrator(alpha=0.1, verbose=False)
+            ref_sta.fit(cal_trues, cal_mu, cal_sigma, cal_pi)
+            sta_intervals = ref_sta.predict(test_mu, test_sigma, test_pi)
+            sta_widths = np.array([seg[:, 1].sum() - seg[:, 0].sum() if len(seg) else 0.0
+                                   for seg in sta_intervals])
+            sta_covered = np.array([bool(len(seg)) and bool(np.any((seg[:, 0] <= y) & (y <= seg[:, 1])))
+                                     for y, seg in zip(test_trues_np, sta_intervals)])
+            sta_width = float(sta_widths.mean())
+            sta_coverage = float(sta_covered.mean())
+
+            # SETA-HPD (phi=0 slice) on the same split -- the method EASE-HPD's epistemic-share
+            # field is meant to improve on, and can never lose to on the tuning objective.
+            ref_seta = SETAHPDCalibrator(alpha=0.1, verbose=False)
+            ref_seta.fit(cal_trues, cal_mu, cal_sigma, cal_pi)
+            seta_intervals = ref_seta.predict(test_mu, test_sigma, test_pi)
+            seta_widths = np.array([seg[:, 1].sum() - seg[:, 0].sum() if len(seg) else 0.0
+                                    for seg in seta_intervals])
+            seta_covered = np.array([bool(len(seg)) and bool(np.any((seg[:, 0] <= y) & (y <= seg[:, 1])))
+                                      for y, seg in zip(test_trues_np, seta_intervals)])
+            seta_width = float(seta_widths.mean())
+            seta_coverage = float(seta_covered.mean())
+
+            print("\n" + "="*40)
+            print("--- EASE-HPD Diagnostics ---")
+            print(f"[1] (c,rho,theta,phi) surface ({len(diag_widths)} cells, mog_decompose={calibrator.mog_decompose}, "
+                  f"phi_active={calibrator.phi_active_}, "
+                  f"{'SINGLE-FOLD (in-sample)' if calibrator.single_fold_used_ else f'{calibrator.n_repeats_} tune/calib splits'}): "
+                  f"chosen (c*,rho*,theta*,phi*)=({calibrator.c_:.4f},{calibrator.rho_:.4f},"
+                  f"{calibrator.theta_:.4f},{calibrator.phi_:.4f}) "
+                  f"({'BOUNDARY' if diag_is_boundary else 'interior'} solution), s_bar={calibrator.s_bar_:.4f}, "
+                  f"tune width@best={calibrator.tune_width_at_best_:.4f}, "
+                  f"width range [{min(diag_widths):.4f}, {max(diag_widths):.4f}]")
+            print(f"    top votes (cell:n_splits): {diag_votes_str}")
+            print(f"    phi-marginal (best tune width over c,rho,theta | phi): {diag_phi_marg_str}")
+            print(f"[2] Same-split references: MoG-HPD coverage={ref_coverage:.4f} width={ref_width:.4f} "
+                  f"({100.0 * (width - ref_width) / ref_width:+.1f}% vs EASE); "
+                  f"STA-HPD coverage={sta_coverage:.4f} width={sta_width:.4f} "
+                  f"({100.0 * (width - sta_width) / sta_width:+.1f}% vs EASE); "
+                  f"SETA-HPD coverage={seta_coverage:.4f} width={seta_width:.4f} "
+                  f"({100.0 * (width - seta_width) / seta_width:+.1f}% vs EASE)  | "
+                  f"EASE-HPD (this run): coverage={coverage:.4f}, avg width={width:.4f}")
+            print("="*40 + "\n")
+
+            with open("result_calibration_ease_hpd.txt", 'a') as f:
+                f.write(f"{setting} (EASE-HPD Diagnostics)\n")
+                f.write(f"boundary={diag_is_boundary}, chosen_c={calibrator.c_:.4f}, "
+                        f"chosen_rho={calibrator.rho_:.4f}, chosen_theta={calibrator.theta_:.4f}, "
+                        f"chosen_phi={calibrator.phi_:.4f}, s_bar={calibrator.s_bar_:.4f}, "
+                        f"mog_decompose={calibrator.mog_decompose}, phi_active={calibrator.phi_active_}, "
+                        f"single_fold={calibrator.single_fold_used_}, "
+                        f"ref_mog_hpd: coverage={ref_coverage:.4f} width={ref_width:.4f} | "
+                        f"ref_sta_hpd: coverage={sta_coverage:.4f} width={sta_width:.4f} | "
+                        f"ref_seta_hpd: coverage={seta_coverage:.4f} width={seta_width:.4f} | "
+                        f"ease_hpd: coverage={coverage:.4f} width={width:.4f}\n")
+                f.write(f"top_votes (c,rho,theta,phi):n_splits: {diag_votes_str}\n")
+                f.write(f"phi_marginal (phi:best_tune_width): {diag_phi_marg_str}\n\n")
+        except Exception as e:
+            print(f"[EASE-HPD Diagnostics] skipped due to error: {e}")
 
         return coverage, width
 

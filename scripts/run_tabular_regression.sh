@@ -101,7 +101,7 @@ do
         --prob_expert --tau $tau --max_grad_norm 1.0 --load_balance_weight $load_balance_weight "${n_samples_args[@]}" \
         --use_reg_moecp --use_reg_moce --use_reg_cp_vs --use_reg_cp_aleatoric \
         --use_reg_cp_aleat_scale --use_reg_adaptive_variance \
-        --use_reg_mog_hpd --use_reg_sta_hpd --use_reg_seta_hpd \
+        --use_reg_mog_hpd --use_reg_sta_hpd --use_reg_seta_hpd --use_reg_meld_hpd --use_reg_ease_hpd \
         --use_reg_standard_cp --overwrite > "logs/tabular/${data}_MOG_seed${seed}.log" 2>&1 &
 
         # 3. Run MOGU with the specified calibration methods
@@ -113,7 +113,7 @@ do
         --prob_expert --unc_gating --tau $tau --max_grad_norm 1.0 --load_balance_weight $load_balance_weight "${n_samples_args[@]}" \
         --use_reg_moecp --use_reg_moce --use_reg_cp_vs --use_reg_cp_aleatoric \
         --use_reg_cp_aleat_scale --use_reg_adaptive_variance \
-        --use_reg_mog_hpd --use_reg_sta_hpd --use_reg_seta_hpd \
+        --use_reg_mog_hpd --use_reg_sta_hpd --use_reg_seta_hpd --use_reg_meld_hpd --use_reg_ease_hpd \
         --use_reg_standard_cp --overwrite > "logs/tabular/${data}_MOGU_seed${seed}.log" 2>&1 &
 
         # 4. Run CQR (true quantile-regression head + conformalized quantile regression calibration)
@@ -146,7 +146,7 @@ do
         --prob_expert --tau $tau --max_grad_norm 1.0 --load_balance_weight $load_balance_weight "${n_samples_args[@]}" \
         --use_reg_moecp --use_reg_moce --use_reg_cp_vs --use_reg_cp_aleatoric \
         --use_reg_cp_aleat_scale --use_reg_adaptive_variance \
-        --use_reg_mog_hpd --use_reg_sta_hpd --use_reg_seta_hpd \
+        --use_reg_mog_hpd --use_reg_sta_hpd --use_reg_seta_hpd --use_reg_meld_hpd --use_reg_ease_hpd \
         --use_reg_standard_cp --overwrite > "logs/tabular/${data}_MOG_ne1_seed${seed}.log" 2>&1 &
 
         wait
@@ -197,6 +197,12 @@ methods = {
     # 'STA-HPD Results' does not contain 'SETA-HPD Results', so the two never cross-match.
     'STA-HPD': r'STA-HPD Results',
     'SETA-HPD': r'SETA-HPD Results',
+    # 'MELD-HPD Results' shares no contiguous substring with 'MoG-HPD Results',
+    # 'STA-HPD Results', or 'SETA-HPD Results' (MELD is M-E-L-D), so it cross-matches none.
+    'MELD-HPD': r'MELD-HPD Results',
+    # 'EASE-HPD Results' shares no contiguous substring with any of the other HPD headers
+    # above (EASE is E-A-S-E), so it cross-matches none.
+    'EASE-HPD': r'EASE-HPD Results',
     'CQR': r'CQR Results:'
 }
 

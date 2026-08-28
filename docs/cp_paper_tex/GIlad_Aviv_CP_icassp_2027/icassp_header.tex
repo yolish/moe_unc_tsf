@@ -1,0 +1,82 @@
+\documentclass{article}
+\usepackage{spconf,amsmath,graphicx,hyperref}
+
+
+\usepackage{cite}
+\usepackage{hyperref}
+\usepackage{amsmath,amssymb,amsfonts}
+%\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\newcommand{\T}{{\scriptscriptstyle \top}}
+\usepackage{algorithm}
+\newcommand{\comment}[1]{}
+\usepackage{algpseudocode}
+\usepackage{multirow}
+\usepackage{booktabs}
+ \newcommand{\Var}{\mathrm{Var}}
+\usepackage{amsthm}
+  %  \ninept
+    
+\begin{document}
+
+\title{Instance-Dependent Conformal Prediction with Temporal Adaptation for Time-Series Forecasting}
+
+
+\author{\IEEEauthorblockN{Lior Frenkel}
+\IEEEauthorblockA{\textit{Bar-Ilan University}\\
+Ramat-Gan, Israel}
+%email address or ORCID}
+\and
+\IEEEauthorblockN{ Shlomo E. Chazan}
+\IEEEauthorblockA{\textit{Bar-Ilan University}\\
+Ramat-Gan, Israel }
+%email address or ORCID}
+\and
+\IEEEauthorblockN{Jacob Goldberger}
+\IEEEauthorblockA{\textit{Bar-Ilan University}\\
+Ramat-Gan, Israel }
+%\\jacob.goldberger@biu.ac.il}
+}
+
+
+\newtheorem{proposition}{Proposition}
+% Recommended for tables.
+
+
+
+
+\maketitle
+
+\begin{abstract}
+Time-series forecasting requires reliable uncertainty estimates for risk-aware decision making. 
+Although conformal prediction provides model-agnostic prediction intervals with finite-sample, distribution-free coverage guarantees under exchangeability, applying it to time-series data is challenging because temporal dependence and nonstationarity generally violate exchangeability.
+Existing conformal approaches for time series primarily adapt calibration to temporal distribution changes, while the resulting intervals may not adequately reflect the difficulty of individual forecast instances. We propose a conformal framework that combines two complementary forms of adaptation: instance-level adaptation, obtained by normalizing residuals using model-predicted uncertainty, and temporal adaptation, obtained through a continuously updated conformal calibration window. We instantiate the framework using probabilistic forecasting models, including mixture-of-Gaussian experts, whose predictive variance provides an input-dependent uncertainty estimate.
+Experiments on standard multivariate time-series benchmarks show that the proposed approach maintains empirical coverage close to the target level while reducing average prediction-interval width by approximately 40–60\% relative to current methods.
+
+
+\end{abstract}
+
+\begin{keywords}
+time-series, mixture-of-experts, confidence interval, conformal prediction
+\end{keywords}
+
+
+\input{introduction}
+\input{method}
+\input{experiments}
+\input{conclusions}
+
+
+\small
+\bibliographystyle{IEEEbib}
+\bibliography{paper}
+
+
+\end{document}

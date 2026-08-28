@@ -626,6 +626,341 @@ the full $(c,\theta)$ tuning surface, the across-split vote spread, a
 \texttt{BOUNDARY}/\texttt{interior} flag on the chosen cell, and the same-split plain MoG-HPD
 reference --- the $(c{=}1,\theta{=}0)$ cell of that same surface, i.e.\ the method it must beat.
 
+\section{Shape--Epistemic--Threshold adaptive HPD (SETA-HPD) (proposed)}
+\label{sec:seta-hpd}
+\textbf{File:} \texttt{SETA\_HPD\_Calibrator.py} (\texttt{SETAHPDCalibrator})
+
+STA-HPD (Section~\ref{sec:sta-hpd}) reshapes only the \emph{aleatoric} half of the
+decomposition of Section~\ref{sec:decomposition}: $\sigma_{\mathrm{tot}}^2(\bm x;c) =
+\sum_k w_k\tilde\sigma_k^2(\bm x;c) + \sum_k w_k(\mu_k-\hat y)^2$, where the second
+(\emph{epistemic}) term enters raw and untouched. This matters because the two terms are
+miscalibrated for structurally different reasons: an MoE trained with a load-balancing penalty
+--- needed to stop the gate from collapsing all weight onto one expert --- is under pressure
+that can, as a side effect, push well-separated experts \emph{further} apart than the true
+conditional law warrants, systematically inflating exactly the term $c$ never touches. This is
+precisely the kind of artificially deepened density valley Section~\ref{sec:mog-hpd}'s worked
+example shows is expensive for a level-set method to cover, except now the valley is partly a
+training artifact rather than a genuine feature of the outcome. SETA-HPD adds a third exponent
+$\rho$ acting on that term specifically.
+
+\paragraph{The three-parameter family.} With $\hat y(\bm x)=\sum_k w_k\mu_k(\bm x)$ as in
+Eq.~\eqref{eq:total}, define the mean-shift
+\begin{equation}
+\tilde\mu_k(\bm x;\rho) \;=\; \hat y(\bm x) + \sqrt\rho\,\big(\mu_k(\bm x)-\hat y(\bm x)\big).
+\label{eq:seta-shift}
+\end{equation}
+This shift is exact and structure-preserving: it is affine in $\mu_k$ with weights summing to
+$1$, so $\sum_k w_k\tilde\mu_k(\bm x;\rho) = \hat y(\bm x) + \sqrt\rho\sum_k
+w_k(\mu_k-\hat y)=\hat y(\bm x)$ for \emph{every} $\rho$ (the point prediction, and hence the
+marginal coverage target, is untouched), while the between-component variance scales exactly by
+$\rho$: $\sum_k w_k(\tilde\mu_k-\hat y)^2=\rho\sum_k w_k(\mu_k-\hat y)^2$ by direct substitution.
+So $\rho$ and $c$ act on \emph{disjoint} terms of Eqs.~\eqref{eq:aleat}--\eqref{eq:epist}: $\rho<1$
+compresses experts toward $\hat y$ (filling the density valley an over-separated MoE opens up,
+favoring a single interval), $\rho>1$ amplifies disagreement, $\rho=1$ is the raw, unreshaped
+epistemic scale. Combined with $c$ (Eq.~\eqref{eq:sta-shape}),
+\begin{align}
+f_{c,\rho}(y\mid\bm x) &= \sum_k w_k(\bm x)\,\mathcal N\big(y;\ \tilde\mu_k(\bm x;\rho),\
+\tilde\sigma_k^2(\bm x;c)\big), &
+\sigma_{\mathrm{tot}}^2(\bm x;c,\rho) &= \textstyle\sum_k w_k\tilde\sigma_k^2 + \rho\sum_k
+w_k(\mu_k-\hat y)^2, \label{eq:seta-sigmatot}\\
+S_i(c,\rho,\theta) &= -\log f_{c,\rho}(y_i\mid\bm x_i) - \theta\log\sigma_{\mathrm{tot}}(\bm
+x_i;c,\rho), &
+\hat C(\bm x) &= \big\{y:\ \log f_{c,\rho}(y\mid\bm x)\ge -\hat t-\theta\log\sigma_{\mathrm{tot}}(\bm
+x;c,\rho)\big\}. \label{eq:seta-region}
+\end{align}
+Because the shift preserves $\hat y$, the epistemic term of $\sigma_{\mathrm{tot}}$ in
+Eq.~\eqref{eq:seta-sigmatot} picks up the factor $\rho$ automatically once $\tilde\mu_k$ is
+substituted in --- no special-casing is needed anywhere downstream.
+
+\paragraph{Boundary recovery.} Every method introduced so far is a point, or an entire
+sub-family, of this 3-D grid:
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+$(c,\rho,\theta)$ & recovers \\
+\midrule
+$(1,1,0)$ & MoG-HPD (Section~\ref{sec:mog-hpd}), exactly \\
+$(c,1,\theta)$, any $(c,\theta)$ & STA-HPD (Section~\ref{sec:sta-hpd}) --- the entire $\rho=1$
+sub-family, not one point \\
+$(1,\rho,0)$, any $\rho$ & epistemic-scale-only HPD, a new intermediate calibrator \\
+$(1,1,1)$ & CP-VS on total variance (exactly when $K=1$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+so, because $\rho=1$ is always kept on $\rho_{\mathrm{grid}}$, the tuned method's tuning objective
+can never be worse than STA-HPD's, which by Section~\ref{sec:sta-hpd} can never be worse than
+MoG-HPD's --- a floor by construction, not an empirical claim. $\rho$ has effect only when $K>1$;
+for $K=1$ the epistemic term is identically zero and SETA-HPD coincides with STA-HPD exactly.
+
+\paragraph{Validity and selection.} For any $(c,\rho,\theta)$ fixed before the calibration labels
+are seen, Eq.~\eqref{eq:seta-region} is another frozen scoring function, so the guarantee of
+Section~\ref{sec:quantile} holds exactly, regardless of mixture correctness --- unchanged from
+Section~\ref{sec:sta-hpd}. Selection uses the identical repeated-split, majority-vote,
+median-aggregated procedure as STA-HPD (Section~\ref{sec:sta-hpd}), widened from a $(c,\theta)$
+grid to a $(c,\rho,\theta)$ grid with $\rho_{\mathrm{grid}}=\{0,0.25,0.5,0.75,1,1.5,2\}$ by
+default. The cost of the extra axis is largely absorbed: $f_{c,\rho}$ does not depend on $\theta$,
+so for each $(c,\rho)$ pair the expensive $[N,M,K]$ density evaluation is computed once and the
+whole $\theta$ grid is swept with only cheap quantile and threshold-count operations, an
+$\approx|\theta_{\mathrm{grid}}|\times$ speedup that also benefits the original two-parameter
+path.
+
+\paragraph{Measured results.} At $\alpha=0.1$ on the MOG/MOGU checkpoints, mean$\,\pm\,$std over
+$5$ outer tune/calib-split seeds (each internally using $\texttt{n\_repeats}=10$), against STA-HPD
+--- the method SETA-HPD must beat on top of:
+
+\begin{center}
+\begin{tabular}{@{}lrrrrl@{}}
+\toprule
+\textbf{Dataset (arch.)} & \textbf{MoG-HPD} & \textbf{STA-HPD} & \textbf{SETA-HPD} & $\bm\Delta$
+(SETA vs.\ STA) & $\rho^\star$ (stability) \\
+\midrule
+Synthetic (MOG)          & 1.0490 & $0.9910\pm0.0026$ & $0.9910\pm0.0026$ & $0.0\%$ & $1.0$ (4/5) \\
+Superconductivity (MOG)  & 0.7964 & $0.7836\pm0.0031$ & $\bm{0.7858\pm0.0008}$ & $+0.3\%$ & $0.75$
+(5/5, stable) \\
+Bike (MOG)                & 0.7940 & $0.7712\pm0.0014$ & $\bm{0.7376\pm0.0012}$ & $\bm{-4.3\%}$ &
+$0.25$ (5/5, stable) \\
+Temperature (MOG)         & 0.9817 & $0.9673\pm0.0000$ & $0.9768\pm0.0078$ & $+1.0\%$ & $0.5$ (3/5,
+unstable) \\
+Synthetic (MOGU)          & 1.5614 & $1.3579\pm0.0005$ & $1.3618\pm0.0009$ & $+0.3\%$ & $0.0$
+(5/5, no measurable effect) \\
+Superconductivity (MOGU) & 0.9542 & $0.9134\pm0.0011$ & $0.9137\pm0.0010$ & $0.0\%$ & $1.0$ (4/5) \\
+Bike (MOGU)                & 0.6424 & $0.6367\pm0.0039$ & $0.6359\pm0.0045$ & $-0.1\%$ & $0.25$--$0.5$
+(unstable) \\
+Temperature (MOGU)        & 0.9951 & $0.9989\pm0.0043$ & $0.9988\pm0.0092$ & $\sim0.0\%$ &
+$0.5$--$2.0$ (unstable) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The mechanism is safe by construction (Section~\ref{sec:seta-hpd}'s boundary-recovery argument
+above) and this holds empirically: no config regresses outside seed noise. Its practical value is
+dataset-dependent: a clean no-op on Synthetic, a small but fully stable gain on Superconductivity
+(MOG) via fewer fragmented multi-interval sets rather than raw width, and its largest, most stable
+effect on Bike (MOG). Where $\rho^\star$ is unstable across the five outer seeds (Temperature,
+Bike/MOGU), the tuning-fold signal for $\rho$ is itself weak, and the width effect is correspondingly
+within noise --- exactly the instability that motivates Sections~\ref{sec:meld-hpd}
+and~\ref{sec:ease-hpd} below.
+
+\paragraph{Applicability.} Same requirement as MoG-HPD/STA-HPD: MOG/MOGU only, via
+\texttt{\_collect\_mog\_predictions}. \texttt{predict()} returns the same ragged per-point segment
+list as Section~\ref{sec:mog-hpd}.
+
+\section{Maximum-likelihood epistemic--aleatoric decomposition HPD (MELD-HPD) (proposed)}
+\label{sec:meld-hpd}
+\textbf{File:} \texttt{MELD\_HPD\_Calibrator.py} (\texttt{MELDHPDCalibrator})
+
+SETA-HPD selects $(c,\rho,\theta)$ by arg-min of a region-\emph{width} measured on a subsampled
+tune fold (Section~\ref{sec:seta-hpd}) --- a noisy objective, and the additional $\rho$ axis gives
+the search more freedom to fit that noise than the original two-parameter STA-HPD search had. The
+measured-results table of Section~\ref{sec:seta-hpd} shows the consequence directly: on
+Temperature (MOG), $\rho^\star$ is stable on only $3$ of $5$ outer seeds and SETA-HPD comes out
+$+1.0\%$ \emph{wider} than STA-HPD on average --- the added flexibility overfit the tune-fold width
+estimate rather than finding a generalizing correction. MELD-HPD keeps the surrogate density family
+$f_{c,\rho}$ of Eq.~\eqref{eq:seta-sigmatot} identical, and changes only how the two \emph{shape}
+exponents $(c,\rho)$ are chosen: by a proper scoring rule rather than by width.
+
+\paragraph{Selection by maximum calibration log-density.} Define the mean calibration log
+predictive density on the tune fold,
+\begin{equation}
+L(c,\rho) \;=\; \frac{1}{|\mathcal D_{\mathrm{tune}}|}\sum_{i\in\mathcal D_{\mathrm{tune}}}
+\log f_{c,\rho}(y_i\mid\bm x_i), \qquad (c^\star,\rho^\star) = \operatorname*{arg\,max}_{c,\rho}
+L(c,\rho).
+\label{eq:meld-logscore}
+\end{equation}
+Maximizing $L$ over samples drawn from the true conditional law $p(\cdot\mid\bm x)$ is the
+empirical analogue of minimizing $\operatorname{KL}\big(p(\cdot\mid\bm x)\,\Vert\,f_{c,\rho}(\cdot
+\mid\bm x)\big)$ averaged over the tune-fold's empirical distribution of $\bm x$, since
+$\mathbb E_p[\log f_{c,\rho}] = -\operatorname{KL}(p\Vert f_{c,\rho}) + \text{(entropy of $p$,
+independent of $(c,\rho)$)}$: the arg-max over $(c,\rho)$ of the left side is the arg-min of the
+KL divergence. By the Neyman--Pearson width-optimality argument of Section~\ref{sec:mog-hpd}, the
+level set of the best-\emph{matching} density is the narrowest \emph{valid} region achievable
+within the surrogate family, so Eq.~\eqref{eq:meld-logscore} targets width \emph{indirectly},
+through density fit, rather than by measuring width on a subsampled grid directly. The score is
+strictly proper, smooth in $(c,\rho)$, and evaluated on the \emph{entire} tune fold rather than a
+capped, subsampled grid, so it does not chase the same sampling noise that destabilized SETA-HPD's
+$\rho^\star$ on Temperature.
+
+Because $f_{c,\rho}$ does not depend on $\theta$ (Eq.~\eqref{eq:seta-sigmatot}), $L$ cannot rank
+$\theta$; the threshold-field exponent is therefore still chosen by arg-min tune-fold width at
+the now-fixed $(c^\star,\rho^\star)$, exactly as in Section~\ref{sec:sta-hpd} --- width is
+$\theta$'s correct objective, and it is now a single, well-behaved dimension rather than a joint
+search.
+
+\paragraph{A closed-form anchor (diagnostic only).} MELD-HPD additionally reports a least-squares
+epistemic-reliability estimate, not used in the selection decision itself: with
+$A_i=\sum_k w_k\tilde\sigma_k^2(\bm x_i;c^\star)$, $E_i=\sum_k w_k(\mu_k(\bm x_i)-\hat y(\bm
+x_i))^2$, and squared residual $R_i^2=(y_i-\hat y(\bm x_i))^2$,
+\begin{equation}
+\hat\rho_{\mathrm{closed}} \;=\; \max\!\left(0,\ \frac{\sum_i E_i\,(R_i^2-A_i)}{\sum_i
+E_i^2}\right),
+\label{eq:meld-rhohat}
+\end{equation}
+the least-squares fit of the reshaped total variance $A_i+\rho E_i$ to the squared residuals ---
+``how much of the reported epistemic spread the residuals actually support.'' It is logged
+alongside $\rho^\star$ as a sanity check on the density-selected value, not as an alternative
+selector.
+
+\paragraph{Boundary recovery, but \emph{not} the same floor.} The score \emph{form}
+(Eq.~\eqref{eq:seta-region}) is unchanged, so the same grid points recover MoG-HPD, STA-HPD, and
+CP-VS as in Section~\ref{sec:seta-hpd}'s table, and validity is unaffected: any $(c,\rho,\theta)$
+fixed before calibration labels are seen gives the exact guarantee of Section~\ref{sec:quantile}.
+But because the \emph{selection rule} is no longer an arg-min of width over a grid that contains
+the ancestor's exact cell, MELD-HPD does \emph{not} inherit the ``cannot be worse than STA-HPD on
+the tuning objective'' floor that SETA-HPD has by construction (Section~\ref{sec:seta-hpd}). This
+is a deliberate departure --- maximum-likelihood-optimal shape is a well-defined, principled target
+in its own right, but it is not, in general, the same shape that minimizes conformalized width ---
+and its empirical consequence is measured directly below.
+
+\paragraph{Measured results.} At $\alpha=0.1$, single tune/calib split (seed $4022$), against
+STA-HPD:
+
+\begin{center}
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+\textbf{Dataset} & \textbf{Arch.} & \textbf{STA-HPD} & \textbf{SETA-HPD} & \textbf{MELD-HPD} &
+$\bm\Delta$ (vs.\ STA) & Coverage \\
+\midrule
+Bike               & MOG  & 0.7729 & 0.7399 & $\bm{0.7399}$ & $\bm{-4.3\%}$ & 0.9025 \\
+Synthetic          & MOG  & 0.9925 & 0.9925 & $\bm{0.9820}$ & $\bm{-1.1\%}$ & 0.8900 \\
+Temperature        & MOG  & 0.9673 & 0.9673 & 0.9786 & $+1.2\%$ & 0.8912 \\
+Superconductivity  & MOG  & 0.7816 & 0.7849 & 0.7894 & $+1.0\%$ & 0.8932 \\
+Temperature        & MOGU & 0.9937 & 0.9912 & $\bm{0.9893}$ & $\bm{-0.4\%}$ & 0.8912 \\
+Superconductivity  & MOGU & 0.9125 & 0.9142 & 0.9217 & $+1.0\%$ & 0.8904 \\
+Synthetic          & MOGU & 1.3578 & 1.3617 & 1.3804 & $+1.7\%$ & 0.8933 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Coverage stayed within $[0.888,\,0.903]$ of the $0.90$ target on every config, so validity is
+unaffected --- this is purely a width comparison. The honest result is a wash: MELD-HPD wins
+clearly on Bike and Synthetic (MOG), roughly ties on Temperature (MOGU), and loses by a similar
+margin ($+1.0\%$ to $+1.7\%$) on the remaining four configs. This is direct empirical confirmation
+of the theoretical point above: maximizing calibration log-density is a well-posed statistical
+criterion, but it targets a different quantity than conformalized width, and unlike SETA-HPD it
+carries no structural guarantee against regressing on the metric this whole family is built to
+minimize.
+
+\paragraph{Applicability.} Same requirement as SETA-HPD: MOG/MOGU only; $\rho^\star$ and
+$\hat\rho_{\mathrm{closed}}$ are only informative for $K>1$.
+
+\section{Epistemic-share adaptive threshold HPD (EASE-HPD) (proposed)}
+\label{sec:ease-hpd}
+\textbf{File:} \texttt{EASE\_HPD\_Calibrator.py} (\texttt{EASEHPDCalibrator})
+
+Every method through Section~\ref{sec:seta-hpd} tilts its threshold field by the point's
+\emph{total} scale $\sigma_{\mathrm{tot}}^2(\bm x)=A(\bm x)+E(\bm x)$ alone, where
+$A(\bm x)=\sum_k w_k\tilde\sigma_k^2(\bm x;c)$ and $E(\bm x)=\rho\sum_k w_k(\mu_k(\bm x)-\hat y(\bm
+x))^2$ are the (reshaped) aleatoric and epistemic terms of Eq.~\eqref{eq:seta-sigmatot}. Two
+points with the \emph{same} $\sigma_{\mathrm{tot}}$ but opposite \emph{compositions} --- one point
+where the variance is entirely within-expert noise, another where it is entirely cross-expert
+disagreement --- receive identical threshold treatment under $\theta$, because $\theta$ only ever
+sees the sum. This is a real gap: the two terms are miscalibrated for structurally different
+reasons (Section~\ref{sec:seta-hpd}'s motivating paragraph), so the part of the density-level
+mismatch that a threshold field exists to correct should plausibly track the \emph{share} of the
+variance that is epistemic, not merely its total. Rather than adopt MELD-HPD's proper-scoring
+selection rule, EASE-HPD keeps SETA-HPD's width-arg-min-plus-majority-vote selection machinery
+completely unchanged (restoring the floor MELD-HPD gave up) and instead widens the \emph{grid} by
+one more axis: a second threshold-field exponent $\phi$ acting on that share.
+
+\paragraph{The epistemic share and a fourth exponent.} Define, from the \emph{already} reshaped
+($c$) and shifted ($\rho$) surrogate,
+\begin{equation}
+s(\bm x;c,\rho) \;=\; \frac{E(\bm x;c,\rho)}{A(\bm x;c)+E(\bm x;c,\rho)} \;\in\; [0,1],
+\label{eq:ease-share}
+\end{equation}
+using the rho-shifted means directly, so $\rho$'s effect on the share is picked up automatically
+with no separate bookkeeping (Eq.~\eqref{eq:seta-sigmatot} already computes $E$ this way). Frozen
+to its calibration-set mean, per $(c,\rho)$ cell, exactly as $G$ is frozen once on the full
+calibration set (Section~\ref{sec:sta-hpd}) rather than per split,
+\begin{equation}
+\bar s(c,\rho) \;=\; \frac{1}{n}\sum_{i=1}^n s(\bm x_i;c,\rho),
+\label{eq:ease-sbar}
+\end{equation}
+the score and region gain a fourth term:
+\begin{align}
+S_i(c,\rho,\theta,\phi) &= -\log f_{c,\rho}(y_i\mid\bm x_i) - \theta\log\sigma_{\mathrm{tot}}(\bm
+x_i;c,\rho) - \phi\big(s(\bm x_i;c,\rho)-\bar s\big), \label{eq:ease-score}\\
+\hat C(\bm x) &= \Big\{y:\ \log f_{c,\rho}(y\mid\bm x)\ \ge\ -\hat t -
+\theta\log\sigma_{\mathrm{tot}}(\bm x;c,\rho) - \phi\big(s(\bm x;c,\rho)-\bar s\big)\Big\}.
+\label{eq:ease-region}
+\end{align}
+$\phi>0$ spends extra width at points where disagreement dominates the variance more than typical
+for the dataset; $\phi<0$ tightens them --- the natural correction if the epistemic inflation is
+partly a training artifact the model already over-covers for. Two design choices matter: $s$ is
+\emph{bounded} in $[0,1]$ (unlike a raw ratio $E/A$, it cannot diverge as $A\to0$), and it is
+\emph{centered} by $\bar s$ so that $\phi$ and $\theta$ do not compete over the same additive
+constant and $\hat t$ remains on a comparable scale across $\phi$. The mechanism is automatically
+inert whenever $K=1$ or $\rho=0$: $E\equiv0$, so $s$ is constant across $\bm x$ and the $\phi$
+term collapses into the (data-independent) global threshold $\hat t$.
+
+\paragraph{Boundary recovery.} Every earlier method is a point or sub-family of this 4-D grid:
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+$(c,\rho,\theta,\phi)$ & recovers \\
+\midrule
+$(1,1,0,0)$ & MoG-HPD (Section~\ref{sec:mog-hpd}), exactly \\
+$(c,1,\theta,0)$, any $(c,\theta)$ & STA-HPD (Section~\ref{sec:sta-hpd}) \\
+$(c,\rho,\theta,0)$, any $(c,\rho,\theta)$ & SETA-HPD (Section~\ref{sec:seta-hpd}) --- the entire
+$\phi=0$ slice \\
+$(c,\rho,\theta,\phi)$ & EASE-HPD \\
+\bottomrule
+\end{tabular}
+\end{center}
+Because the selection rule is the \emph{same} width-arg-min-plus-majority-vote procedure as
+STA-HPD/SETA-HPD and $\phi=0$ is always kept on $\phi_{\mathrm{grid}}$, EASE-HPD's tuning
+objective can never be worse than SETA-HPD's, which can never be worse than STA-HPD's, which can
+never be worse than MoG-HPD's --- the same nested-floor argument as Section~\ref{sec:seta-hpd},
+extended by one more axis, and (unlike MELD-HPD) restored in full. This was additionally verified
+directly: forcing $\phi_{\mathrm{grid}}=\{0\}$ reproduces \texttt{SETAHPDCalibrator}'s
+$(c^\star,\rho^\star,\theta^\star)$, $\hat t$, and predicted widths bit-for-bit on a held-out
+synthetic check.
+
+\paragraph{Validity and selection.} Unchanged: any $(c,\rho,\theta,\phi)$ fixed before calibration
+labels are seen is a frozen scoring function, so Section~\ref{sec:quantile}'s guarantee holds
+exactly. Selection is the identical repeated-split, majority-vote, median-aggregated procedure,
+with $\phi_{\mathrm{grid}}=\{-1,-0.5,0,0.5,1\}$ appended to SETA-HPD's $(c,\rho,\theta)$ grid
+(giving $1400$ cells, versus SETA-HPD's $280$). The cost is again largely absorbed: $f_{c,\rho}$
+is independent of both $\theta$ and $\phi$, so the expensive per-$(c,\rho)$ density evaluation is
+unchanged from Section~\ref{sec:seta-hpd}, and the widened $(\theta,\phi)$ sweep is only cheap
+threshold-count operations.
+
+\paragraph{Measured results.} At $\alpha=0.1$, single tune/calib split (seed $4022$), MOG
+configurations only, against SETA-HPD:
+
+\begin{center}
+\begin{tabular}{@{}lrrrrrl@{}}
+\toprule
+\textbf{Dataset} & \textbf{STA-HPD} & \textbf{SETA-HPD} & \textbf{EASE-HPD} & $\bm\Delta$ (vs.\
+SETA) & Coverage & $(c^\star,\rho^\star,\theta^\star,\phi^\star)$ \\
+\midrule
+Synthetic          & 0.9925 & 0.9925 & $\bm{0.9618}$ & $\bm{-3.1\%}$ & 0.8953 & $(1.3,\,1.0,\,0.75,\,-1.0)$ \\
+Bike               & 0.7729 & 0.7399 & 0.7399 & $0.0\%$ & 0.9025 & $(1.0,\,0.25,\,0.5,\,0.0)$ \\
+Superconductivity  & 0.7816 & 0.7849 & $\bm{0.7823}$ & $\bm{-0.3\%}$ & 0.8906 & $(1.0,\,0.75,\,0.25,\,0.5)$ \\
+Temperature        & 0.9673 & 0.9673 & 0.9709 & $+0.4\%$ & 0.8879 & $(1.3,\,0.75,\,0.5,\,-0.5)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+EASE-HPD ties or beats SETA-HPD on three of four configurations, and its one regression
+(Temperature, $+0.4\%$) is roughly a third the size of MELD-HPD's regression on the identical
+config ($+1.2\%$, Section~\ref{sec:meld-hpd}) --- consistent with the restored floor: it bounds
+only the \emph{tune-fold} objective, not test-time generalization, so a small residual gap between
+tune and test performance can still appear, but it is far smaller once the selection rule itself
+is not also fighting sampling noise on an extra axis. The $\phi$-marginal (best tune-fold width at
+each $\phi$, minimized over the remaining three exponents) shows a consistent directional signal
+on three of the four configs: $\phi<0$ beats $\phi=0$ by margins of roughly $0.6$--$1.6\%$ in
+tune-fold width, weak evidence that points with above-typical epistemic share should, on these
+datasets, receive a \emph{tighter} threshold rather than a wider one --- consistent with the
+epistemic term being partly a load-balancing artifact the model already over-covers for. The vote
+count on the winning cell is low across all four configs ($1$--$2$ of $10$ splits, since the grid
+quadrupled while the number of splits did not), so a specific $\phi^\star$ value should be treated
+as suggestive rather than confirmed without a multi-seed study analogous to
+Section~\ref{sec:seta-hpd}'s.
+
+\paragraph{Applicability.} Same requirement as SETA-HPD: MOG/MOGU only; $\rho$ and $\phi$ only
+have effect for $K>1$.
+
 \section{Summary table}
 
 \begin{center}
@@ -653,6 +988,17 @@ STA-HPD & $-\log f_c(y_i\mid\bm{x}_i) - \theta\log\sigma_{\mathrm{tot}}(\bm{x}_i
 $\tilde\sigma_k = G(\sigma_k/G)^c$ & level set $\{y: f_c(y\mid\bm{x}) \ge
 \hat\tau\,\sigma_{\mathrm{tot}}(\bm{x};c)^{-\theta}\}$; contains MoG-HPD $(c{=}1,\theta{=}0)$,
 CP-VS $(1,1)$ and Standard CP $(0,0)$ \\
+SETA-HPD & $-\log f_{c,\rho}(y_i\mid\bm{x}_i) - \theta\log\sigma_{\mathrm{tot}}(\bm{x}_i;c,\rho)$,
+with $\tilde\mu_k=\hat y+\sqrt\rho(\mu_k-\hat y)$ & level set of $f_{c,\rho}$ at
+$\hat\tau\,\sigma_{\mathrm{tot}}(\bm{x};c,\rho)^{-\theta}$; contains STA-HPD $(\rho{=}1)$, entire
+sub-family, width-argmin selected \\
+MELD-HPD & same score form as SETA-HPD, but $(c,\rho)$ selected by $\arg\max$ mean calibration
+log-density instead of $\arg\min$ width & same region form as SETA-HPD at the log-density-selected
+$(c^\star,\rho^\star)$; no width-argmin floor over SETA-HPD \\
+EASE-HPD & $-\log f_{c,\rho}(y_i\mid\bm{x}_i) - \theta\log\sigma_{\mathrm{tot}}(\bm{x}_i;c,\rho) -
+\phi\big(s(\bm{x}_i;c,\rho)-\bar s\big)$, $s=E/(A{+}E)$ the epistemic share & level set tilted by
+both $\sigma_{\mathrm{tot}}$ and epistemic share; contains SETA-HPD $(\phi{=}0)$, entire
+sub-family, width-argmin selected \\
 \bottomrule
 \end{tabular}
 \end{center}

@@ -1,0 +1,171 @@
+\section{Instance- and time-adaptive Conformal Prediction for Time-Series Forecasting}
+In this section, we propose a conformal forecasting framework that adapts prediction intervals along two complementary dimensions:
+across forecast instances according to their predicted uncertainty, and over time according to changes in the residual distribution.
+
+
+Applying conformal prediction with the absolute-residual nonconformity score 
+$s(x,y)=|y-\hat{y}(x)|$  produces prediction intervals with a common width for all test instances   \cite{kato2023review,zhou2025conformal}.  A fixed-width prediction interval cannot adapt to sample-specific uncertainty and therefore fails to distinguish between cases where the regression prediction is more reliable and those where it is not. A standard way to obtain an instance-dependent calibrated interval is the Conformalized Quantile Regression (CQR) algorithm \cite{cqr2019}.
+The CQR algorithm is a calibrated regression method that directly finds a prediction interval without any parametric assumption of the prediction distribution.
+It consists of a Quantile Regression (QR) \cite{koenker1978regression} followed by a conformalization step.
+Although CQR can adapt to heteroscedasticity, training multiple conditional quantiles using the pinball loss may be sensitive to optimization, quantile crossing, and limited data. In this study, we investigate conformal calibration based on the learned conditional variance of the prediction.
+%A recent study showed that applying CP to a network trained with a Gaussian loss function  \cite{Nizhar2025} yields better results than CQR.
+
+
+
+%{\bf Mixture of Experts.} We next present a probabilistic MoE framework  that forms the basis of our instance-dependent calibration procedure. Modeling the time-series output by a single Gaussian can be too restrictive. Mixture-of-experts models are particularly suitable for time-series forecasting because temporal data often exhibit heterogeneous and time-varying dynamics. By allowing different experts to specialize in distinct forecasting regimes and combining them according to the current input, an MoE can provide both accurate predictions and instance-dependent uncertainty estimates. This makes it especially appropriate for constructing adaptive conformal prediction intervals whose widths reflect the difficulty of each forecast.
+%A MoE network \cite{jacobs1991adaptive} is  defined as follows:
+%\begin{equation}\label{eq:moe}
+ %   x  \rightarrow  ( w_i(x), \mu_i(x)), \hspace{1cm} i=1,...,k 
+%\end{equation} where $x$ denotes the input, $\mu_i$ is the prediction of the $i$-th expert and $w_i$ is the weight the model assigns to that expert's prediction. %The weights satisfy $w_i(x) \ge 0$ and $\sum_i w_i(x)=1$.
+%The model's output is then calculated as the weighted sum of these expert predictions:
+%%\begin{equation}\label{eq:moe_pred}     \hat{y}(x) = \sum w_i(x)\mu_i(x). \end{equation}
+%Typically, an MoE comprises a set of individual expert neural networks (often architecturally identical) that predict the outputs $\mu_i$, along with an additional gating neural module responsible for predicting the expert weights $w_i$. When combining CP with MoE, we can either obtain a fixed-width prediction interval  or we can apply CQR by calibrating an auxiliary QR network.  
+
+{\bf Mixture-of-Gaussian Experts (MoGE).}
+We next describe the probabilistic forecasting model used to obtain the input-dependent uncertainty estimate required by the proposed conformal framework.
+ Mixture-of-experts models are particularly suitable for time-series forecasting because temporal data often exhibit heterogeneous and time-varying dynamics.
+Each expert is associated with an input-dependent variance 
+$\sigma^2_i(x)$.
+This model assumes that the conditional distribution of the labels $y$ given $x$  is a mixture of Gaussians. 
+The MoGE model is defined as follows:  
+\begin{equation}\label{eq:mog}
+    x  \rightarrow  ( w_i(x), \mu_i(x), \sigma^2_i(x)), \hspace{1cm} i=1,...,k. 
+\end{equation}
+The MoGE model assumes the following MoG conditional density:
+\begin{equation}
+f(y|x) = \sum_i w_i(x) N ( y ; \mu_i(x), \sigma_i^2 (x)).
+\label{eq:mogdensity}
+\end{equation}
+The mean $\mu_i(x)$ represents the prediction of the $i$-th expert,  while the variance $\sigma_i^2(x)$ 
+represents its estimated conditional variance.
+Given  labeled training data $(x_1,y_1),...,(x_n,y_n)$,
+the network is trained by minimizing the negative log-likelihood loss function:
+\begin{equation}
+L(\theta) = -\sum_{t=1}^n \log (\sum_{i=1}^k w_i(x_t) \mathcal{N}(y_t; \mu_i(x_t),\sigma_i^2(x_t))
+\label{nll}
+\end{equation}
+ where $\theta$ denotes the set of network parameters.
+At inference time, the model prediction is given by:
+ \begin{equation}
+ \hat{y}(x) = E ( y|x) = \sum w_i(x)\mu_i(x).
+ \end{equation}
+The law of total variance implies that:
+\begin{equation}
+\Var(y|x)  = \sum w_i(x) \sigma_i^2(x) +  \sum w_i(x) (\hat{y}(x)-\mu_i(x))^2.
+\label{var-moge}
+\end{equation}
+The first term of (\ref{var-moge}) can be viewed as the within-expert uncertainty and the second term is the between-expert uncertainty. We denote them by
+\begin{align}
+\sigma_a^2(x) &= \sum_i w_i(x) \sigma_i^2(x), \label{eq:aleat}\\
+\sigma_e^2(x) &= \sum_i w_i(x) (\hat{y}(x)-\mu_i(x))^2, \label{eq:epist}
+\end{align}
+so that $\Var(y|x)=\sigma_a^2(x)+\sigma_e^2(x)$. The within-expert term is the average of the noise levels reported by the individual experts, weighted by the gating, and the between-expert term measures the disagreement between the expert predictions.
+
+
+%Mixture-of-Gaussians with Uncertainty-Based Gating (MoGU) is a variant of  MoGE  where the gating weights are directly extracted from experts' variances rather than an additional prediction task in the following way: \begin{equation}    w_i = \frac{ \sigma_i^{-2} }{ \sum_j \sigma_j^{-2}}.     \label{widef}
+%\end{equation}
+%In other words, each expert is weighted in inverse proportion to its variance (i.e., proportional to its precision).  Further substituting (\ref{widef}) into (\ref{var-moge}) we obtain the variance reported by the MoGU model: \begin{equation} \Var(y|x)  =  \frac{k}{\sum_j \sigma_j^{-2}(x)}  + \sum_i \frac{ \sigma_i^{-2}(x)}{\sum_j \sigma_j^{-2}(x)} (\hat{y}(x)-\mu_i(x))^2.
+%\label{var-mogu}
+%\end{equation}
+
+
+{\bf Calibrating a MoGE model. } 
+We next propose two variants of an instance-dependent CP procedure for MoGE regression models. The calibration is performed by multiplying the estimated conditional variance of the prediction by a scalar $q^2$ that is learned in a calibration phase. In the case of a single Gaussian this operation is well defined: multiplying the variance by $q^2$ transforms $\mathcal{N}(\mu(x),\sigma^2(x))$ into $\mathcal{N}(\mu(x),(q\sigma(x))^2)$, a distribution with the same mean and a calibrated variance. In the case of a MoG of the form (\ref{eq:mogdensity}), we can still form a CP procedure by calibrating the total variance (\ref{var-moge}).    
+
+Let $(x_1,y_1),...,(x_n,y_n)$ be a calibration set and let $s_i = |y_i-\hat{y}(x_i)|/\sigma(x_i)$ be the corresponding non-conformity scores.  The calibration value $q$ computed by the CP algorithm is the  $\frac{\lceil(n+1)(1-\alpha)\rceil}{n}$ quantile of $s_1,...,s_n$.
+ In other words, $q$ is the minimal value for which the true value lies within the prediction interval defined by $q$ for at least a  $(1 - \alpha)$ fraction of the calibration set.
+Given a test sample $(x,y)$, define $C_q(x)=[\hat{y}(x)-q\sigma(x),\hat{y}(x)+q\sigma(x)]$.
+  The CP theory \cite{vovk2005conformal}  guarantees that, under exchangeability, for  test data $(x,y)$, the value $q$ found by the CP algorithm satisfies:
+$1-\alpha \le p(y\in C_q(x))$. 
+
+In the nonstationary time-series setting considered here, exchangeability is generally violated; we therefore use rolling calibration and 
+Adaptive Conformal Inference (ACI) \cite{gibbs2021adaptive} to adapt the conformal threshold over time and evaluate coverage empirically.
+We maintain a sliding calibration window containing the most recent nonconformity scores, initialized using the validation set. Since the forecasting model is multivariate-input/multivariate-output, calibration is performed independently for each channel and forecast horizon. The calibration window is updated causally as the corresponding test residuals become available. To further account for temporal distribution shifts, we use ACI \cite{gibbs2021adaptive}, which updates the effective miscoverage level according 
+to the following recursion, with parameter $\delta$:  
+\begin{equation}   \alpha_{t+1} = \alpha_t + \delta\,(\alpha - \mathrm{err}_t),
+  \qquad \mathrm{err}_t = \mathbf{1}\{s_t > q_t\},
+\end{equation}
+Thus, $\sigma(x)$ adapts the interval width to the difficulty of the individual forecast, whereas the time-varying conformal threshold $q$
+ adapts it to changes in the residual distribution over time.
+ The ACI update provides a distribution-free long-run coverage guarantee: irrespective of the underlying data-generating process, the  time-averaged empiricalmiscoverage frequency converges to the target level $\alpha$ \cite{gibbs2021adaptive}.
+
+Another option to calibrate a MoGE density is to multiply the variance of each Gaussian separately, i.e.\ replacing $\sigma_i(x)$ by $q\sigma_i(x)$.
+In this case only the within-expert uncertainty is affected by the calibration procedure and the between-expert uncertainty remains unchanged.
+ It can be easily verified that to rescale only the within-expert term and leave the between-expert
+term as it is, the non-conformity score becomes:
+\begin{equation}
+  s_i = \sqrt{\max (0, \frac{(y_i-\hat{y}(x_i))^2 - \sigma_e^2(x_i) }{\sigma_a^2(x_i)})}.
+\end{equation}
+The calibrated variance term of a test sample is: 
+\begin{equation}
+\sigma_q^2(x)  = q^2\sigma_a^2(x)+\sigma_e^2(x).
+\label{eq:calvar}
+\end{equation}
+
+We denote the MoGE calibration based on the total variance by CP-MoG and the calibration procedure based on the within-expert variance by CP-MoG-a. 
+%Both options are valid and reasonable extensions of a variance-based calibration of a Gaussian distribution.  We note that CP-MoG corresponds to the MoGE: \[
+%\sum_i w_i(x)\,\mathcal{N}\big(y;\,\hat{y}(x)+ q(\mu_i(x)-\hat{y}(x)),(q\sigma_i(x))^2\big),
+%\]
+%and  CP-MoG-a corresponds to the MoGE:   \[
+%\sum_i w_i(x)\,\mathcal{N}\big(y;\,\mu_i(x),(q\sigma_i(x))^2\big).
+%\]
+In the next section, we empirically compare the performance of the two MoGE calibration methods on the task of time-series prediction.    
+The proposed instance-dependent conformal prediction framework with temporal adaptation is summarized in Algorithm~1. 
+%Given a confidence level $1-\alpha$, we can next apply CP to the scale $q$ and find a prediction interval around $\hat{y}(x)$ in the form of
+%\begin{equation} C_q(x)= [\hat{y}(x)-\sigma_q(x),\hat{y}(x)+\sigma_q(x) ] .
+%\label{eq:interval} \end{equation} A labeled example $(x,y)$ is covered by (\ref{eq:interval}) when its squared prediction error does not exceed $q^2\sigma_a^2(x)+\sigma_e^2(x)$, which is a lower bound on the squared scale $q^2$. For each labeled calibration example $(x,y)$ we therefore define the conformal score: \begin{equation} s =  \max\Big(0,\frac{(y-\hat{y}(x))^2-\sigma_e^2(x)}{\sigma_a^2(x)}\Big) ,
+%\label{eq:score}
+%\end{equation} which subtracts the between-expert term from the squared prediction error and measures the remainder in units of within-expert variance.
+
+
+
+%however, multiplying the variance (\ref{var-moge}) by $q^2$ yields
+%$$ q^2\Var(y|x)\!=\!\sum_i w_i(x)\big(q\sigma_i(x)\big)^2
+%+\sum_i w_i(x)\big(q\hat{y}(x)-q\mu_i(x)\big)^2,
+%$$ which is the variance of the MoG
+%\[ \sum_i w_i(x)\,\mathcal{N}\big(y;\,q\mu_i(x),(q\sigma_i(x))^2\big). \]
+%In other words, scaling the variance of the mixture as a whole also scales the expert means, and the prediction of the calibrated model becomes $q\hat{y}(x)$. Changing the network prediction is not what we expect from a calibration process.
+
+
+\begin{algorithm}[t]
+\caption{Instance-Dependent Conformal Prediction with Temporal Adaptation}
+\label{alg:vs_aci}
+\begin{algorithmic}[1]
+\Require Trained forecasting model providing $\hat{y}(x)$ and $\sigma(x)$;
+initial calibration-score set $\mathcal{S}_0$;
+target miscoverage level $\alpha$;
+ACI step size $\delta$;
+calibration-window size $W$.
+\State Initialize $\alpha_1 \gets \alpha$
+\For{$t=1,2,\ldots$}
+    \State \!\!\!\!Obtain the prediction   $\hat{y}(x_t)$ and its uncertainty
+        $\sigma(x_t)$.
+       \State \!\!\!\!Compute the adaptive conformal quantile: \\
+    \hspace{1cm}$
+    q_t \gets
+    \operatorname{Quantile}_{1-\alpha_t}
+    \left(\mathcal{S}_{t-1}\right)
+    $.
+    \State \!\!\!\!Output:  $C_t(x_t)  \gets [\hat{y}(x_t)\!-\!q_t\sigma(x_t),\hat{y}(x_t)\!+\!q_t\sigma(x_t)]$.
+    %$ \left[ \hat{y}(x_t)-q_t\sigma(x_t),\;     \hat{y}(x_t)+q_t\sigma(x_t) \right]$.
+    \State \!\!\!\!After $y_t$ becomes available, compute:
+    $
+    s_t \gets
+    \frac{|y_t-\hat{y}(x_t)|}{\sigma(x_t)}
+    $.
+    \State\!\!\!\!Compute the coverage error:
+    $
+    \mathrm{err}_t
+    \gets
+    \mathbf{1}\{s_t>q_t\}.
+    $
+    \State \!\!\!\!Update the effective miscoverage level using ACI:
+    \[
+    \alpha_{t+1}
+    \gets
+    \alpha_t+\delta(\alpha-\mathrm{err}_t)
+    \]
+    \State \!\!\!\! Update $S_t$ by adding $s_t$ and removing its oldest score.
+\EndFor
+\end{algorithmic}
+\end{algorithm}

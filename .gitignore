@@ -237,3 +237,4 @@ calibration/archive/
 
 # spreadsheet exports of tables that live in docs/ as text
 *.xlsx
+docs/cp_paper_tex/*.zip

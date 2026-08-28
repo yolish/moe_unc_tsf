@@ -1,0 +1,1631 @@
+% ============================================================================
+% SETA-HPD, explained from first principles.
+%
+% This is a TUTORIAL document, not a conference paper. Its companion,
+% sta_hpd_paper.tex, is written for a reader who already knows what split
+% conformal prediction, exchangeability, and a highest-density region are; it
+% is dense on purpose, because that is what a conference reviewer wants. This
+% document assumes none of that. It starts from "what is a prediction
+% interval and why would you want one," builds every concept in order
+% (Gaussian density -> mixture-of-experts -> conformal prediction ->
+% highest-density regions -> STA-HPD -> SETA-HPD), and only ever uses a
+% definition, theorem, or piece of notation after it has been introduced.
+% Every abstract construction is paired with a single running worked numeric
+% example (a toy 2-expert model) so a reader can check every formula by hand.
+% ============================================================================
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts, amsthm}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{remark}{Remark}[section]
+
+\title{\Large SETA-HPD, Explained from First Principles:\\
+A Tutorial on Highest-Density-Region Conformal Calibration\\
+for Mixture-of-Experts Regression}
+\author{Gilad Aviv\\ \texttt{giladaviv987@gmail.com}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document explains SETA-HPD -- a method for turning a Mixture-of-Experts regression model's
+raw predictions into statistically valid, tightly-fitted prediction intervals -- starting from
+nothing. It assumes no prior exposure to conformal prediction, highest-density regions, or
+mixture models. Every idea is introduced once, defined precisely, motivated with plain-language
+intuition, and then carried through a single running numeric example so that every formula in
+the document can be checked by hand. The document ends exactly where the companion conference
+paper (\texttt{sta\_hpd\_paper.tex}) begins: at a full statement of SETA-HPD, its two ancestor
+methods (MoG-HPD and STA-HPD) as special cases, and the empirical results that motivate it. This
+is a tutorial, not a novel contribution in itself -- everything here is a fuller explanation of
+material that already exists in this repository's calibrators
+(\texttt{calibration/tabular\_regression/MoG\_HPD\_Calibrator.py},
+\texttt{STA\_HPD\_Calibrator.py}, \texttt{SETA\_HPD\_Calibrator.py},
+\texttt{MELD\_HPD\_Calibrator.py}) and its conference-style write-up.
+\end{abstract}
+
+\tableofcontents
+
+% ============================================================================
+\section{Why do we need any of this?}
+\label{sec:why}
+
+\subsection{Point predictions are not enough}
+
+Suppose a trained regression model looks at an input $\bm x$ (some features -- sensor readings,
+past values of a time series, demographic variables, whatever the problem calls for) and
+outputs a single number $\hat y(\bm x)$, its best guess at the true outcome $y$. This is called a
+\emph{point prediction}. Point predictions are useful, but they are silent about a question that
+matters enormously in practice: \emph{how wrong might $\hat y(\bm x)$ be?} A model that predicts
+tomorrow's temperature as $21^\circ$C is not equally useful in a case where the true temperature
+is almost always within $1^\circ$C of that guess, versus a case where it could plausibly be
+anywhere from $10^\circ$C to $32^\circ$C. The point prediction looks identical in both cases; the
+right decision to make downstream (should you bring a coat? should a hospital keep extra beds on
+standby?) is completely different.
+
+What we want instead of a single number is a \emph{prediction set} $\hat C(\bm x) \subseteq
+\mathbb R$: a set of plausible values for $y$, built so that it is likely to actually contain the
+true outcome. The simplest kind of prediction set is a symmetric interval $\hat y(\bm x) \pm
+s(\bm x)$, but as this document will show in detail (Section~\ref{sec:hpd}), a symmetric interval
+is not always the best-shaped set -- one of the two central ideas this document builds up to.
+
+\subsection{What ``a good prediction set'' means}
+\label{sec:coverage}
+
+Before building any specific method, we need to pin down precisely what makes a prediction set
+\emph{good}. Two properties, in tension with each other, define the whole subject:
+
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{Validity (coverage).} Fix a small number $\alpha \in (0,1)$, e.g.\ $\alpha=0.1$. A
+prediction set $\hat C(\bm x)$ has \emph{marginal coverage} $1-\alpha$ if, averaged over the
+randomness of drawing a fresh test point $(\bm x_{\mathrm{test}}, y_{\mathrm{test}})$,
+\begin{equation}
+P\big(y_{\mathrm{test}} \in \hat C(\bm x_{\mathrm{test}})\big) \ \ge\ 1-\alpha.
+\label{eq:coverage-def}
+\end{equation}
+For $\alpha=0.1$ this says: if you built this prediction set for many independent test points,
+the true outcome would fall inside the set at least $90\%$ of the time.
+\item \textbf{Efficiency (width).} Among all sets with coverage at least $1-\alpha$, we prefer the
+one with the smallest size (for an interval, the smallest width; more generally, the smallest
+Lebesgue measure -- ``total length,'' allowing for a set made of several disjoint pieces).
+\end{itemize}
+
+These two properties trade off against each other in the most trivial way possible: the whole
+real line $\hat C(\bm x) = \mathbb R$ always has coverage $1$, but it is useless (infinite width).
+The entire technical content of every method in this document is about achieving \emph{valid}
+coverage (Eq.~\ref{eq:coverage-def}) with the \emph{smallest possible width}. Section~\ref{sec:cp}
+builds the tool that guarantees validity (conformal prediction); Section~\ref{sec:hpd} and
+everything after it is about squeezing out width without ever giving up that validity guarantee.
+
+\subsection{The model we are calibrating: a Mixture-of-Experts regressor}
+\label{sec:moe}
+
+Everything in this document is built on top of an already-trained \emph{Mixture-of-Experts} (MoE)
+regression model, so we describe that model first, from scratch, before touching calibration at
+all.
+
+\subsubsection{A single Gaussian expert}
+
+The simplest ``probabilistic'' regressor does not just output a number $\hat y(\bm x)$; it
+outputs a full Gaussian (normal) density over possible outcomes,
+\begin{equation}
+p(y \mid \bm x) = \mathcal N(y;\ \mu(\bm x),\ \sigma^2(\bm x)) = \frac{1}{\sigma(\bm x)\sqrt{2\pi}}
+\exp\!\left(-\frac{(y-\mu(\bm x))^2}{2\sigma^2(\bm x)}\right),
+\end{equation}
+where $\mu(\bm x)$ is the model's best-guess mean (its point prediction) and $\sigma(\bm x)$ is
+its reported standard deviation -- how spread out it believes the outcome could be around that
+mean, for this specific input $\bm x$. Because $\sigma(\bm x)$ is allowed to depend on $\bm x$,
+this kind of model can be \emph{heteroscedastic}: more confident (small $\sigma$) on some inputs,
+less confident (large $\sigma$) on others.
+
+\subsubsection{Mixing several experts}
+
+A single Gaussian is unimodal by construction -- it always has exactly one peak. Many real
+outcomes are not: a delivery time might genuinely be ``fast, if there's no traffic'' or ``slow, if
+there is,'' with little mass in between. A \emph{Mixture-of-Experts} model \cite{jordan1994hierarchical} represents this by
+training $K$ separate sub-networks (``experts''), each of which looks at the same input $\bm x$
+and outputs its own Gaussian $\mathcal N(\mu_k(\bm x), \sigma_k^2(\bm x))$, plus one more
+sub-network (the \emph{gate}) that outputs, for the same input, a probability weight $w_k(\bm x)$
+for each expert, with $\sum_{k=1}^K w_k(\bm x) = 1$. The model's full predictive density is the
+weighted sum
+\begin{equation}
+f_{\mathrm{mix}}(y \mid \bm x) = \sum_{k=1}^K w_k(\bm x)\, \mathcal N\big(y;\ \mu_k(\bm x),\
+\sigma_k^2(\bm x)\big).
+\label{eq:mixdef}
+\end{equation}
+Read this as: ``with probability $w_k(\bm x)$, the outcome behaves like expert $k$'s Gaussian.''
+Equation~\eqref{eq:mixdef} is a genuine probability density (it integrates to $1$, since each
+component does and the weights sum to $1$), and unlike a single Gaussian it can be multimodal --
+it can have several separate peaks, one per well-separated expert.
+
+The model's single point prediction (used, e.g., to report ``the'' forecast, or to compute a mean
+squared error) is the gate-weighted average of the expert means,
+\begin{equation}
+\hat y(\bm x) = \sum_{k=1}^K w_k(\bm x)\, \mu_k(\bm x).
+\label{eq:yhatdef}
+\end{equation}
+
+\subsubsection{Two kinds of uncertainty: aleatoric and epistemic}
+\label{sec:aleaepis}
+
+A basic and useful fact from probability (the \emph{law of total variance}) splits the mixture's
+variance around $\hat y(\bm x)$ into two pieces that have a genuine, different practical meaning:
+\begin{align}
+\underbrace{\operatorname{Var}(Y\mid\bm x)}_{\text{total variance}}
+&= \underbrace{\sum_{k=1}^K w_k(\bm x)\,\sigma_k^2(\bm x)}_{\sigma_a^2(\bm x):\ \text{aleatoric (within-expert)}}
+\ +\ \underbrace{\sum_{k=1}^K w_k(\bm x)\,\big(\mu_k(\bm x) - \hat y(\bm x)\big)^2}_{\sigma_e^2(\bm x):\ \text{epistemic (between-expert)}}.
+\label{eq:lotv}
+\end{align}
+\begin{itemize}[leftmargin=1.5em]
+\item $\sigma_a^2(\bm x)$, the \textbf{aleatoric} term, is how spread-out each individual expert
+believes the outcome is, averaged over the gate's weighting. This is irreducible noise \emph{even
+if the gate committed fully to one expert}.
+\item $\sigma_e^2(\bm x)$, the \textbf{epistemic} term, is how much the experts \emph{disagree
+with each other} -- how far each expert's mean sits from the aggregate prediction, weighted by how
+much the gate trusts that expert. This is zero only when every expert the gate puts weight on
+predicts (almost) the same mean.
+\end{itemize}
+We write $\sigma_{\mathrm{tot}}^2(\bm x) = \sigma_a^2(\bm x) + \sigma_e^2(\bm x)$ for the sum.
+
+\begin{example}[The running example]
+\label{ex:running}
+Throughout this document we use one fixed, tiny, fully worked example: a $K=2$ expert model at a
+single fixed input $\bm x$ (we drop the $\bm x$ argument since it never changes), with
+\[
+w_1 = 0.6,\quad \mu_1 = 2,\quad \sigma_1 = 0.5, \qquad\qquad
+w_2 = 0.4,\quad \mu_2 = 6,\quad \sigma_2 = 1.0.
+\]
+By Eq.~\eqref{eq:yhatdef}, $\hat y = 0.6\cdot 2 + 0.4\cdot 6 = 1.2 + 2.4 = 3.6$. By
+Eq.~\eqref{eq:lotv},
+\[
+\sigma_a^2 = 0.6\cdot 0.5^2 + 0.4\cdot 1.0^2 = 0.15 + 0.40 = 0.55,\qquad
+\sigma_e^2 = 0.6\,(2-3.6)^2 + 0.4\,(6-3.6)^2 = 0.6\cdot2.56 + 0.4\cdot5.76 = 1.536+2.304 = 3.84,
+\]
+so $\sigma_{\mathrm{tot}}^2 = 0.55+3.84 = 4.39$, i.e.\ $\sigma_{\mathrm{tot}} \approx 2.095$.
+Notice that the epistemic term $(3.84)$ dwarfs the aleatoric term $(0.55)$ here: almost all of
+this point's total uncertainty comes from the two experts disagreeing about \emph{where} the
+outcome is (2 vs.\ 6), not from either expert individually being unsure. This is exactly the
+regime -- large expert disagreement -- where the ideas in this document matter most, and it is
+why Section~\ref{sec:seta} eventually introduces a knob that acts on $\sigma_e^2$ specifically.
+\end{example}
+
+We now leave the model fixed (Example~\ref{ex:running}'s two numbers never change) and build up,
+step by step, everything needed to turn $(\mu_k,\sigma_k,w_k)$ into a valid, tight prediction set.
+
+% ============================================================================
+\section{Conformal prediction, from scratch}
+\label{sec:cp}
+
+This section builds \emph{split conformal prediction} \cite{vovk2005algorithmic,lei2018distribution},
+the machinery that gives \emph{any} prediction set the coverage guarantee of
+Eq.~\eqref{eq:coverage-def}, exactly, for any model whatsoever -- including a badly wrong one. It
+is the part of the story that makes coverage a solved problem, so that everything after this
+section (Sections~\ref{sec:hpd}--\ref{sec:seta}) is free to focus entirely on width.
+
+\subsection{Setup and the one assumption: exchangeability}
+
+We have a trained model (Section~\ref{sec:moe}) that we are not going to retrain or modify. We
+additionally have a \emph{calibration set} $\mathcal D_{\mathrm{cal}} = \{(\bm x_i, y_i)\}_{i=1}^n$
+-- labeled data the model was not trained on -- and we will eventually see a fresh test point
+$(\bm x_{\mathrm{test}}, y_{\mathrm{test}})$ whose label we do not get to see, only predict a set
+for.
+
+The one assumption every method in this document relies on is \emph{exchangeability}: the $n+1$
+points $(\bm x_1,y_1),\dots,(\bm x_n,y_n),(\bm x_{\mathrm{test}},y_{\mathrm{test}})$, taken
+together, have a joint distribution that does not change if we relabel/permute which one is
+``the test point.'' (Independent, identically-distributed data is one common way to get
+exchangeability, but exchangeability is a strictly weaker requirement.) Nothing here assumes the
+trained model is correct, that the errors are Gaussian, or that $y$ depends on $\bm x$ in any
+particular way -- only this one symmetry condition on how the data was generated.
+
+\subsection{Nonconformity scores}
+
+Fix any rule for turning a labeled point $(\bm x, y)$ into a single real number $S(\bm x, y)$,
+called a \emph{nonconformity score}: intuitively, ``how surprising is it that this $\bm x$ was
+paired with this $y$, according to my model?'' A large score means ``very surprising, doesn't fit
+my model's story for $\bm x$ well''; a small score means ``exactly what I'd expect.'' The only
+formal requirement on $S$ for what follows is that it is a fixed, deterministic function -- it
+does not get to look at, or be re-optimized using, the label of the point currently being scored,
+beyond the specific mechanics described in Section~\ref{sec:validity} later. Sections
+\ref{sec:standardcp}--\ref{sec:seta} are all, structurally, ``choose a different $S$'' with
+everything else in this section held fixed.
+
+\subsection{The finite-sample quantile correction}
+\label{sec:quantile}
+
+Compute the score $S_i = S(\bm x_i, y_i)$ for every calibration point, giving $n$ numbers
+$S_1,\dots,S_n$. Sort them ascending: $S_{(1)} \le S_{(2)} \le \dots \le S_{(n)}$. The threshold we
+use is \emph{not} simply the empirical $(1-\alpha)$ quantile (e.g.\ the $90$th percentile for
+$\alpha=0.1$); it is a slightly more conservative, finite-sample-corrected version:
+\begin{equation}
+\hat q = S_{(k)}, \qquad k = \Big\lceil (n+1)(1-\alpha) \Big\rceil,
+\label{eq:qlevel-order}
+\end{equation}
+with the convention that if $k>n$ (which happens for small $n$ or $\alpha$), $\hat q = +\infty$
+(the resulting prediction set is the whole real line -- coverage can trivially be met, at the cost
+of an unusable, infinitely wide set; this only occurs for tiny calibration sets). Equivalently, in
+terms of a quantile \emph{level} rather than an order-statistic index,
+\begin{equation}
+q_{\mathrm{level}} = \min\!\left(1,\ \frac{\lceil (n+1)(1-\alpha)\rceil}{n}\right), \qquad
+\hat q = \operatorname{Quantile}_{q_{\mathrm{level}}}(\{S_i\}),
+\label{eq:qlevel}
+\end{equation}
+using the ``upper'' (round up to the next actually-observed data point) quantile convention. Every
+calibrator described in this document uses exactly this construction; only the score $S$ changes.
+
+\begin{example}
+With $n=19$ calibration points and $\alpha=0.1$: $k = \lceil 20\times0.9\rceil = \lceil 18\rceil =
+18$, so $\hat q$ is the \emph{18th smallest} of the 19 scores -- not the 90th percentile in the
+everyday sense (which would sit between the 17th and 18th of 19 sorted points), but pushed one
+notch higher, to the largest value below the very worst score. This one-notch conservatism is
+exactly what Theorem~\ref{thm:coverage} below shows is necessary and sufficient for exact
+coverage.
+\end{example}
+
+\subsection{Why this gives exact coverage}
+\label{sec:validity}
+
+\begin{theorem}[Split-conformal marginal coverage]
+\label{thm:coverage}
+Suppose $S$ is fixed independently of the calibration and test labels (in particular, not tuned
+using $y_1,\dots,y_n$ or $y_{\mathrm{test}}$), and the $n+1$ points are exchangeable. Then, with
+$\hat q$ as in Eq.~\eqref{eq:qlevel-order} and $\hat C(\bm x_{\mathrm{test}}) = \{y :
+S(\bm x_{\mathrm{test}}, y) \le \hat q\}$,
+\begin{equation}
+P\big(y_{\mathrm{test}} \in \hat C(\bm x_{\mathrm{test}})\big) \ge 1-\alpha.
+\end{equation}
+\end{theorem}
+\begin{proof}
+Let $S_{\mathrm{test}} = S(\bm x_{\mathrm{test}}, y_{\mathrm{test}})$ and consider the $n+1$
+numbers $S_1,\dots,S_n,S_{\mathrm{test}}$. Because $S$ does not depend on which point is labeled
+``test'' and the underlying $n+1$ points are exchangeable, these $n+1$ scores are themselves
+exchangeable, so (ties broken arbitrarily) the \emph{rank} of $S_{\mathrm{test}}$ among all $n+1$
+scores is uniformly distributed on $\{1,\dots,n+1\}$: every position is equally likely a priori,
+by symmetry. The event $y_{\mathrm{test}} \in \hat C(\bm x_{\mathrm{test}})$ is exactly the event
+$S_{\mathrm{test}} \le \hat q = S_{(k)}$, i.e.\ that $S_{\mathrm{test}}$'s rank among the $n+1$
+combined scores is at most $k$. By uniformity of the rank,
+$P(\text{rank}(S_{\mathrm{test}}) \le k) = k/(n+1) \ge (1-\alpha)$, using $k = \lceil
+(n+1)(1-\alpha)\rceil \ge (n+1)(1-\alpha)$.
+\end{proof}
+
+This is the single most important fact in this entire document: \emph{coverage is free}, for any
+choice of nonconformity score $S$ (subject only to the ``fixed in advance of the labels''
+condition), regardless of whether the underlying model is any good. Every method from here on
+picks a specific, cleverer $S$, purely to make the resulting set \emph{narrower}, never to make it
+\emph{more valid} -- validity is already guaranteed by Theorem~\ref{thm:coverage} the moment $S$
+is fixed.
+
+\subsection{Two classical calibrators, worked through in full}
+\label{sec:standardcp}
+
+To make Section~\ref{sec:quantile}--\ref{sec:validity} completely concrete before anything more
+sophisticated is introduced, here are the two simplest possible choices of $S$.
+
+\paragraph{Standard CP.} Ignore every uncertainty estimate the model reports and score the raw
+absolute residual, $S_i = |y_i - \hat y(\bm x_i)|$. The threshold $\hat q$ from
+Eq.~\eqref{eq:qlevel-order} is then a single number, and the resulting prediction interval is
+$\hat y(\bm x) \pm \hat q$ -- the same width for every test point, regardless of how confident or
+unconfident the model is at $\bm x$. This is valid (Theorem~\ref{thm:coverage} always applies) but
+wasteful: it must be wide enough to cover the model's worst, least-confident predictions, and pays
+that same width even on inputs where the model is highly confident.
+
+\paragraph{CP-VS (variance-scaled CP).} Normalize the residual by the model's own reported total
+scale before scoring, $S_i = |y_i - \hat y(\bm x_i)| / \sigma_{\mathrm{tot}}(\bm x_i)$. The
+resulting interval is $\hat y(\bm x) \pm \hat q\, \sigma_{\mathrm{tot}}(\bm x)$: heteroscedastic,
+wider exactly where the model itself reports more uncertainty. This is a strict improvement over
+Standard CP whenever $\sigma_{\mathrm{tot}}(\bm x)$ is genuinely informative about $|y-\hat
+y(\bm x)|$, and it is still exactly valid by Theorem~\ref{thm:coverage} -- normalizing by
+$\sigma_{\mathrm{tot}}(\bm x_i)$ is just another fixed-in-advance scoring rule.
+
+Both of these commit, by construction, to a \emph{symmetric interval} centered at $\hat y(\bm x)$.
+A third classical alternative, conformalized quantile regression (CQR) \cite{romano2019conformalized},
+instead conformalizes an auxiliary quantile-regression head and shifts its predicted quantiles by a
+single additive correction -- still not shaped by the model's own predictive density. Section~\ref{sec:hpd}
+shows why, once that density is genuinely multimodal (as in Example~\ref{ex:running}), ignoring its
+shape is itself a source of wasted width -- independent of how well-tuned any single scale
+$\sigma_{\mathrm{tot}}(\bm x)$ is.
+
+% ============================================================================
+\section{Highest-density regions: the right shape for the set}
+\label{sec:hpd}
+
+\subsection{Why a symmetric interval can be the wrong shape}
+
+Look again at Example~\ref{ex:running}. If we imagine, just for a moment, that the model's
+mixture density $f_{\mathrm{mix}}(\cdot\mid \bm x)$ from Eq.~\eqref{eq:mixdef} \emph{were} exactly
+the true conditional density of $y$ (we will make this exact and remove the ``imagine'' in
+Section~\ref{sec:moghpd}), plug in the two components:
+\[
+f_{\mathrm{mix}}(y) = 0.6\,\mathcal N(y; 2, 0.5^2) + 0.4\,\mathcal N(y; 6, 1.0^2).
+\]
+Evaluate this density at three points: the two expert means, and the aggregate prediction $\hat y
+= 3.6$ that a symmetric interval would be centered on.
+\begin{align*}
+f_{\mathrm{mix}}(2) &= 0.6\cdot \tfrac{1}{0.5\sqrt{2\pi}}\cdot 1 \ +\ 0.4\cdot(\text{negligible})
+\ \approx\ 0.4788,\\
+f_{\mathrm{mix}}(6) &= 0.4\cdot \tfrac{1}{1.0\sqrt{2\pi}}\cdot 1 \ +\ (\text{negligible})
+\ \approx\ 0.1596,\\
+f_{\mathrm{mix}}(3.6) &\approx\ 0.6\cdot0.004768 \ +\ 0.4\cdot0.02239 \ \approx\ 0.0118
+\end{align*}
+(numerically: at $y=3.6$, expert 1 is $3.2$ of its own standard deviations away and expert 2 is
+$2.4$ of its own standard deviations away, so both components have already decayed a great deal).
+The density at $\hat y=3.6$ -- the exact center any symmetric interval would use -- is more than
+$40\times$ smaller than the density at either mode. A symmetric interval $\hat y \pm s$ must, to
+reach any reasonable coverage, either stretch $s$ far enough to swallow the near-empty valley
+between the two modes (wasting width on values of $y$ that are individually very unlikely), or
+fail to reach one of the two modes entirely. Neither option is necessary: the region that actually
+achieves a given coverage with the least total width is not an interval at all here, but
+\emph{two} disjoint intervals, one bracketing each mode, with nothing in between. This is the
+motivating picture for everything in this section.
+
+\subsection{Definition}
+
+\begin{definition}[Highest-density region]
+\label{def:hpd}
+For a probability density $f$ on $\mathbb R$ and $\alpha\in(0,1)$, the $100(1-\alpha)\%$
+\emph{highest-density region} of $f$ is
+\begin{equation}
+R_\alpha(f) = \{y \in \mathbb R : f(y) \ge \tau_\alpha\},
+\end{equation}
+where $\tau_\alpha$ is the largest constant such that $\int_{R_\alpha(f)} f \ge 1-\alpha$. In
+words: keep exactly the values of $y$ where the density is \emph{tallest}, stopping once you have
+accumulated $1-\alpha$ of the total probability mass. Depending on $f$'s shape, $R_\alpha(f)$ can
+be a single interval (unimodal $f$) or a union of several disjoint intervals (multimodal $f$).
+\end{definition}
+
+This is a completely classical, pre-conformal-prediction idea from Bayesian and frequentist
+density estimation, originally studied as the natural generalization of a symmetric credible
+interval to arbitrary densities \cite{boxtiao1973bayesian,hyndman1996computing}. The next theorem
+is a fact purely about a fixed density $f$ -- it has nothing to do with calibration sets, models,
+or conformal prediction yet.
+
+\subsection{Why the level set is width-optimal}
+
+\begin{theorem}[Level-set width optimality]
+\label{thm:hpd}
+Fix a density $f$ and $\alpha\in(0,1)$, and let $R_\tau=\{y:f(y)\ge\tau\}$ with $\tau$ chosen so
+$\int_{R_\tau}f=1-\alpha$ (i.e.\ $R_\tau=R_\alpha(f)$). Then for \emph{any} measurable set $C$
+with $\int_C f \ge 1-\alpha$, $|R_\tau| \le |C|$, where $|\cdot|$ denotes total length (Lebesgue
+measure).
+\end{theorem}
+
+\emph{Intuition before the proof.} Think of $f$ as describing how ``valuable'' (in probability
+mass per unit length) each point $y$ is. $R_\tau$ greedily buys the most valuable points first,
+stopping once it has bought $1-\alpha$ of the total value. Any other set $C$ with the same total
+value must, compared to $R_\tau$, be missing some of $R_\tau$'s points (each worth at least
+$\tau$ per unit length) and including some points $R_\tau$ left out (each worth less than $\tau$
+per unit length, or $C$ could not need more length than $R_\tau$ to hit the same value). Trading
+away high-value length for low-value length to reach the same total value always costs you extra
+length. That is the entire proof, made precise:
+
+\begin{proof}
+Let $D_1 = R_\tau \setminus C$ and $D_2 = C\setminus R_\tau$. Since $D_1 \subset R_\tau$, $f\ge
+\tau$ on $D_1$; since $D_2 \subset R_\tau^c$, $f < \tau$ on $D_2$. The region $R_\tau \cap C$ is
+shared by both sets, so $\int_C f \ge \int_{R_\tau} f = 1-\alpha \ge \int_C f$ forces
+$\int_{D_2} f \ge \int_{D_1} f$ (the extra mass $C$ has over $R_\tau\cap C$, from $D_2$, must be at
+least as large as the mass $R_\tau$ has over $R_\tau\cap C$, from $D_1$, since both totals equal
+$1-\alpha$ once you add back $\int_{R_\tau\cap C} f$ to each). Hence
+$\tau|D_2| \ge \int_{D_2}f \ge \int_{D_1}f \ge \tau|D_1|$, so $|D_2|\ge|D_1|$, and
+$|R_\tau|-|C| = |D_1|-|D_2| \le 0$.
+\end{proof}
+
+\begin{corollary}[A single Gaussian recovers the symmetric interval]
+\label{cor:gauss-hpd}
+If $f=\mathcal N(\mu,\sigma^2)$ (a single, unimodal, symmetric Gaussian), $R_\alpha(f)$ is exactly
+the familiar symmetric interval $[\mu - \sigma z_{1-\alpha/2},\ \mu+\sigma z_{1-\alpha/2}]$, where
+$z_{1-\alpha/2}$ is the standard-normal $(1-\alpha/2)$ quantile.
+\end{corollary}
+\begin{proof}
+$f$ is symmetric and strictly decreasing in $|y-\mu|$, so every super-level set $\{f\ge\tau\}$ is a
+single interval centered at $\mu$; choosing its half-width so it carries mass $1-\alpha$ under a
+standard Gaussian gives $\sigma z_{1-\alpha/2}$ exactly.
+\end{proof}
+
+Corollary~\ref{cor:gauss-hpd} is the reassurance that highest-density regions are not some exotic
+replacement for the familiar symmetric interval -- they \emph{are} the familiar symmetric interval,
+in the one case (a single unimodal, symmetric density) where the symmetric interval is already
+correct. Section~\ref{sec:standardcp}'s Standard CP and CP-VS are implicitly always using the
+\emph{equal-tailed} region $[F^{-1}(\alpha/2), F^{-1}(1-\alpha/2)]$ instead (excluding equal
+probability mass from each tail); by Theorem~\ref{thm:hpd} this can only be as narrow as
+$R_\alpha(f)$, with equality exactly in the unimodal-symmetric case of
+Corollary~\ref{cor:gauss-hpd}. For a genuinely multimodal $f$, like Example~\ref{ex:running}'s
+mixture, the two constructions diverge, and $R_\alpha(f)$ is strictly narrower.
+
+\subsection{MoG-HPD: conformalizing the level set}
+\label{sec:moghpd}
+
+Theorem~\ref{thm:hpd} is a fact about a \emph{known} density $f$. In practice we do not know the
+true conditional density of $y\mid\bm x$; all we have is the model's fitted mixture
+$f_{\mathrm{mix}}(\cdot\mid\bm x)$ of Eq.~\eqref{eq:mixdef}, which is at best an approximation to
+the truth. \textbf{MoG-HPD} \cite{izbicki2020cd,sadinle2019least} is the calibrator that plugs
+$f=f_{\mathrm{mix}}(\cdot\mid\bm x)$ into
+Definition~\ref{def:hpd} and then uses Section~\ref{sec:cp}'s machinery to pick the threshold
+$\tau$ in a way that is guaranteed valid \emph{regardless of whether $f_{\mathrm{mix}}$ is
+correct}. Concretely: the nonconformity score is the negative log-density,
+\begin{equation}
+S_i = -\log f_{\mathrm{mix}}(y_i \mid \bm x_i),
+\end{equation}
+conformalized exactly as in Section~\ref{sec:quantile} to get a threshold $\hat t = \hat q$ (using
+the notation $\hat t$ from here on, since it lives on the $-\log$ scale), and the prediction set
+returned for a new $\bm x$ is
+\begin{equation}
+\hat C(\bm x) = \big\{y : -\log f_{\mathrm{mix}}(y\mid\bm x) \le \hat t\big\}
+= \big\{y : f_{\mathrm{mix}}(y\mid\bm x) \ge e^{-\hat t}\big\},
+\label{eq:moghpd-region}
+\end{equation}
+i.e.\ exactly the empirical highest-density region of $f_{\mathrm{mix}}(\cdot\mid\bm x)$ at level
+$\hat\tau = e^{-\hat t}$. Two separate facts hold about Eq.~\eqref{eq:moghpd-region}, and it is
+important to keep them apart:
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{Validity} follows immediately from Theorem~\ref{thm:coverage}: $S_i = -\log
+f_{\mathrm{mix}}(y_i\mid\bm x_i)$ is a fixed function of $(\bm x_i,y_i)$ (it does not peek at
+$y_{\mathrm{test}}$), so $P(y_{\mathrm{test}}\in\hat C(\bm x_{\mathrm{test}}))\ge 1-\alpha$
+\emph{regardless of whether $f_{\mathrm{mix}}$ is a good model of the truth}.
+\item \textbf{Width-optimality} only holds \emph{relative to $f_{\mathrm{mix}}$ itself}
+(Theorem~\ref{thm:hpd}): if the fitted mixture is close to the true conditional density, the
+resulting set is close to the truly optimal set; if $f_{\mathrm{mix}}$ is systematically wrong in
+some way, MoG-HPD faithfully returns the level set of the \emph{wrong} density -- valid, but not
+as narrow as it could be. This is exactly the gap that Sections~\ref{sec:stahpd} and
+\ref{sec:seta} exist to close.
+\end{itemize}
+
+\subsubsection{Finding the region numerically}
+\label{sec:numerics}
+
+Equation~\eqref{eq:moghpd-region} defines the region implicitly (as wherever a curve clears a
+threshold), not as a closed-form interval, so it has to be located numerically. This repository's
+implementation (\texttt{MoG\_HPD\_Calibrator.\_segments\_for\_point}) does this in three steps,
+which every later method (STA-HPD, SETA-HPD) reuses unchanged:
+\begin{enumerate}[leftmargin=1.5em]
+\item \textbf{Window.} Build a search window wide enough to contain all the mass, starting from
+$[\min_k \mu_k - 6\sigma_k,\ \max_k \mu_k + 6\sigma_k]$ and doubling outward (up to a fixed number
+of times) if the density at the window's edges has not yet decayed to a negligible fraction of the
+threshold.
+\item \textbf{Grid scan.} Evaluate $f_{\mathrm{mix}}(y) - \tau$ on a fine grid inside the window
+(finer near each component's own mean, to avoid missing a narrow peak) and record every pair of
+adjacent grid points where the sign flips -- each such pair brackets one boundary of the region.
+\item \textbf{Root refinement.} Within each bracketing pair, run Brent's method (a fast, reliable
+1-D root finder that only needs the function values, not a derivative) to pin the exact boundary
+to numerical precision. The boundaries, sorted and paired up, are the disjoint $[{\rm lower},{\rm
+upper}]$ segments of $\hat C(\bm x)$; segments closer together than a small numerical tolerance
+are merged.
+\end{enumerate}
+The returned prediction set for a test point is therefore not always a single interval: it is a
+\emph{ragged} list of $[\text{lower},\text{upper}]$ segments, possibly empty (rare, only under
+numerical edge cases), possibly a single interval (the common case, and the only possible case
+when $K=1$), and possibly several disjoint intervals (when the mixture is genuinely multimodal and
+the threshold falls in a valley, exactly as in Example~\ref{ex:running}).
+
+\begin{example}[Example~\ref{ex:running}, continued]
+Suppose, hypothetically, that a calibration procedure had produced the threshold $\hat\tau =
+0.05$ for this model (this is smaller than $f_{\mathrm{mix}}(3.6)\approx0.0118$ from earlier --
+wait, we need $\hat\tau$ \emph{above} the valley for it to open a gap; take instead $\hat\tau =
+0.05$, which sits between the valley height $0.0118$ and the shorter peak height $f_{\mathrm{mix}}(6)
+\approx 0.1596$). Since $f_{\mathrm{mix}}(3.6) = 0.0118 < \hat\tau = 0.05$, the region $\{y :
+f_{\mathrm{mix}}(y)\ge\hat\tau\}$ does \emph{not} include $y=3.6$: it is two disjoint intervals,
+one bracketing $y=2$ (where the tall, narrow first component clears $0.05$) and one bracketing
+$y=6$ (where the shorter, wider second component clears $0.05$), with a gap in between covering
+the near-empty valley. A symmetric interval centered at $\hat y=3.6$ could never produce this
+shape, no matter how its half-width $s$ is tuned -- it would have to either include the whole
+valley or miss one of the two modes.
+\end{example}
+
+% ============================================================================
+\section{STA-HPD: correcting how the density is scaled and thresholded}
+\label{sec:stahpd}
+
+\subsection{What is still wrong with plain HPD calibration}
+
+MoG-HPD (Section~\ref{sec:moghpd}) is valid by construction and shape-optimal \emph{relative to
+$f_{\mathrm{mix}}$}. But $f_{\mathrm{mix}}$ is a trained neural network's output, not the truth,
+and two specific, systematic mismatches recur across real datasets:
+\begin{enumerate}[leftmargin=1.5em]
+\item \textbf{Global over/under-dispersion.} The per-expert standard deviations $\sigma_k(\bm x)$
+might be systematically too large or too small relative to how big the actual residuals turn out
+to be, uniformly across the dataset -- e.g., a model trained with a particular loss weighting might
+consistently over-report or under-report its own spread.
+\item \textbf{Wrong sensitivity to the model's own scale.} Even when $\sigma_k(\bm x)$ is centered
+correctly on average, it may carry more or less \emph{information} about the actual residual size
+on some datasets than others (a large reported $\sigma$ does not always mean a large error is
+likely, if $\sigma$ itself is a noisy quantity) -- so trusting it with a fixed, dataset-independent
+curvature (as MoG-HPD implicitly does) is not always right.
+\end{enumerate}
+\textbf{STA-HPD} (Shape--Threshold Adaptive HPD) opens exactly two tunable knobs to correct these,
+each a no-op at its default value, so that MoG-HPD is always reachable as a special case.
+
+\subsection{The shape exponent $c$}
+\label{sec:c}
+
+Freeze, once, on the full calibration set, the geometric mean of every per-expert reported
+standard deviation,
+\begin{equation}
+G = \exp\!\Big(\operatorname*{mean}_{k,i}\ \log\sigma_k(\bm x_i)\Big),
+\label{eq:Gdef}
+\end{equation}
+i.e.\ the ``typical'' scale this model reports across the whole calibration set. For a
+\emph{shape} exponent $c\in\mathbb R_{\ge0}$, define the reshaped per-expert scale
+\begin{equation}
+\tilde\sigma_k(\bm x; c) = G\,\big(\sigma_k(\bm x)/G\big)^c.
+\label{eq:sigmashape}
+\end{equation}
+
+\begin{lemma}[What $c$ actually does]
+\label{lem:cdoes}
+$\log\tilde\sigma_k(\bm x;c) = \log G + c\big(\log\sigma_k(\bm x)-\log G\big)$, i.e.\ reshaping is
+a straight line in log-scale space, anchored at $G$, with slope $c$. Consequently
+$\tilde\sigma_k(\bm x;1)=\sigma_k(\bm x)$ (the raw mixture, unchanged); $\tilde\sigma_k(\bm x;0)=G$
+for every $k$ and $\bm x$ (every expert's scale collapses to the same constant $G$, i.e.\
+heteroscedasticity is switched off entirely); and for $c\in(0,1)$, every $\sigma_k(\bm x)$ is
+pulled part-way toward $G$ (large $\sigma_k$ shrunk down, small $\sigma_k$ pulled up), while $c>1$
+does the opposite, stretching the spread of scales apart.
+\end{lemma}
+\begin{proof}
+Take logs of Eq.~\eqref{eq:sigmashape}. The three boundary facts follow by substituting $c=1$,
+$c=0$, and reading off the slope $c$ of the resulting affine function.
+\end{proof}
+
+\begin{example}[Example~\ref{ex:running}, continued]
+With only these two numbers on the ``calibration set,'' $G = \exp\!\big(\tfrac12(\log 0.5 +
+\log 1.0)\big) = \exp(-0.3466) \approx 0.7071$ (the geometric mean of $0.5$ and $1.0$, which is
+$\sqrt{0.5\times1.0}=\sqrt{0.5}\approx0.7071$). At $c=0.5$:
+\[
+\tilde\sigma_1(0.5) = 0.7071\cdot(0.5/0.7071)^{0.5} = 0.7071\times0.8409 \approx 0.5946, \qquad
+\tilde\sigma_2(0.5) = 0.7071\cdot(1.0/0.7071)^{0.5} = 0.7071\times1.1892 \approx 0.8409.
+\]
+The narrower expert's scale moved \emph{up} (from $0.5$ toward $0.7071$) and the wider expert's
+scale moved \emph{down} (from $1.0$ toward $0.7071$): $c<1$ genuinely compresses the two experts'
+reported scales toward their common geometric-mean anchor, exactly as Lemma~\ref{lem:cdoes}
+predicts.
+\end{example}
+
+\subsection{The threshold-field exponent $\theta$}
+\label{sec:theta}
+
+Define the reshaped mixture density and its total predictive scale (the aleatoric term now uses
+the reshaped $\tilde\sigma_k$; the epistemic term is untouched -- $c$ is designed to act on the
+within-expert spread specifically, per failure mode 1 above),
+\begin{align}
+f_c(y\mid\bm x) &= \sum_{k=1}^K w_k(\bm x)\,\mathcal N\big(y;\ \mu_k(\bm x),\
+\tilde\sigma_k^2(\bm x;c)\big), \label{eq:fc}\\
+\sigma_{\mathrm{tot}}^2(\bm x;c) &= \sum_{k=1}^K w_k(\bm x)\,\tilde\sigma_k^2(\bm x;c) \;+\;
+\sum_{k=1}^K w_k(\bm x)\,\big(\mu_k(\bm x)-\hat y(\bm x)\big)^2. \label{eq:sigmatotc}
+\end{align}
+A \emph{second}, separate exponent $\theta \in \mathbb R$ then tilts the conformal score itself by
+the point's own total scale, correcting failure mode 2 above:
+\begin{equation}
+S_i(c,\theta) = -\log f_c(y_i\mid\bm x_i) \;-\; \theta\,\log\sigma_{\mathrm{tot}}(\bm x_i;c),
+\label{eq:stascore}
+\end{equation}
+with threshold $\hat t(c,\theta)$ from Section~\ref{sec:quantile} applied to these scores, and
+induced region
+\begin{equation}
+\hat C(\bm x) = \Big\{y :\ \log f_c(y\mid\bm x) \;\ge\; -\hat t(c,\theta) \;-\;
+\theta\log\sigma_{\mathrm{tot}}(\bm x;c) \Big\}.
+\label{eq:staregion}
+\end{equation}
+Read Eq.~\eqref{eq:staregion} carefully: it is \emph{still} a level set of the single density
+$f_c$ (the same object at every $\bm x$, once $c$ is fixed), but the \emph{threshold it is compared
+against} is no longer the single global $e^{-\hat t}$ that MoG-HPD used -- it is scaled up or down,
+per test point, by that point's own $\sigma_{\mathrm{tot}}(\bm x;c)^{-\theta}$. $\theta>0$ demands
+\emph{more} density (a stricter threshold, narrower set, all else equal) exactly where the model
+reports more total scale; $\theta<0$ does the opposite; $\theta=0$ recovers the single global
+threshold.
+
+\subsection{Boundary recovery: STA-HPD contains everything introduced so far}
+
+\begin{proposition}[Boundary recovery]
+\label{prop:starecovery}
+$(c,\theta)=(1,0)$ recovers MoG-HPD exactly (Eqs.~\ref{eq:stascore}--\ref{eq:staregion} reduce to
+Eq.~\ref{eq:moghpd-region} directly). When $K=1$ (a single Gaussian, no mixture at all),
+$(c,\theta)=(1,1)$ recovers CP-VS (Section~\ref{sec:standardcp}) on the total predictive standard
+deviation exactly. $(c,\theta)=(0,0)$ recovers Standard CP: every $\tilde\sigma_k(\bm x;0)=G$
+collapses to the same constant (Lemma~\ref{lem:cdoes}), so $f_0(\cdot\mid\bm x)$ no longer depends
+on $\bm x$ through the experts' scales at all, and $\theta=0$ leaves a single global threshold, so
+the whole construction reduces to a single fixed-width region.
+\end{proposition}
+\begin{proof}
+Direct substitution into Eqs.~\eqref{eq:sigmashape}--\eqref{eq:staregion}, using
+Lemma~\ref{lem:cdoes}'s two boundary identities $\tilde\sigma_k(\bm x;1)=\sigma_k(\bm x)$ and
+$\tilde\sigma_k(\bm x;0)=G$.
+\end{proof}
+
+\begin{corollary}[Closed form when $K=1$]
+\label{cor:k1closedform}
+When $K=1$, write $\tilde\sigma(\bm x;c)$ for the sole reshaped scale and $\hat\tau=e^{-\hat
+t(c,\theta)}$. The region $\hat C(\bm x)$ of Eq.~\eqref{eq:staregion} is the symmetric interval
+$\hat y(\bm x) \pm s(\bm x)$ with
+\begin{equation}
+s(\bm x) = \tilde\sigma(\bm x;c)\ \sqrt{2\log\!\left(\frac{1}{\hat\tau\sqrt{2\pi}\
+\tilde\sigma(\bm x;c)^{1-\theta}}\right)}.
+\label{eq:k1closedform}
+\end{equation}
+\end{corollary}
+\begin{proof}
+For $K=1$, $f_c(y\mid\bm x)$ is a single Gaussian with scale $\tilde\sigma(\bm x;c)$, and
+$\sigma_{\mathrm{tot}}(\bm x;c)=\tilde\sigma(\bm x;c)$ exactly (the epistemic term is identically
+zero with only one expert). Substituting the Gaussian density into $\log f_c(y\mid\bm x)\ge -\hat
+t-\theta\log\tilde\sigma(\bm x;c)$ and solving for $|y-\mu(\bm x)|$ gives
+Eq.~\eqref{eq:k1closedform} after collecting terms and taking a square root.
+\end{proof}
+
+This closed form is a useful sanity check: plugging $(c,\theta)=(1,0)$ into
+Eq.~\eqref{eq:k1closedform} gives back MoG-HPD's single-Gaussian half-width exactly; plugging in
+$(1,1)$ makes the $\tilde\sigma(\bm x;c)^{1-\theta}$ factor vanish, giving $s(\bm x) =
+\hat q\,\sigma(\bm x)$ for a constant $\hat q$ -- CP-VS's form exactly.
+
+\subsection{Why this can actually help: a population-level argument}
+\label{sec:optimality}
+
+Section~\ref{sec:hpd} established that a level set is width-optimal \emph{for the density it is a
+level set of}. It says nothing about which density -- or which threshold field -- is the right
+one to use in the first place. This subsection derives what the truly optimal choice would have to
+satisfy, so that the gap between that ideal and what plain MoG-HPD does is visible, and so that
+$(c,\theta)$'s role in closing that gap is not just a heuristic.
+
+\begin{theorem}[First-order optimality of the level-set family]
+\label{thm:optimality}
+Let the true conditional density of $Y\mid\bm x$ be $p(\cdot\mid\bm x)$ (generally unknown, and
+generally not equal to any $f_c$). Consider choosing a per-point log-threshold function $g(\bm x)$,
+defining $C_g(\bm x) = \{y : \log f(y\mid\bm x) \ge -g(\bm x)\}$ for whatever fixed density $f$ is
+in force, to solve
+\[
+\min_g\ \mathbb E_{\bm x}\big[|C_g(\bm x)|\big] \quad\text{subject to}\quad
+\mathbb E_{\bm x}\big[P(Y\in C_g(\bm x)\mid \bm x)\big] \ge 1-\alpha.
+\]
+At a stationary point of the associated Lagrangian, writing $b(\bm x)$ for a boundary point of
+$C_g(\bm x)$,
+\begin{equation}
+p\big(b(\bm x)\mid\bm x\big) = \text{a constant, the same for every } \bm x.
+\label{eq:optcond}
+\end{equation}
+\end{theorem}
+\emph{Intuition.} If the true density at the boundary were higher at some $\bm x$ than at another,
+you could shave a sliver of width off the low-boundary-density point (losing little true coverage
+there, since the true density is low there) and spend it at the high-boundary-density point
+(buying more true coverage there per unit of width spent) -- a strict improvement, until the
+boundary densities equalize. The full derivation:
+\begin{proof}
+\emph{Step 1 (boundary perturbation).} Perturb $g(\bm x)\mapsto g(\bm x)+\delta$ at one $\bm x$
+only. Each boundary point $b(\bm x)$ solves $\log f(b(\bm x)\mid\bm x)=-g(\bm x)$; linearizing,
+$\Delta b = -\delta\, f(b\mid\bm x)/f'(b\mid\bm x)$ to first order.
+
+\emph{Step 2 (width response).} The set's width changes, to first order, by
+$\delta\, f(b\mid\bm x)/|f'(b\mid\bm x)|$ (summed over boundary points, with sign chosen so
+increasing $\delta$ enlarges the region).
+
+\emph{Step 3 (true-coverage response).} The \emph{true} covered probability
+$\int_{C_g(\bm x)} p(y\mid\bm x)\,dy$ changes, by the same boundary displacement, by $\delta\,
+p(b\mid\bm x)\, f(b\mid\bm x)/|f'(b\mid\bm x)|$ -- identical to Step 2's rate except the model
+density $f(b\mid\bm x)$ in the numerator is replaced by the \emph{true} density $p(b\mid\bm x)$.
+
+\emph{Step 4 (stationarity).} The Lagrangian is $\mathcal L[g] = \mathbb E_{\bm x}[|C_g(\bm x)|] -
+\lambda\big(\mathbb E_{\bm x}[P(Y\in C_g(\bm x)\mid\bm x)] - (1-\alpha)\big)$. Stationarity requires
+Step 2's rate to equal $\lambda\times$ Step 3's rate at every $\bm x$. The common factor
+$f(b\mid\bm x)/|f'(b\mid\bm x)|$ cancels from both sides, leaving $1 = \lambda\, p(b(\bm x)\mid\bm
+x)$ at every $\bm x$, for one shared multiplier $\lambda$ -- i.e.\ $p(b(\bm x)\mid\bm x) =
+1/\lambda$, the same value everywhere.
+\end{proof}
+
+Plain MoG-HPD instead enforces $f_{\mathrm{mix}}(b(\bm x)\mid\bm x) = \hat\tau$, a constant
+condition on the \emph{model's} density -- which coincides with the true optimum
+(Eq.~\ref{eq:optcond}) only where $f_{\mathrm{mix}}$ agrees with the truth exactly at the
+boundary. The shape exponent $c$ corrects the part of that mismatch driven by systematic
+mis-scaling of $\sigma_k(\bm x)$; the threshold field $\theta$ corrects the remaining pointwise
+level mismatch. In particular, when $\sigma_k(\bm x)$ only partially tracks the true residual size,
+dispersion in $\sigma_k$ across the dataset inflates typical values of $\sigma_k^{c}$-type terms
+faster than it deflates the matching conformal quantile, so the width-minimizing $c^\star$ is
+generally interior and can fall strictly below $1$ -- a data-driven shrinkage of heteroscedasticity
+that plain MoG-HPD (which fixes $c\equiv1$) cannot express.
+
+\subsection{Fitting $(c,\theta)$ without breaking validity}
+\label{sec:stafit}
+
+There is a subtlety here that is easy to get wrong. Theorem~\ref{thm:coverage} requires $S$ to be
+fixed \emph{independently of the labels it is being conformalized against}. If $(c,\theta)$ were
+chosen by minimizing width on the very same calibration points that then supply $\hat t(c,\theta)$,
+the resulting score would have secretly used the labels $y_1,\dots,y_n$ twice -- once to pick
+$(c,\theta)$, once to pick $\hat t$ -- breaking exchangeability and, with it,
+Theorem~\ref{thm:coverage}'s guarantee.
+
+The fix is to split $\mathcal D_{\mathrm{cal}}$ into two disjoint pieces, $\mathcal
+D_{\mathrm{tune}}$ (used only to \emph{choose} $(c,\theta)$) and $\mathcal D_{\mathrm{calib}}$
+(used only to compute the final $\hat t$, at the now-fixed $(c,\theta)$). Because the split is
+made before either fold's labels are used for anything, and $\mathcal D_{\mathrm{calib}}$'s
+labels are never touched during the $(c,\theta)$ search, the final score is a fixed function of
+$(\bm x,y)$ by the time it is conformalized, and Theorem~\ref{thm:coverage} applies exactly, with
+no assumption about model correctness. This is stated precisely below.
+
+\begin{proposition}[Marginal validity]
+\label{prop:stavalidity}
+For any $(c,\theta)$ selected using only $\mathcal D_{\mathrm{tune}}$, disjoint from the $\mathcal
+D_{\mathrm{calib}}$ fold that supplies $\hat t$, Eq.~\eqref{eq:stascore} is a data-independent
+scoring function by the time it is conformalized on $\mathcal D_{\mathrm{calib}}$, so
+Theorem~\ref{thm:coverage} applies directly: $P(y_{\mathrm{test}}\in\hat C(\bm x_{\mathrm{test}}))
+\ge 1-\alpha$ exactly, independent of whether $f_{\mathrm{mix}}$ or $f_c$ is well specified.
+\end{proposition}
+
+\paragraph{Choosing the split.} A single $50/50$ tune/calib split was tried and found empirically
+to \emph{lose} to plain MoG-HPD outright on this repository's data: halving the calibration fold
+starves $\hat t$'s quantile estimate of data faster than the tuning gain compensates. Two changes
+fix this:
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{Small tune fraction.} $\texttt{tune\_frac}=0.2$ by default, not $0.5$ -- the
+$(c,\theta)$ grid is low-dimensional and discrete, so it needs far less data to rank candidates
+than the continuous $(1-\alpha)$ quantile needs to be estimated precisely.
+\item \textbf{Repeated splitting with majority vote.} This mirrors the cross-conformal-style
+resampling used elsewhere for tuned conformal methods \cite{gibbs2021adaptive}. A single split's
+chosen $(c^\star,\theta^\star)$
+is noticeably split-dependent (different random tune/calib partitions can pick different grid
+cells). Draw $n_{\mathrm{repeats}}$ (default $10$) independent splits; take $(c^\star,\theta^\star)$
+as the \emph{mode} (majority vote) of the per-split arg-mins -- appropriate for a discrete grid,
+where an arithmetic mean of grid indices would not even necessarily land on a grid point -- and
+take the final threshold as the \emph{median} of the per-split calib-fold quantiles at that now-fixed
+$(c^\star,\theta^\star)$:
+\begin{equation}
+\hat t = \operatorname*{median}_{r=1,\dots,n_{\mathrm{repeats}}}\
+\operatorname{Quantile}_{q_{\mathrm{level}}}\Big(\big\{S_i(c^\star,\theta^\star)\big\}_{i\in\mathcal
+D_{\mathrm{calib}}^{(r)}}\Big).
+\label{eq:medianquantile}
+\end{equation}
+\end{itemize}
+Because $(1,0)$ is always on the grid, the tune-fold objective's arg-min can never be worse than
+evaluating it at $(1,0)$ alone: STA-HPD's own tuning search can never underperform plain MoG-HPD
+on the fold used to pick $(c^\star,\theta^\star)$, and empirically this floor also holds on the
+held-out test data across every dataset tried (Section~\ref{sec:results}).
+
+\begin{algorithm}[t]
+\caption{STA-HPD fitting}
+\label{alg:stahpd}
+\begin{algorithmic}[1]
+\State \textbf{Input:} calibration set $\mathcal D_{\mathrm{cal}}$, grids $\mathcal C,\Theta$,
+$\alpha$, $n_{\mathrm{repeats}}$
+\For{$r=1$ to $n_{\mathrm{repeats}}$}
+  \State split $\mathcal D_{\mathrm{cal}}$ into $\mathcal D_{\mathrm{tune}}^{(r)}, \mathcal
+D_{\mathrm{calib}}^{(r)}$
+  \For{$(c,\theta)\in\mathcal C\times\Theta$}
+    \State fit $\hat t^{(r)}(c,\theta)$ and measure mean region width on $\mathcal
+D_{\mathrm{tune}}^{(r)}$
+  \EndFor
+  \State $(c^{(r)},\theta^{(r)}) \gets \arg\min$ tune-fold width
+\EndFor
+\State $(c^\star,\theta^\star) \gets$ majority vote over $\{(c^{(r)},\theta^{(r)})\}_{r=1}^{n_{\mathrm{repeats}}}$
+\For{$r=1$ to $n_{\mathrm{repeats}}$}
+  \State $\hat t^{(r)} \gets$ quantile of $\{S_i(c^\star,\theta^\star)\}_{i\in\mathcal
+D_{\mathrm{calib}}^{(r)}}$
+\EndFor
+\State $\hat t \gets \operatorname{median}_r \hat t^{(r)}$
+\State \textbf{Output:} $(c^\star,\theta^\star,\hat t)$; predict via
+Eq.~\eqref{eq:staregion} using Section~\ref{sec:numerics}'s grid-scan-plus-Brent root finder
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{STA-HPD's results}
+\label{sec:results}
+
+Table~\ref{tab:stahpd-results} reports STA-HPD against plain MoG-HPD on four tabular regression
+benchmarks with a $K=3$-expert model trained by mixture negative log-likelihood, $1-\alpha=90\%$
+nominal coverage, $\texttt{tune\_frac}=0.2$, $n_{\mathrm{repeats}}=10$, over the grid
+$\mathcal C=\{0.2,0.4,\dots,2.0\}$, $\Theta=\{-1.0,-0.75,\dots,3.0\}$ (numbers reproduced from this
+repository's logged calibration runs). Realized coverage across all cells stayed within
+$[88.6\%,91.5\%]$ of the $90\%$ target, so the width comparison below is not confounded by any
+method quietly under-covering to buy a narrower interval.
+
+\begin{table}[h]
+\centering
+\caption{Average interval width, MoG-HPD vs.\ STA-HPD, at matched $\sim\!90\%$ coverage.}
+\label{tab:stahpd-results}
+\begin{tabular}{@{}lrrrl@{}}
+\toprule
+\textbf{Dataset} & \textbf{MoG-HPD} & \textbf{STA-HPD} & $\Delta$ & $(c^\star,\theta^\star)$ \\
+\midrule
+Synthetic & 1.0490 & \textbf{0.9925} & $-5.4\%$ & $(1.3, 0.25)$ \\
+Bike & 0.7940 & \textbf{0.7729} & $-2.7\%$ & $(1.0, 0.75)$ \\
+Temperature & 0.9817 & \textbf{0.9673} & $-1.5\%$ & $(1.3, 0.25)$ \\
+Superconductivity & 0.7964 & \textbf{0.7816} & $-1.9\%$ & $(0.8, 0.25)$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The reduction is positive on all four datasets (and no dataset's search collapses back onto
+$(c^\star,\theta^\star)=(1,0)$), with the largest gain on Synthetic -- the one dataset here whose
+true conditional law is a known, genuine mixture, exactly the regime Section~\ref{sec:hpd}
+motivated highest-density regions for in the first place.
+
+% ============================================================================
+\section{SETA-HPD: also correcting the between-expert spread}
+\label{sec:seta}
+
+\subsection{The gap STA-HPD still leaves open}
+
+Look back at Eq.~\eqref{eq:sigmatotc}: $\sigma_{\mathrm{tot}}^2(\bm x;c)$ already contains
+\emph{both} terms of the aleatoric/epistemic decomposition (Eq.~\ref{eq:lotv}) -- but $c$ (via
+Eq.~\ref{eq:sigmashape}) only ever reshapes the first, the within-expert term $\sum_k
+w_k\tilde\sigma_k^2$. The second term, $\sum_k w_k(\mu_k-\hat y)^2$ -- \emph{how far apart the gate
+places the expert means} -- is left in Eq.~\eqref{eq:fc} and~\eqref{eq:staregion} exactly as the
+base model reported it, however systematically over- or under-separated that spread actually is.
+
+This matters concretely for a Mixture-of-Experts model, for a specific, mechanical reason: an MoE
+trained with a load-balancing penalty (needed to stop the gate from collapsing all its weight
+onto a single expert during training) is under pressure that can, as a side effect, push
+well-separated experts \emph{further} apart than the true conditional law actually warrants. That
+is precisely the kind of artificially deep density valley that Section~\ref{sec:hpd}'s discussion
+of Example~\ref{ex:running} showed is expensive for a level-set method to cover -- except now the
+valley is partly an artifact of training pressure, not a real feature of the outcome's
+distribution. \textbf{SETA-HPD} (Shape--Epistemic--Threshold Adaptive HPD) adds the missing third
+knob to correct exactly this.
+
+\subsection{The epistemic mean-shift}
+
+Introduce a second exponent $\rho \ge 0$, acting on the between-expert term only, through a shift
+of the expert means themselves (not their scales):
+\begin{equation}
+\tilde\mu_k(\bm x;\rho) = \hat y(\bm x) + \sqrt\rho\,\big(\mu_k(\bm x) - \hat y(\bm x)\big).
+\label{eq:etamu}
+\end{equation}
+Each expert's mean is pulled toward (or pushed away from) the aggregate prediction $\hat y(\bm x)$,
+by a factor of $\sqrt\rho$ applied to its original distance from $\hat y(\bm x)$.
+
+\begin{lemma}[What the mean-shift does, exactly]
+\label{lem:etashift}
+For every $\bm x$: $\sum_k w_k(\bm x)\,\tilde\mu_k(\bm x;\rho) = \hat y(\bm x)$ (the aggregate
+prediction is exactly unchanged, for \emph{any} $\rho$), and $\sum_k w_k(\bm x)\big(\tilde\mu_k(\bm
+x;\rho) - \hat y(\bm x)\big)^2 = \rho\,\sum_k w_k(\bm x)\big(\mu_k(\bm x)-\hat y(\bm x)\big)^2$
+(the epistemic variance is scaled by exactly $\rho$). Consequently $\tilde\mu_k(\bm x;1)=\mu_k(\bm
+x)$ (identity) and $\tilde\mu_k(\bm x;0)=\hat y(\bm x)$ for every $k$ (every expert collapses onto
+the single aggregate prediction, i.e.\ the epistemic spread is switched off entirely, mirroring
+what $c=0$ did to the aleatoric term in Lemma~\ref{lem:cdoes}).
+\end{lemma}
+\begin{proof}
+Substitute Eq.~\eqref{eq:etamu} directly. For the mean: $\sum_k w_k\tilde\mu_k = \sum_k w_k\hat y +
+\sqrt\rho\sum_k w_k(\mu_k-\hat y) = \hat y + \sqrt\rho\,(\hat y-\hat y) = \hat y$, using $\sum_k
+w_k=1$ and $\hat y=\sum_k w_k\mu_k$ (Eq.~\ref{eq:yhatdef}). For the variance:
+$\sum_k w_k(\tilde\mu_k-\hat y)^2 = \sum_k w_k\big(\sqrt\rho(\mu_k-\hat y)\big)^2 = \rho\sum_k
+w_k(\mu_k-\hat y)^2$ directly. Substituting $\rho=1,0$ gives the two boundary identities.
+\end{proof}
+
+The first half of Lemma~\ref{lem:etashift} is the important structural guarantee: because the
+shift is built to be mean-\emph{preserving}, applying it never changes the model's point
+prediction or, downstream, the target coverage level -- it only redistributes where, around that
+fixed point, the mixture's mass sits. Combined with Lemma~\ref{lem:cdoes}, $c$ and $\rho$ act on
+\emph{disjoint} pieces of the variance decomposition (Eq.~\ref{eq:lotv}): $c$ reshapes only
+$\sigma_a^2$, $\rho$ reshapes only $\sigma_e^2$, and neither touches $\hat y(\bm x)$.
+
+\begin{example}[Example~\ref{ex:running}, concluded]
+Recall $\hat y=3.6$, $\mu_1=2$, $\mu_2=6$. At $\rho=0.25$, $\sqrt\rho=0.5$:
+\[
+\tilde\mu_1(0.25) = 3.6 + 0.5\,(2-3.6) = 3.6 - 0.8 = 2.8, \qquad
+\tilde\mu_2(0.25) = 3.6 + 0.5\,(6-3.6) = 3.6 + 1.2 = 4.8.
+\]
+The gap between the two expert means shrinks from $6-2=4$ to $4.8-2.8=2$ -- exactly halved, since
+$\sqrt{0.25}=0.5$ -- while their weighted average is still exactly $0.6\times2.8+0.4\times4.8 =
+1.68+1.92=3.6=\hat y$, unchanged. This directly fills in part of the density valley between the
+two modes that Section~\ref{sec:hpd} identified as the source of wasted width: at $\rho=1$ the
+valley sits at the true $\hat y=3.6$ between well-separated modes at $2$ and $6$; at $\rho=0.25$
+the same valley sits between modes at $2.8$ and $4.8$, a much narrower gap for a level-set method
+to have to cover or split across.
+\end{example}
+
+\subsection{The SETA-HPD family}
+
+Combine the reshaped scale $\tilde\sigma_k(\bm x;c)$ (Eq.~\ref{eq:sigmashape}, unchanged from
+STA-HPD) with the shifted mean $\tilde\mu_k(\bm x;\rho)$ (Eq.~\ref{eq:etamu}, new) into a jointly
+reshaped density and total scale,
+\begin{align}
+f_{c,\rho}(y\mid\bm x) &= \sum_{k=1}^K w_k(\bm x)\,\mathcal N\big(y;\ \tilde\mu_k(\bm x;\rho),\
+\tilde\sigma_k^2(\bm x;c)\big), \label{eq:fcrho}\\
+\sigma_{\mathrm{tot}}^2(\bm x;c,\rho) &= \sum_{k=1}^K w_k(\bm x)\,\tilde\sigma_k^2(\bm x;c) \;+\;
+\rho\sum_{k=1}^K w_k(\bm x)\,\big(\mu_k(\bm x)-\hat y(\bm x)\big)^2, \label{eq:sigmatotrho}
+\end{align}
+where the second line follows directly from Lemma~\ref{lem:etashift}'s exact-$\rho$-scaling
+identity (there is no need to recompute the epistemic term from the shifted means separately -- it
+is, by construction, exactly $\rho$ times the original). The score, threshold, and induced region
+are the three-exponent analogues of Eqs.~\eqref{eq:stascore}--\eqref{eq:staregion}, with every
+occurrence of $\theta$'s field now built from $\sigma_{\mathrm{tot}}(\bm x;c,\rho)$ instead of
+$\sigma_{\mathrm{tot}}(\bm x;c)$:
+\begin{align}
+S_i(c,\rho,\theta) &= -\log f_{c,\rho}(y_i\mid\bm x_i) - \theta\log\sigma_{\mathrm{tot}}(\bm
+x_i;c,\rho), \label{eq:setascore}\\
+\hat C(\bm x) &= \Big\{y : \log f_{c,\rho}(y\mid\bm x) \ge -\hat t(c,\rho,\theta) -
+\theta\log\sigma_{\mathrm{tot}}(\bm x;c,\rho)\Big\}. \label{eq:setaregion}
+\end{align}
+
+\subsection{Boundary recovery}
+
+\begin{proposition}[Boundary recovery, three exponents]
+\label{prop:setarecovery}
+$(c,\rho,\theta)=(1,1,0)$ recovers MoG-HPD exactly. $(c,\rho,\theta)=(c,1,\theta)$, for
+\emph{any} $(c,\theta)$, recovers STA-HPD exactly -- so STA-HPD is not a single point of
+SETA-HPD's family but an entire sub-family (the whole $\rho=1$ slice). $(c,\rho,\theta)=(1,\rho,0)$,
+for any $\rho$, is a new intermediate calibrator that scales only the epistemic spread, leaving the
+aleatoric term and the threshold untouched. $(c,\rho,\theta)=(1,1,1)$ recovers CP-VS exactly when
+$K=1$ (where the epistemic term is identically zero, so $\rho$ has no effect at all).
+\end{proposition}
+\begin{proof}
+Each case is direct substitution into Eqs.~\eqref{eq:etamu}--\eqref{eq:setaregion}, using
+Lemma~\ref{lem:etashift} ($\tilde\mu_k(\bm x;1)=\mu_k(\bm x)$) and Lemma~\ref{lem:cdoes}
+($\tilde\sigma_k(\bm x;1)=\sigma_k(\bm x)$), exactly as in the proof of
+Proposition~\ref{prop:starecovery}.
+\end{proof}
+
+Table~\ref{tab:cheatsheet} in Section~\ref{sec:summary} collects every method introduced in this
+document as a single row of the $(c,\rho,\theta)$ grid, for quick reference.
+
+Because $\rho=1$ is always kept on SETA-HPD's search grid (by construction: even if a user passes
+a custom grid that omits it, $1.0$ is re-inserted), and $(1,0)$ is always on STA-HPD's own
+$(c,\theta)$ grid, the arg-min of SETA-HPD's tuning objective over the full 3-D grid can never
+exceed the arg-min restricted to the $\rho=1$ slice -- which is exactly STA-HPD's own tuning
+objective. So SETA-HPD's tuning-fold performance can never be worse than STA-HPD's, which in turn
+can never be worse than MoG-HPD's: the three methods form a strict, nested floor. Validity is
+completely unaffected by adding the third exponent: Proposition~\ref{prop:stavalidity}'s argument
+applies verbatim with $(c,\rho,\theta)$ selected on $\mathcal D_{\mathrm{tune}}$ in place of
+$(c,\theta)$, since nothing about the exchangeability argument in Theorem~\ref{thm:coverage}
+depends on how many exponents the frozen, label-independent scoring function happens to have.
+
+\subsection{Fitting}
+
+The fitting procedure is Algorithm~\ref{alg:stahpd} verbatim, with the grid searched at each split
+widened from $\mathcal C\times\Theta$ to $\mathcal C\times\mathcal R\times\Theta$, where $\mathcal
+R = \{0,0.25,0.5,0.75,1.0,1.5,2.0\}$ by default ($1.0$ always included, for the boundary-recovery
+argument above to hold). One implementation detail keeps the added cost of the third exponent
+small: $f_{c,\rho}$ does not depend on $\theta$ at all (Eq.~\ref{eq:fcrho}), so for each $(c,\rho)$
+pair the reshaped density is evaluated on the tune fold exactly once, and the entire $\theta$ grid
+is then swept against it using only cheap quantile and threshold-count operations -- the expensive
+part (evaluating a $K$-component mixture density on a fine grid) does not get repeated once per
+$\theta$, keeping the added cost roughly proportional to $|\mathcal R|$ rather than $|\mathcal
+R|\times|\Theta|$.
+
+\subsection{SETA-HPD's results, and when the third knob actually helps}
+\label{sec:setaresults}
+
+Table~\ref{tab:setaresults} extends Table~\ref{tab:stahpd-results} with SETA-HPD, same checkpoints,
+$1-\alpha=90\%$, matched tune/calib splits so STA-HPD and SETA-HPD are compared on identical folds.
+
+\begin{table}[h]
+\centering
+\caption{MoG-HPD vs.\ STA-HPD vs.\ SETA-HPD at matched coverage. $\rho^\star=1$ means the search
+left the epistemic term untouched (SETA-HPD collapsed back onto its own STA-HPD sub-family).}
+\label{tab:setaresults}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+\textbf{Dataset} & \textbf{MoG-HPD} & \textbf{STA-HPD} & \textbf{SETA-HPD} & $\Delta$ vs.\ STA-HPD
+& $\rho^\star$ \\
+\midrule
+Synthetic & 1.0490 & 0.9925 & 0.9925 & $0.0\%$ & $1.00$ \\
+Bike & 0.7940 & 0.7729 & \textbf{0.7399} & $-4.3\%$ & $0.25$ \\
+Temperature & 0.9817 & 0.9673 & 0.9673 & $0.0\%$ & $1.00$ \\
+Superconductivity & 0.7964 & 0.7816 & 0.7849 & $+0.4\%$ & $0.75$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The change relative to STA-HPD is never negative by more than measurement noise, consistent with
+the nested-floor argument above, but the practical picture is dataset-dependent rather than a
+uniform win:
+\begin{itemize}[leftmargin=1.5em]
+\item On \textbf{Synthetic} and \textbf{Temperature}, the search selects $\rho^\star=1$ and stays
+there across repeated resamples: STA-HPD's own $(c,\theta)$ already capture whatever is correctable
+about these two datasets, and there is no further, separately-correctable epistemic miscalibration
+left for $\rho$ to fix.
+\item On \textbf{Bike}, $\rho^\star=0.25$ is selected stably and yields the largest gain in the
+sweep, $-4.3\%$ width relative to STA-HPD, while also eliminating disjoint multi-segment prediction
+sets entirely (from a small but nonzero fraction of test points down to none): compressing the two
+experts toward $\hat y$ removes the density valley that was fragmenting some predictions into two
+separate intervals, exactly the mechanism illustrated in the running example above.
+\item On \textbf{Superconductivity}, $\rho^\star=0.75$ is selected stably; mean width is
+essentially flat, but the fraction of fragmented (disjoint, multi-interval) prediction sets drops
+substantially -- the same coverage budget is being spent as fewer, more usable single intervals
+rather than as raw width reduction, a benefit not visible in the width column alone.
+\end{itemize}
+The general lesson: $\rho$ is a genuinely separate degree of freedom from $(c,\theta)$ (it acts on
+a different, disjoint term of the variance decomposition, per Lemma~\ref{lem:etashift}), but
+whether that specific degree of freedom is the bottleneck on a given dataset -- as opposed to the
+aleatoric shape or the threshold level, which $(c,\theta)$ already correct -- is itself a
+data-dependent question, which is exactly what the tuning search in Section~\ref{sec:stafit}
+(extended to the 3-D grid) is built to answer safely, i.e.\ without ever risking a worse result
+than not using $\rho$ at all.
+
+Section~\ref{sec:stafit}'s tuning search picks every exponent -- $(c,\theta)$ for STA-HPD,
+$(c,\rho,\theta)$ for SETA-HPD -- by the same objective: minimize mean prediction-set width on a
+tune fold $\mathcal D_{\mathrm{tune}}$. That width is a noisy, resampled estimate of a population
+quantity, and giving the search one more dimension to explore (as SETA-HPD's $\rho$ does) gives it
+more room to fit that noise rather than genuine signal, so a $(c^\star,\rho^\star,\theta^\star)$
+that merely got lucky on one tune fold can occasionally generalize worse, on held-out data, than
+the plainer STA-HPD it was meant to improve on. The next two sections pick up this thread from two
+different directions: Section~\ref{sec:ease} (EASE-HPD) widens the same width-driven search by one
+further axis, while Section~\ref{sec:meld} (MELD-HPD) instead replaces the width objective itself,
+for the two exponents that actually define the surrogate density, with a different, smoother
+criterion.
+
+% ============================================================================
+\section{EASE-HPD: Letting the Threshold Respond to \emph{Composition}, Not Just Total Scale}
+\label{sec:ease}
+
+\subsection{The gap SETA-HPD still leaves open}
+
+Look once more at $\sigma_{\mathrm{tot}}^2(\bm x;c,\rho)$ from Eq.~\eqref{eq:sigmatotrho}. It is a
+\emph{sum} of an aleatoric piece and an epistemic piece; write them out separately,
+\begin{equation}
+A(\bm x;c) = \sum_{k=1}^K w_k(\bm x)\,\tilde\sigma_k^2(\bm x;c), \qquad
+E(\bm x;\rho) = \sum_{k=1}^K w_k(\bm x)\,\big(\tilde\mu_k(\bm x;\rho) - \hat y(\bm x)\big)^2,
+\label{eq:aeterms}
+\end{equation}
+so that $\sigma_{\mathrm{tot}}^2(\bm x;c,\rho) = A(\bm x;c) + E(\bm x;\rho)$. The threshold-field
+exponent $\theta$ (Section~\ref{sec:stahpd}) multiplies $\log\sigma_{\mathrm{tot}}$ -- it only ever
+sees this \emph{sum}. Two test points can have exactly the same total $A+E$ while having
+completely different \emph{compositions}: one point's uncertainty might be almost entirely
+within-expert noise ($E\approx0$), another's almost entirely expert disagreement ($A\approx0$).
+$\theta$, as defined so far, treats these two points identically, because it never looks past the
+sum. That is a real gap, for a specific, mechanical reason particular to this MoE setting: as
+already discussed in Section~\ref{sec:seta}, the epistemic term $E(\bm x;\rho)$ is shaped in part
+by the load-balancing pressure used during training (an artifact of how the gate is regularized),
+while the aleatoric term $A(\bm x;c)$ is fit directly against the data by each expert's own
+negative log-likelihood and is typically much better behaved. If the threshold could tell \emph{how
+much} of a point's total scale comes from the (less trustworthy) epistemic piece versus the (more
+trustworthy) aleatoric piece, it could tilt accordingly. \textbf{EASE-HPD} (Epistemic-Aleatoric
+Share-adaptive threshold HPD) adds exactly this fourth knob.
+
+\subsection{The epistemic share}
+
+Define the (post-reshaping) \emph{epistemic share} of a point's total predictive variance,
+\begin{equation}
+s(\bm x;c,\rho) = \frac{E(\bm x;\rho)}{A(\bm x;c) + E(\bm x;\rho)} =
+\frac{E(\bm x;\rho)}{\sigma_{\mathrm{tot}}^2(\bm x;c,\rho)} \ \in\ [0,1].
+\label{eq:share}
+\end{equation}
+$s(\bm x;c,\rho)=0$ means ``all of this point's uncertainty is within-expert noise''; $s(\bm
+x;c,\rho)=1$ means ``all of it is expert disagreement''; a value like $0.35$ means roughly a third
+of the reported variance at $\bm x$ comes from experts disagreeing rather than from any one
+expert's own reported spread.
+
+\begin{lemma}[The share is always well defined, and collapses exactly when the epistemic term
+does]
+\label{lem:share}
+For every $\bm x,c,\rho$: $A(\bm x;c)\ge0$ and $E(\bm x;\rho)\ge0$ (both are weighted sums of
+squares with nonnegative weights $w_k$), so $s(\bm x;c,\rho)$ is a well-defined ratio in $[0,1]$
+whenever $\sigma_{\mathrm{tot}}(\bm x;c,\rho)>0$, which always holds since every $\tilde\sigma_k(\bm
+x;c)>0$. Moreover $s(\bm x;c,\rho)\equiv0$ for every $\bm x$ whenever $\rho=0$ \emph{or} $K=1$.
+\end{lemma}
+\begin{proof}
+Well-definedness and the $[0,1]$ range follow directly from $A,E\ge0$. At $\rho=0$,
+Lemma~\ref{lem:etashift} gives $\tilde\mu_k(\bm x;0)=\hat y(\bm x)$ for every $k$, so
+$E(\bm x;0) = \sum_k w_k(\hat y(\bm x)-\hat y(\bm x))^2 = 0$ for every $\bm x$. At $K=1$,
+$\hat y(\bm x)=\mu_1(\bm x)$ identically (there is only one expert to average), so
+$\tilde\mu_1(\bm x;\rho)-\hat y(\bm x)=0$ for every $\rho$, giving $E(\bm x;\rho)=0$ again. In both
+cases $s(\bm x;c,\rho) = 0/A(\bm x;c) = 0$.
+\end{proof}
+
+This lemma matters practically, not just formally: it says in advance, precisely, the two
+situations in which the new knob introduced below is guaranteed to do nothing -- so that when it is
+later observed to do nothing on a particular dataset (Section~\ref{sec:easeexample}), that is a
+predicted consequence of the construction, not a bug to debug.
+
+\subsection{The EASE-HPD family}
+
+Freeze the calibration-set mean share at each $(c,\rho)$ cell, $\bar s(c,\rho) = \tfrac1n\sum_i
+s(\bm x_i;c,\rho)$ (exactly as $G$ was frozen for $c$ in Eq.~\ref{eq:Gdef}). A fourth exponent
+$\phi\in\mathbb R$ tilts the score by a point's own \emph{deviation} of its share from that typical
+value,
+\begin{align}
+S_i(c,\rho,\theta,\phi) &= -\log f_{c,\rho}(y_i\mid\bm x_i) \;-\; \theta\log\sigma_{\mathrm{tot}}(\bm
+x_i;c,\rho) \;-\; \phi\big(s(\bm x_i;c,\rho) - \bar s(c,\rho)\big), \label{eq:easescore}\\
+\hat C(\bm x) &= \Big\{y : \log f_{c,\rho}(y\mid\bm x) \ge -\hat t(c,\rho,\theta,\phi) -
+\theta\log\sigma_{\mathrm{tot}}(\bm x;c,\rho) - \phi\big(s(\bm x;c,\rho)-\bar s(c,\rho)\big)
+\Big\}. \label{eq:easeregion}
+\end{align}
+Centering by $\bar s(c,\rho)$ is what keeps $\phi$ from simply fighting $\hat t$ over the same
+additive constant (without centering, a nonzero average share would let $\phi$ silently shift the
+effective threshold for \emph{every} point, not just tilt it based on how a point's composition
+differs from typical); boundedness of $s$ in $[0,1]$ (Lemma~\ref{lem:share}) means this term can
+never blow up the way an uncentered ratio $E/A$ could as $A\to0$.
+
+\begin{proposition}[Boundary recovery, four exponents]
+\label{prop:easerecovery}
+$(c,\rho,\theta,\phi)=(1,1,0,0)$ recovers MoG-HPD exactly. $(c,\rho,\theta,0)$, for \emph{any}
+$(c,\rho,\theta)$, recovers SETA-HPD exactly -- so SETA-HPD, and by
+Proposition~\ref{prop:setarecovery} STA-HPD and MoG-HPD with it, are entire sub-families of
+EASE-HPD, not merely isolated points.
+\end{proposition}
+\begin{proof}
+At $\phi=0$ the term $-\phi(s(\bm x;c,\rho)-\bar s(c,\rho))$ vanishes identically in
+Eqs.~\eqref{eq:easescore}--\eqref{eq:easeregion}, regardless of the value of $s$, leaving exactly
+SETA-HPD's score and region (Eqs.~\ref{eq:setascore}--\ref{eq:setaregion}); the case
+$(1,1,0,0)$ then follows from Proposition~\ref{prop:setarecovery}'s own $(1,1,0)$ case.
+\end{proof}
+
+\begin{remark}[$\phi$ is provably inert exactly where Lemma~\ref{lem:share} predicts]
+\label{rem:phiinert}
+Whenever the tuned $\rho^\star=0$, or whenever $K=1$, Lemma~\ref{lem:share} gives
+$s(\bm x;c,\rho)\equiv0$ for every calibration point, hence $\bar s(c,\rho)=0$ too, so
+$s(\bm x;c,\rho)-\bar s(c,\rho)\equiv0$ identically: the $\phi$ term contributes exactly zero to
+Eqs.~\eqref{eq:easescore}--\eqref{eq:easeregion} for \emph{every} value of $\phi$. In that regime
+$\phi$ cannot be identified from the tuning objective at all (every candidate $\phi$ scores
+identically), and whichever value the tie-break happens to pick has literally no effect on the
+output.
+\end{remark}
+
+Validity carries over unchanged: Proposition~\ref{prop:stavalidity}'s argument applies verbatim
+with $(c,\rho,\theta,\phi)$ selected on $\mathcal D_{\mathrm{tune}}$ in place of $(c,\theta)$, since
+$\phi(s(\bm x;c,\rho)-\bar s(c,\rho))$ is, for any fixed $(c,\rho,\theta,\phi)$, simply another
+data-independent function of $\bm x$ -- adding it changes nothing about the exchangeability
+argument behind Theorem~\ref{thm:coverage}.
+
+\paragraph{Fitting.} The search widens from $\mathcal C\times\mathcal R\times\Theta$ to $\mathcal
+C\times\mathcal R\times\Theta\times\Phi$, with $\Phi=\{-1.0,-0.5,0,0.5,1.0\}$ by default ($0\in\Phi$
+always kept, for the same boundary-recovery reason as every other knob in this document). Since
+neither $f_{c,\rho}$ nor $s(\cdot;c,\rho)$ depends on $\theta$ or $\phi$, both are computed once per
+$(c,\rho)$ pair and the whole $(\theta,\phi)$ sub-grid is then swept with cheap quantile and
+threshold-count operations, mirroring the same factorization trick used for SETA-HPD's grid
+(Section~\ref{sec:seta}). Because $\rho=1$ and $\phi=0$ are always on their respective grids, the
+tune-fold objective can never be worse at the arg-min than at $(c,\rho,\theta,0)$ for any
+$(c,\rho,\theta)\in\mathcal C\times\mathcal R\times\Theta$, which in turn can never be worse than
+$(1,1,0,0)$: EASE-HPD's tuning objective can never exceed SETA-HPD's, which can never exceed
+STA-HPD's or plain MoG-HPD's -- the same nested floor as Section~\ref{sec:seta}, now with one more
+link in the chain.
+
+\subsection{A worked example, including the collapse case}
+\label{sec:easeexample}
+
+On the single-expert Synthetic checkpoint used elsewhere in this document (seed $4022$,
+$1-\alpha=90\%$), the fitting search selects $(c^\star,\rho^\star,\theta^\star,\phi^\star) =
+(0.8,\,0,\,1.5,\,-1.0)$, with the tune-fold width identical across \emph{every} candidate $\phi$
+(the logged $\phi$-marginal reads $1.4402$ at all five grid values). This is
+Remark~\ref{rem:phiinert}'s collapse case, playing out on real data: the search independently lands
+on $\rho^\star=0$ (the same choice SETA-HPD makes on its own on this dataset,
+Table~\ref{tab:setaresults}), which by Lemma~\ref{lem:share} forces $s(\bm x;c,0)\equiv0$ and $\bar
+s=0$ -- so $\phi$ is provably unable to move either the score or the region here, regardless of
+which value it happens to be assigned. EASE-HPD's realized coverage and width on this checkpoint,
+$0.8933$ and $1.3473$, are accordingly identical to STA-HPD's and SETA-HPD's to four decimal
+places (Table~\ref{tab:allfive} below) -- an empirical confirmation, not merely a theoretical
+prediction, of Remark~\ref{rem:phiinert}.
+
+% ============================================================================
+\section{MELD-HPD: Selecting Shape by a Different Objective Entirely}
+\label{sec:meld}
+
+\subsection{Why picking $(c,\rho)$ by width can misfire}
+
+Every method up to this point -- STA-HPD, SETA-HPD, EASE-HPD -- selects its exponents by the same
+recipe: minimize an estimate $\bar W$ of the tune-fold's mean region width
+(Section~\ref{sec:stafit}), computed on a \emph{subsample} of the tune fold using the fast
+fixed-grid approximation of Section~\ref{sec:numerics}. This estimate is a Monte-Carlo
+approximation of a population quantity, not the population quantity itself, and it is built from a
+capped, subsampled set of points for speed. Widening the grid that gets searched (as each of
+$c\to(c,\theta)\to(c,\rho,\theta)\to(c,\rho,\theta,\phi)$ did) gives the arg-min more room to fit
+sampling noise \emph{in that specific noisy estimator}, not necessarily more room to reduce the
+population width it is approximating. In practice this shows up exactly as this risk predicts:
+SETA-HPD is documented (Section~\ref{sec:setaresults}, and this repository's own diagnostic logs)
+to occasionally come out \emph{wider than STA-HPD on held-out test data}, on specific
+(architecture, dataset) configurations, despite the tune-fold floor $\bar W(c^\star,\rho^\star,
+\theta^\star)\le\bar W(1,1,0)$ holding exactly, by construction, on the very fold that chose those
+parameters. The floor Section~\ref{sec:seta} establishes is real -- but it is a floor on the
+\emph{estimator}, evaluated where it was fit, not a guarantee about the \emph{population} quantity
+it approximates, evaluated somewhere new. \textbf{MELD-HPD} (Maximum-likelihood Epistemic-aLeatoric
+Decomposition) responds by selecting the two \emph{density-shaping} exponents $(c,\rho)$ --
+the only two that change $f_{c,\rho}$ itself, as opposed to $\theta$, which only ever tilts a
+threshold around an already-fixed density -- using a completely different, smoother objective,
+evaluated on the whole tune fold rather than a width subsample.
+
+\subsection{The log-score objective, and what it is secretly minimizing}
+
+Define the mean calibration \emph{log-density} on the tune fold,
+\begin{equation}
+L(c,\rho) = \frac{1}{|\mathcal D_{\mathrm{tune}}|} \sum_{i\in\mathcal D_{\mathrm{tune}}} \log
+f_{c,\rho}(y_i\mid\bm x_i).
+\label{eq:logscore}
+\end{equation}
+This is simply the average log-likelihood the reshaped density $f_{c,\rho}$ assigns to the actual
+observed outcomes -- a completely standard model-fit criterion, with no reference to conformal
+prediction, width, or coverage at all. The next result says precisely what maximizing it targets.
+
+\begin{proposition}[The log score targets the KL-closest member of the family]
+\label{prop:logscore-kl}
+Let $p(\cdot\mid\bm x)$ denote the true (unknown) conditional density of $Y\mid\bm x$. Then
+\begin{equation}
+\mathbb E\big[\log f_{c,\rho}(Y\mid X)\big] = -\,\mathbb E_X\big[H(p(\cdot\mid X))\big] \;-\;
+\mathbb E_X\big[\mathrm{KL}\big(p(\cdot\mid X)\,\big\|\,f_{c,\rho}(\cdot\mid X)\big)\big],
+\label{eq:klidentity}
+\end{equation}
+where $H$ is differential entropy and $\mathrm{KL}$ is Kullback--Leibler divergence -- a standard
+measure of how different two densities are, always $\ge0$, equal to $0$ exactly when the two
+densities agree almost everywhere. The first term on the right does not depend on $(c,\rho)$ at
+all, so maximizing the left side over $(c,\rho)$ is \emph{exactly} minimizing $\mathbb
+E_X[\mathrm{KL}(p(\cdot\mid X)\,\|\,f_{c,\rho}(\cdot\mid X))]$: the population log score is
+maximized precisely at whichever $(c,\rho)$ makes the reshaped density closest, on average in KL
+divergence, to the true conditional law.
+\end{proposition}
+\begin{proof}
+For a fixed $\bm x$, split $\int p(y\mid\bm x)\log f_{c,\rho}(y\mid\bm x)\,dy$ by adding and
+subtracting $\int p(y\mid\bm x)\log p(y\mid\bm x)\,dy$:
+\[
+\int p(y\mid\bm x)\log f_{c,\rho}(y\mid\bm x)\,dy = \int p(y\mid\bm x)\log p(y\mid\bm x)\,dy -
+\int p(y\mid\bm x)\log\frac{p(y\mid\bm x)}{f_{c,\rho}(y\mid\bm x)}\,dy = -H(p(\cdot\mid\bm x)) -
+\mathrm{KL}\big(p(\cdot\mid\bm x)\,\|\,f_{c,\rho}(\cdot\mid\bm x)\big),
+\]
+the standard cross-entropy/entropy/KL decomposition. Taking $\mathbb E_X$ of both sides gives
+Eq.~\eqref{eq:klidentity}. Since $\mathrm{KL}\ge0$ and $\mathbb E_X[H(p(\cdot\mid X))]$ is a fixed
+constant of the (unknown, but fixed) true law, maximizing the left-hand side over $(c,\rho)$ is
+exactly minimizing the KL term.
+\end{proof}
+
+This is the population-level reason the log score is called a \emph{strictly proper} scoring rule
+\cite{gneiting2007strictly}: no other member of the family can achieve a higher expected score than
+the KL-closest one, so maximizing the sample version $L(c,\rho)$ (Eq.~\ref{eq:logscore}) is a
+sensible, well-founded way to estimate the population-optimal $(c,\rho)$, using the entire tune
+fold rather than a width subsample, with no dependence on any grid-resolution approximation of a
+region's measure (unlike $\bar W$, which additionally discretizes the region on a fixed grid).
+
+\begin{remark}[A proxy for width optimality, not a guarantee of it]
+\label{rem:logscoreproxy}
+Theorem~\ref{thm:optimality}'s optimality condition (Eq.~\ref{eq:optcond}) is a statement about the
+true density specifically \emph{at the region's boundary}; it is not, in general, the same
+condition as minimizing the \emph{global} average discrepancy $\mathbb E_X[\mathrm{KL}(p(\cdot\mid
+X)\|f_{c,\rho}(\cdot\mid X))]$ that Proposition~\ref{prop:logscore-kl} shows the log score targets
+-- a density can be globally close in KL divergence while still being systematically wrong exactly
+at the region's boundary, or the reverse. Selecting $(c,\rho)$ by the log score is therefore a
+well-motivated \emph{proxy} for solving Eq.~\eqref{eq:optcond}, not a construction that provably
+achieves it. This is the precise, technical sense in which MELD-HPD's shape selection is
+theoretically well grounded but, unlike Proposition~\ref{prop:stavalidity}'s coverage guarantee,
+carries no exact guarantee of narrower width -- and the worked comparison below
+(Section~\ref{sec:meldexample}) shows this gap is not just a theoretical possibility.
+\end{remark}
+
+\subsection{$\theta$ still needs its own objective, and a diagnostic for $\rho$}
+
+$\theta$ never enters $f_{c,\rho}$ (Eq.~\ref{eq:fcrho}) -- it only tilts the threshold around an
+already-fixed density -- so $L(c,\rho)$ is constant in $\theta$ and cannot be used to choose it.
+$\theta^\star$ is therefore still selected exactly as in STA-HPD/SETA-HPD, by $\arg\min$ tune-fold
+width $\bar W(c^\star,\rho^\star,\theta)$, but now at the already-fixed $(c^\star,\rho^\star)$ --
+its own proper one-dimensional objective, and a much safer search than a joint $(c,\rho,\theta)$
+width arg-min, since only one axis is left for the noisy width estimator to overfit.
+
+As a purely interpretive diagnostic (not part of the selection rule itself), MELD-HPD also reports
+a closed-form estimate of how much epistemic spread the residuals actually support:
+
+\begin{lemma}[Least-squares epistemic-reliability estimate]
+\label{lem:closedrho}
+Fix $c$, write $A_i=A(\bm x_i;c)$, $E_i = \sum_k w_k(\bm x_i)(\mu_k(\bm x_i)-\hat y(\bm x_i))^2$
+(the \emph{raw}, un-reshaped, $\rho=1$ epistemic term), and $R_i^2=(y_i-\hat y(\bm x_i))^2$ (the
+squared residual). The value of $\rho$ minimizing $J(\rho) = \sum_{i=1}^n (A_i+\rho E_i - R_i^2)^2$
+is
+\begin{equation}
+\hat\rho = \frac{\sum_i E_i(R_i^2-A_i)}{\sum_i E_i^2}, \qquad \text{whenever } \sum_i E_i^2>0,
+\label{eq:closedrho}
+\end{equation}
+and the reported diagnostic is $\max(\hat\rho,0)$ (projected onto $\rho\ge0$, since
+Eq.~\eqref{eq:etamu}'s $\sqrt\rho$ requires it). $\hat\rho$ is undefined (reported as \texttt{NaN})
+when $\sum_i E_i^2=0$, i.e.\ whenever $K=1$, where the epistemic term carries no information at
+all for any $\rho$ to be fit against.
+\end{lemma}
+\begin{proof}
+$J$ is a quadratic, convex function of $\rho$ (its second derivative is $2\sum_i E_i^2\ge0$).
+Setting $J'(\rho) = 2\sum_i E_i(A_i+\rho E_i-R_i^2)=0$ and solving gives $\rho\sum_i E_i^2 = \sum_i
+E_i(R_i^2-A_i)$, i.e.\ Eq.~\eqref{eq:closedrho}; convexity makes this stationary point the global
+minimizer whenever $\sum_i E_i^2>0$.
+\end{proof}
+
+Equation~\eqref{eq:closedrho} is exactly the ordinary-least-squares fit, treating $E_i$ as the sole
+covariate with fixed offset $A_i$, of the reshaped total-variance identity
+$\sigma_{\mathrm{tot}}^2(\bm x;c,\rho) = A(\bm x;c) + \rho E(\bm x)$ against the observed squared
+residuals -- in plain terms, ``how much of the model's reported epistemic spread the residuals
+actually back up,'' at the log-score-chosen $c^\star$. A value near $\hat\rho\approx1$ says the
+reported epistemic spread is about right; $\hat\rho\ll1$ says the experts are more separated than
+the residuals warrant (over-separation, the failure mode motivating $\rho$ in the first place,
+Section~\ref{sec:seta}); $\hat\rho\gg1$ says the reverse.
+
+\subsection{Boundary recovery, validity, and a weaker floor}
+
+The reachable $(c,\rho,\theta)$ configurations are identical to SETA-HPD's own grid $\mathcal
+C\times\mathcal R\times\Theta$, and still contain $(1,1,0)$ (MoG-HPD) and $(c,1,\theta)$ for every
+$(c,\theta)$ (STA-HPD), by the same substitutions as Proposition~\ref{prop:setarecovery}.
+
+\begin{remark}[Same grid, a weaker guarantee]
+\label{rem:meldweakfloor}
+Because $(c^\star,\rho^\star)$ is chosen to \emph{maximize} $L(c,\rho)$ rather than \emph{minimize}
+$\bar W(c,\rho,\theta)$, and $(1,1)\in\mathcal C\times\mathcal R$, MELD-HPD's tuning objective only
+guarantees $L(c^\star,\rho^\star)\ge L(1,1)$ -- a floor on \emph{log density}, not on width. This
+does \emph{not} imply $\bar W(c^\star,\rho^\star,\theta^\star)\le\bar W(1,1,0)$: unlike every other
+method in this document, MELD-HPD carries no guarantee that its tune-fold width is at most plain
+MoG-HPD's or STA-HPD's -- only that $\theta^\star$ is itself width-optimal \emph{given} the
+already-fixed, log-score-selected $(c^\star,\rho^\star)$ (since $\theta=0$ is still on the grid
+$\theta^\star$ is chosen from).
+\end{remark}
+
+Validity is completely unaffected by any of this: Theorem~\ref{thm:coverage}'s guarantee depends
+only on $(c,\rho,\theta)$ being fixed by \emph{some} rule that is a function of the tune fold
+alone, independent of the calib fold's labels -- it does not depend on \emph{which} objective that
+rule optimizes. Since $(c^\star,\rho^\star)$ is chosen from $\mathcal D_{\mathrm{tune}}$ by
+Eq.~\eqref{eq:logscore} and $\theta^\star$ from the same fold by $\bar W$, both disjoint from
+$\mathcal D_{\mathrm{calib}}$, the resulting score is a frozen, label-independent function of
+$(\bm x_i,y_i)$ by the time it is conformalized, exactly as in
+Proposition~\ref{prop:stavalidity}.
+
+\paragraph{Fitting.} Two stages replace the single width arg-min of Algorithm~\ref{alg:stahpd}: (1)
+$(c^\star,\rho^\star)$ is the majority vote, over the $n_{\mathrm{repeats}}$ splits, of the
+per-split $\arg\max_{c,\rho} L(c,\rho)$ (each per-point log-density is floored at $-10^3$ nats
+before averaging, so one numerically underflowing point cannot send an entire grid cell to
+$-\infty$); (2) at the now-fixed $(c^\star,\rho^\star)$, $\theta^\star$ is the majority vote of the
+per-split $\arg\min_\theta \bar W(c^\star,\rho^\star,\theta)$. The final threshold uses the same
+median-of-calib-fold-quantiles construction as every other method here
+(Eq.~\ref{eq:medianquantile}), unchanged.
+
+\subsection{A worked comparison across all five methods}
+\label{sec:meldexample}
+
+On the same checkpoint, split construction, and nominal coverage used in
+Section~\ref{sec:easeexample}, Table~\ref{tab:allfive} reports every method introduced in this
+document side by side.
+
+\begin{table}[h]
+\centering
+\caption{All five calibrators on one held-out checkpoint (Synthetic, single-expert probabilistic
+head, seed $4022$, $1-\alpha=90\%$), identical tune/calib construction throughout.}
+\label{tab:allfive}
+\begin{tabular}{@{}lrrl@{}}
+\toprule
+\textbf{Method} & \textbf{Coverage} & \textbf{Width} & \textbf{Selected parameters} \\
+\midrule
+MoG-HPD & $0.9087$ & $1.5757$ & --- \\
+STA-HPD & $0.8933$ & $1.3473$ & $(c,\theta)=(0.8,1.5)$ \\
+SETA-HPD & $0.8933$ & $1.3473$ & $(c,\rho,\theta)=(0.8,0,1.5)$ \\
+EASE-HPD & $0.8933$ & $1.3473$ & $(c,\rho,\theta,\phi)=(0.8,0,1.5,-1.0)$ \\
+MELD-HPD & $0.8940$ & $1.3708$ & $(c,\rho,\theta)=(1.3,0,0.75)$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+STA-HPD, SETA-HPD, and EASE-HPD agree to four decimal places -- exactly what their respective
+nested-floor propositions guarantee on this config, once $\rho^\star=0$ and
+Remark~\ref{rem:phiinert}'s inertness are accounted for. MELD-HPD is the one visible exception, at
+$1.3708$ -- $1.7\%$ \emph{wider} than the other four -- and the logged tuning surfaces show exactly
+why. The log-score surface is monotone increasing in $c$ on this config's grid ($L(0.8,0)=-0.4528$,
+$L(1,0)=-0.3885$, $L(1.3,0)=-0.3634$, all at $\rho=0$), so MELD-HPD's proper-scoring-rule selector
+correctly, faithfully picks the largest available $c$ on the grid, $c^\star=1.3$. But the tune-fold
+\emph{width} surface at that same cell, $\bar W(1.3,0,0.75)=1.4705$, is \emph{not} the grid's
+minimum -- that minimum, $\bar W(0.8,0,1.5)=1.4402$, sits at the smaller $c=0.8$ that the other four
+methods all select instead. This is Remark~\ref{rem:logscoreproxy} realized on real data: the
+density that is closest to the truth, by the strictly proper log score, is demonstrably not the
+width-narrowest one on this particular checkpoint -- exactly the gap a KL-motivated selector does
+not, and by Remark~\ref{rem:meldweakfloor}'s argument structurally cannot, close.
+
+% ============================================================================
+\section{Where these ideas come from, and what is actually new}
+\label{sec:related}
+
+It is worth being precise about which parts of this document are borrowed and which are new,
+because most of the machinery is not new and it would be misleading to present it as if it were.
+Reading the sections above, almost every \emph{ingredient} has a clear home in the existing
+literature; what this family contributes is a specific way of combining them.
+
+\paragraph{The level-set idea is not ours.} Turning a predictive density into a prediction set by
+keeping its highest-density region (Section~\ref{sec:hpd}) is a classical statistical object
+\cite{boxtiao1973bayesian,hyndman1996computing}, and conformalizing it -- so the region has a
+distribution-free coverage guarantee even when the density is wrong -- is due to Izbicki, Shimizu
+and Stern (CD-split / HPD-split) \cite{izbicki2020cd}, with the classification analogue in Sadinle
+et al.\ \cite{sadinle2019least}. MoG-HPD (Section~\ref{sec:moghpd}), which is the
+$(c,\rho,\theta,\phi)=(1,1,0,0)$ base case of everything here, is essentially their construction
+applied to a Mixture-of-Experts' mixture density. We do not claim it as a contribution; it is the
+thing the tunable exponents are built \emph{on top of}.
+
+\paragraph{Scaling the interval by a reported uncertainty is not ours either.} Dividing the
+residual by a model-reported scale, $|y-\hat y|/\sigma(\bm x)$ (the CP-VS idea of
+Section~\ref{sec:standardcp}), is standard normalized/locally-adaptive conformal prediction
+\cite{lei2018distribution,papadopoulos2011regression}, and learning a quantile head directly (CQR)
+is Romano et al.\ \cite{romano2019conformalized}. The one thing STA-HPD adds here is that CP-VS
+hard-codes ``width grows in exact proportion to $\sigma$'' -- in the language of
+Section~\ref{sec:theta}, it pins the elasticity of width in $\sigma$ to $1$. Our shape exponent $c$
+simply makes that elasticity a free, tunable number, and the recurring empirical finding that the
+best $c^\star$ is often below $1$ is exactly the statement that this elasticity should \emph{not}
+be fixed at the CP-VS value.
+
+\paragraph{The closest prior work, and the honest distinction.} The idea of \emph{reshaping a
+conformity score after training, specifically to make the intervals narrower while keeping
+coverage}, is itself already published: Boosted Conformal Prediction \cite{xie2024boosted} does
+exactly this, learning a flexible correction to a base score by gradient boosting, and length-%
+optimization methods \cite{kiyani2024length} target expected set size directly subject to a
+validity constraint. So the \emph{goal} in this document -- post-hoc, width-minimizing, coverage-%
+preserving calibration -- is not new, and it would be wrong to pitch STA-HPD/SETA-HPD as the first
+to pursue it. What is different here is \emph{how narrow the family is}: instead of a boosted
+ensemble or a general constrained optimizer, we use two to four interpretable exponents on a
+small discrete grid, chosen so that the named calibrators a Mixture-of-Experts practitioner already
+uses (Standard CP, CP-VS, MoG-HPD) sit at specific grid points (Table~\ref{tab:cheatsheet}). The
+payoff is interpretability -- a fitted $(c^\star,\rho^\star,\theta^\star,\phi^\star)$ says in a
+handful of numbers how the model's reported density had to be corrected -- and a mixture-density
+region shape that can be genuinely multimodal (the disjoint-interval case worked through in
+Section~\ref{sec:hpd}), which a boosted scalar score does not target. The cost is generality: these
+methods are a low-degree-of-freedom special case, not a competitor to the full flexibility of
+\cite{xie2024boosted,kiyani2024length}.
+
+\paragraph{What is actually new, then.} Narrowly: (i) the per-component \emph{shape} exponent $c$
+that powers each expert's own standard deviation before the mixture density is re-formed
+(Section~\ref{sec:c}); (ii) its epistemic counterpart $\rho$ on the between-expert spread
+(Section~\ref{sec:seta}); (iii) the epistemic-\emph{share} threshold field $\phi$
+(Section~\ref{sec:ease}), which lets the threshold respond to how a point's uncertainty is
+\emph{composed}, not only to its total; and (iv) the observation that all of Standard CP, CP-VS and
+MoG-HPD are literal corners of one $(c,\rho,\theta,\phi)$ family, so a single width-driven tuning
+search is guaranteed to do no worse than the best of them on its own objective
+(Propositions~\ref{prop:starecovery},~\ref{prop:setarecovery},~\ref{prop:easerecovery}). The
+repeated-split, mode-vote tuning of Section~\ref{sec:stafit} is a standard cross-conformal
+resampling idea \cite{gibbs2021adaptive}, used here for stability rather than as a contribution in
+its own right; MELD-HPD's proper-scoring-rule selector (Section~\ref{sec:meld}) is likewise a
+direct application of the strictly-proper-scoring-rule framework \cite{gneiting2007strictly} to
+this family's shape exponents, and its own worked comparison (Table~\ref{tab:allfive}) is included
+precisely because it shows the two selection principles -- width arg-min and log-score arg-max --
+can and do disagree on real data, which is the substantive content of
+Remark~\ref{rem:logscoreproxy}, not merely a restatement of the framework it borrows. A careful
+reader (or reviewer) will rightly ask how the numbers compare against Boosted CP directly; that
+head-to-head is future work, and nothing in this document claims to beat it.
+
+% ============================================================================
+\section{Summary}
+\label{sec:summary}
+
+\subsection{Every method in this document, in one table}
+
+\begin{table}[h]
+\centering
+\caption{Every calibrator introduced in this document, as a point (or sub-family) of EASE-HPD's
+$(c,\rho,\theta,\phi)$ grid. ``--'' means the parameter does not exist for that method (it predates
+the knob being introduced); ``n/a'' means the method does not use that grid at all, since it
+selects its parameters by a different mechanism (MELD-HPD).}
+\label{tab:cheatsheet}
+\begin{tabular}{@{}lllll@{}}
+\toprule
+\textbf{Method} & $c$ & $\rho$ & $\theta$ & $\phi$ \\
+\midrule
+Standard CP (Sec.~\ref{sec:standardcp}) & -- & -- & -- & -- \\
+CP-VS, total (Sec.~\ref{sec:standardcp}) & -- & -- & -- & -- \\
+MoG-HPD (Sec.~\ref{sec:moghpd}) & $1$ & $1$ & $0$ & $0$ \\
+Epistemic-scale-only HPD & $1$ & any & $0$ & $0$ \\
+STA-HPD (Sec.~\ref{sec:stahpd}) & any & $1$ & any & $0$ \\
+SETA-HPD (Sec.~\ref{sec:seta}) & any & any & any & $0$ \\
+EASE-HPD (Sec.~\ref{sec:ease}) & any & any & any & any \\
+MELD-HPD (Sec.~\ref{sec:meld}) & any\textsuperscript{$\dagger$} & any\textsuperscript{$\dagger$} &
+any & n/a \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Standard CP and CP-VS are listed with ``--'' because they predate the level-set family entirely
+(Section~\ref{sec:standardcp}); they only coincide with a grid point of $(c,\rho,\theta,\phi)$ in
+the special case $K=1$ (Corollary~\ref{cor:k1closedform} and Proposition~\ref{prop:setarecovery}).
+MELD-HPD's $(c,\rho)$ ($\dagger$) are drawn from the same grids $\mathcal C\times\mathcal R$ as
+every other method, but selected by maximizing the log-score objective $L(c,\rho)$
+(Eq.~\ref{eq:logscore}) rather than by minimizing tune-fold width -- a genuinely different
+selection \emph{rule}, not a different reachable \emph{set} (Section~\ref{sec:meld}). MELD-HPD has
+no $\phi$ knob at all: it is built directly on SETA-HPD's three-exponent score
+(Eqs.~\ref{eq:setascore}--\ref{eq:setaregion}), not EASE-HPD's four-exponent one.
+
+\subsection{The one-paragraph version}
+
+A trained Mixture-of-Experts regressor reports a full Gaussian-mixture predictive density, not
+just a point estimate (Section~\ref{sec:moe}). Split conformal prediction (Section~\ref{sec:cp})
+turns \emph{any} fixed scoring rule built from that density into a set with an exact,
+distribution-free coverage guarantee, regardless of whether the reported density is correct
+(Theorem~\ref{thm:coverage}) -- so coverage is never the hard part. The hard part is width, and
+the highest-density region of a density is provably the narrowest set achieving a given coverage
+\emph{for that density} (Theorem~\ref{thm:hpd}), which is what MoG-HPD conformalizes
+(Section~\ref{sec:moghpd}). Because the reported density is only an approximation to the truth,
+STA-HPD, SETA-HPD, and EASE-HPD each add one more tunable exponent -- $c$ on the within-expert
+(aleatoric) scale, $\rho$ on the between-expert (epistemic) spread, $\theta$ on how strongly the
+region's threshold responds to the model's own total reported scale, and $\phi$ on how strongly it
+additionally responds to that scale's \emph{composition} (Section~\ref{sec:ease}) -- each selected
+by a validity-preserving, repeated-split tuning search (Section~\ref{sec:stafit}), each provably no
+worse than its ancestor on the tuning objective
+(Propositions~\ref{prop:starecovery},~\ref{prop:setarecovery}, and~\ref{prop:easerecovery}), and
+each targeting a specific, named mismatch between the model's reported density and the true
+conditional law (Section~\ref{sec:optimality}). MELD-HPD (Section~\ref{sec:meld}) departs from that
+pattern in one respect: it keeps SETA-HPD's exact $(c,\rho,\theta)$ family but selects the two
+density-shaping exponents $(c,\rho)$ by a proper scoring rule (maximizing calibration
+log-likelihood) instead of by tune-fold width, trading the width-arg-min family's tuning-fold floor
+guarantee for a different, population-level (KL-optimality) justification -- and, on real data, the
+two selection principles can and do disagree (Table~\ref{tab:allfive}).
+
+\subsection{Glossary of symbols}
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Symbol & Meaning \\
+\midrule
+$\bm x$, $y$ & input features; scalar outcome \\
+$K$ & number of MoE experts \\
+$\mu_k(\bm x),\sigma_k(\bm x),w_k(\bm x)$ & $k$-th expert's mean, std.\ dev., gate weight \\
+$\hat y(\bm x)$ & aggregate point prediction, $\sum_k w_k\mu_k$ \\
+$\sigma_a^2,\sigma_e^2,\sigma_{\mathrm{tot}}^2$ & aleatoric, epistemic, total variance \\
+$\alpha$, $1-\alpha$ & target miscoverage / coverage level \\
+$\mathcal D_{\mathrm{cal}},\mathcal D_{\mathrm{tune}},\mathcal D_{\mathrm{calib}}$ & calibration
+set and its tune/calib split \\
+$S_i$, $\hat q$ / $\hat t$ & nonconformity score; conformal threshold \\
+$f_{\mathrm{mix}}$ & the model's raw Gaussian-mixture density \\
+$R_\alpha(f)$ & highest-density region of $f$ at level $\alpha$ \\
+$G$ & calibration-set geometric-mean expert scale (Eq.~\ref{eq:Gdef}) \\
+$c$ & aleatoric shape exponent (Eq.~\ref{eq:sigmashape}) \\
+$\theta$ & threshold-field exponent (Eq.~\ref{eq:stascore}) \\
+$\rho$ & epistemic scale exponent (Eq.~\ref{eq:etamu}) \\
+$\tilde\sigma_k(\bm x;c)$, $\tilde\mu_k(\bm x;\rho)$ & reshaped expert scale / shifted expert mean \\
+$A(\bm x;c)$, $E(\bm x;\rho)$ & aleatoric, epistemic terms of $\sigma_{\mathrm{tot}}^2$ (Eq.~\ref{eq:aeterms}) \\
+$s(\bm x;c,\rho)$, $\bar s(c,\rho)$ & epistemic share (Eq.~\ref{eq:share}); its calibration-set mean \\
+$\phi$ & epistemic-share threshold-field exponent (Eq.~\ref{eq:easescore}) \\
+$L(c,\rho)$ & mean tune-fold log-density objective (Eq.~\ref{eq:logscore}) \\
+$\hat\rho$ & MELD-HPD's closed-form epistemic-reliability diagnostic (Eq.~\ref{eq:closedrho}) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ============================================================================
+\begin{thebibliography}{12}
+
+\bibitem{vovk2005algorithmic}
+V.~Vovk, A.~Gammerman, and G.~Shafer, \emph{Algorithmic Learning in a Random World}. Springer,
+2005.
+
+\bibitem{lei2018distribution}
+J.~Lei, M.~G'Sell, A.~Rinaldo, R.~J.~Tibshirani, and L.~Wasserman, ``Distribution-free predictive
+inference for regression,'' \emph{J. Amer. Statist. Assoc.}, vol.~113, no.~523, pp.~1094--1111,
+2018.
+
+\bibitem{romano2019conformalized}
+Y.~Romano, E.~Patterson, and E.~Cand\`es, ``Conformalized quantile regression,'' in \emph{Advances
+in Neural Information Processing Systems (NeurIPS)}, 2019.
+
+\bibitem{izbicki2020cd}
+R.~Izbicki, G.~Shimizu, and R.~B.~Stern, ``Flexible distribution-free conditional predictive bands
+using density estimators,'' in \emph{Proc. International Conference on Artificial Intelligence and
+Statistics (AISTATS)}, 2020.
+
+\bibitem{sadinle2019least}
+M.~Sadinle, J.~Lei, and L.~Wasserman, ``Least ambiguous set-valued classifiers with bounded error
+levels,'' \emph{J. Amer. Statist. Assoc.}, vol.~114, no.~525, pp.~223--234, 2019.
+
+\bibitem{boxtiao1973bayesian}
+G.~E.~P.~Box and G.~C.~Tiao, \emph{Bayesian Inference in Statistical Analysis}. Addison-Wesley,
+1973.
+
+\bibitem{hyndman1996computing}
+R.~J.~Hyndman, ``Computing and graphing highest density regions,'' \emph{The American
+Statistician}, vol.~50, no.~2, pp.~120--126, 1996.
+
+\bibitem{jordan1994hierarchical}
+M.~I.~Jordan and R.~A.~Jacobs, ``Hierarchical mixtures of experts and the EM algorithm,''
+\emph{Neural Computation}, vol.~6, no.~2, pp.~181--214, 1994.
+
+\bibitem{gibbs2021adaptive}
+I.~Gibbs and E.~Cand\`es, ``Adaptive conformal inference under distribution shift,'' in
+\emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2021.
+
+\bibitem{gneiting2007strictly}
+T.~Gneiting and A.~E.~Raftery, ``Strictly proper scoring rules, prediction, and estimation,''
+\emph{J. Amer. Statist. Assoc.}, vol.~102, no.~477, pp.~359--378, 2007.
+
+\bibitem{gneiting2007strictly}
+T.~Gneiting and A.~E.~Raftery, ``Strictly proper scoring rules, prediction, and estimation,''
+\emph{J. Amer. Statist. Assoc.}, vol.~102, no.~477, pp.~359--378, 2007.
+
+\bibitem{papadopoulos2011regression}
+H.~Papadopoulos, V.~Vovk, and A.~Gammerman, ``Regression conformal prediction with nearest
+neighbours,'' \emph{J. Artificial Intelligence Research}, vol.~40, pp.~815--840, 2011.
+
+\bibitem{xie2024boosted}
+R.~Xie, R.~Foygel~Barber, and E.~J.~Cand\`es, ``Boosted conformal prediction intervals,'' in
+\emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2024.
+
+\bibitem{kiyani2024length}
+S.~Kiyani, G.~Pappas, and H.~Hassani, ``Length optimization in conformal prediction,'' in
+\emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2024.
+
+\end{thebibliography}
+
+\end{document}

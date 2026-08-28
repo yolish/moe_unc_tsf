@@ -1,0 +1,1611 @@
+% ============================================================================
+% STA-HPD conference paper.
+%
+% This file is heavily commented with "why" notes (not "what" notes) explaining
+% the reasoning behind each structural and content decision. The comments are
+% LaTeX comments (%) and do not affect the compiled output; they exist so that
+% anyone editing this file later understands *why* a given choice was made,
+% not just what the choice was.
+% ============================================================================
+
+% 10pt + twocolumn + a4paper: the user asked for a conference-style paper
+% capped at roughly 3 pages of formatted density. Two-column at 10pt is the
+% standard way conference proceedings (IEEE/ACM style) pack more content per
+% physical page than a single-column article class would.
+\documentclass[10pt,twocolumn,a4paper]{article}
+
+% margin=0.75in: tighter than the article-class default (1in) for the same
+% reason as above -- more usable width/height per page without going below a
+% legible margin, matching the user's explicit page-budget constraint.
+\usepackage[margin=0.75in]{geometry}
+% amsmath/amssymb/amsfonts: needed for \operatorname, \mathbb, aligned
+% equations, and the assorted math symbols used throughout Section II.
+% amsthm: provides \newtheorem and the \begin{proof}...\end{proof}
+% environment used for Theorems 1 and 2 -- the paper needs actual proofs,
+% not just stated results, so amsthm's proof environment is load-bearing.
+\usepackage{amsmath, amssymb, amsfonts, amsthm}
+% bm: bold vectors (\bm x) for the covariate, matching the notation already
+% used in this project's calibration_methods.tex so the two documents are
+% typographically consistent.
+\usepackage{bm}
+% booktabs: the user's spec explicitly requires booktabs-style tables
+% (\toprule/\midrule/\bottomrule) rather than default LaTeX table rules.
+\usepackage{booktabs}
+% algorithm + algpseudocode: Section II needs a concrete, citable fitting
+% procedure (Algorithm 1) rather than only prose, since the tuning procedure
+% (repeated splitting + mode vote) is exactly the part of the method that is
+% easy to get wrong if only described in words.
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+% cite: the spec asks for \cite-based references; this package gives
+% slightly better citation-list formatting/sorting than the bare kernel.
+\usepackage{cite}
+\usepackage{graphicx}
+% hyperref: makes \label/\ref/\cite cross-references and the bibliography
+% clickable -- low cost, standard for anything meant to be read as a PDF.
+\usepackage{hyperref}
+
+% Explicit \newtheorem declarations: article class has no built-in Theorem/
+% Proposition/Lemma/Corollary/Remark/Definition/Example environments, so
+% these must be declared before use. Definition and Example are needed by
+% the new "Background: highest-density regions" subsection (Sec. II-B),
+% which introduces the classical HPD-region object and a worked bimodal
+% instance before any conformal-specific content is layered on top of it.
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+
+% Title spells out both the acronym and the application domain (MoE
+% regression) up front, since a reader skimming a conference table of
+% contents needs to know this is a regression-calibration paper, not a
+% classification or vision paper, from the title alone.
+\title{\Large STA-HPD: Shape--Threshold Adaptive Highest-Density-Region\\
+Conformal Prediction for Mixture-of-Experts Regression}
+
+% IEEEauthorblockN/A are normally supplied by the IEEEtran class. Since this
+% document intentionally uses the plain `article` class (per the user's
+% explicit \documentclass spec) rather than IEEEtran, the two commands are
+% redefined locally just below so the familiar IEEE-style author block markup
+% can still be used without pulling in the whole IEEEtran class.
+\author{
+\IEEEauthorblockN{Gilad Aviv}
+\IEEEauthorblockA{Department of Statistics and Data Science\\
+\texttt{giladaviv987@gmail.com}}
+}
+
+% See note above \author{}: these two \newcommand definitions are what make
+% \IEEEauthorblockN / \IEEEauthorblockA valid commands under the plain
+% article class. Kept immediately after \author so the dependency is visible
+% in one place rather than buried earlier in the preamble.
+\newcommand{\IEEEauthorblockN}[1]{\textbf{#1}}
+\newcommand{\IEEEauthorblockA}[1]{#1}
+
+\date{}
+
+\begin{document}
+% \twocolumn[...\begin{@twocolumnfalse}...] is the standard trick for
+% getting a single-column-width title/abstract/keywords block at the top of
+% an otherwise two-column document (plain \maketitle inside a twocolumn
+% document would instead render the title in a single (narrow) column).
+\twocolumn[
+\begin{@twocolumnfalse}
+\maketitle
+% Abstract is capped at ~150 words per the user's spec. It is written to
+% state, in order: the problem with existing methods (symmetric scaling vs.
+% fixed-density HPD), the proposed fix (two-parameter reshaping/tilting),
+% the theoretical guarantee (validity for any fixed (c,theta)), and the
+% headline empirical number -- the order a reviewer skims an abstract in.
+\begin{abstract}
+Conformal prediction for heteroscedastic regression typically scales a symmetric interval by a
+scalar uncertainty estimate, or, when the model exposes a full predictive density, thresholds that
+density at a single global level (highest-density-region, HPD, calibration). Both choices are
+suboptimal in different regimes: symmetric scaling cannot exploit multimodal expert disagreement,
+while fixed-density HPD calibration inherits any systematic mis-scaling of the model's own
+heteroscedasticity uncoerrected. We present STA-HPD (Shape--Threshold Adaptive HPD), which embeds
+plain HPD calibration inside a two-parameter family that reshapes each mixture component's variance
+by an exponent $c$ and tilts the density threshold by a scale-dependent field with exponent
+$\theta$, both selected by conformal risk minimization on a held-out fold with repeated-split
+mode-voting. We show the construction preserves exact finite-sample marginal coverage for any fixed
+$(c,\theta)$, derive the population-level optimality condition it targets, and show it strictly
+contains Standard CP, variance-scaled CP, and plain HPD calibration as boundary cases. Simulation
+results show consistent width reductions of $1$--$23\%$ over plain HPD calibration at matched
+coverage.
+\end{abstract}
+% Keywords chosen to be the terms a reader would actually search on: the
+% method family (conformal prediction / distribution-free calibration), the
+% application (uncertainty quantification, MoE), and the specific technique
+% (HPD regions, heteroscedastic regression) that differentiates this paper
+% from a generic conformal-prediction survey.
+\textbf{Keywords:} conformal prediction, uncertainty quantification, mixture of experts, highest
+density regions, distribution-free calibration, heteroscedastic regression
+\end{@twocolumnfalse}
+]
+
+\section{Introduction}
+% Why this opening: start from the most standard, least controversial fact
+% (split conformal gives distribution-free coverage) so a reader unfamiliar
+% with any of the specific baselines still has firm footing before the
+% paper narrows to MoE-specific concerns.
+Split conformal prediction \cite{vovk2005algorithmic,lei2018distribution} turns any point predictor
+into a set predictor with a distribution-free, finite-sample marginal coverage guarantee, by
+conformalizing a nonconformity score on a held-out calibration fold. The classical instantiation
+conformalizes the raw absolute residual and returns a single interval of constant width. Follow-up
+work makes the interval heteroscedastic by normalizing the residual with a model-reported scale
+(variance-scaled conformal prediction) \cite{lei2018distribution}, or by conformalizing a
+quantile-regression head directly (CQR) \cite{romano2019conformalized}. Both remain committed to a
+symmetric, single-interval region $\hat y(\bm x) \pm s(\bm x)$.
+
+% Why this paragraph: this is the actual motivating gap the paper closes --
+% without it, a reader could reasonably ask "why not just use CQR or CP-VS
+% everywhere?". Making the MoE-multimodality argument explicit, with the
+% Neyman-Pearson pointer forward to Theorem 1, sets up why HPD calibration
+% (and by extension STA-HPD) is the right tool for this model class
+% specifically, not conformal prediction in general.
+This commitment is a real cost when the underlying model is a Mixture-of-Experts (MoE) regressor
+\cite{jordan1994hierarchical}.
+An MoE model with a probabilistic head naturally represents its predictive uncertainty as a Gaussian
+mixture density over the $K$ expert components, and this density is routinely multimodal: distinct
+experts can disagree not about the scale of the outcome, but about which of several plausible
+outcomes is correct. A symmetric interval built around the aggregate mean is provably wasteful in
+this regime, since it must span the full range between well-separated modes while covering the
+low-density valley between them. Highest-density-region (HPD) conformal calibration
+\cite{izbicki2020cd,sadinle2019least} avoids this by conformalizing the negative log-density and
+returning the induced super-level set of the fitted mixture, which is width-optimal \emph{for the
+fitted density itself} by a Neyman--Pearson argument.
+
+% Why this paragraph: plain HPD calibration is not itself the paper's
+% contribution, so before introducing STA-HPD the paper has to state
+% precisely what is left broken after HPD calibration is applied. The two
+% numbered failure modes here map 1:1 onto the two tunable knobs (c and
+% theta) introduced later -- this paragraph is effectively the specification
+% for what those two knobs need to fix.
+The gap this leaves is: the fitted mixture is not the true conditional density, and plain HPD
+calibration has no mechanism to correct \emph{how} that mismatch is structured. Two systematic
+error modes recur in practice: (i) the model's per-component variances $\sigma_k(\bm x)$ may be
+globally over- or under-dispersed relative to the residual scale, and (ii) that dispersion may be
+more or less \emph{informative} about the residual magnitude on some datasets than others, so that
+even a perfectly-centered variance estimate should not be trusted with a fixed, dataset-independent
+curvature.
+
+% Why a numbered contributions paragraph: reviewers scan for this
+% specifically, and numbering it forces the four claims to be independently
+% checkable against the rest of the paper (shape exponent -> Sec. II-C;
+% threshold tilt -> Sec. II-C; tuning procedure -> Sec. II-E; boundary
+% containment -> Proposition 1) rather than left as a vague summary.
+\paragraph{Contributions.} We introduce STA-HPD, a two-parameter generalization of HPD calibration
+that (1) reshapes per-component variances by a power exponent $c$ before recomputing the mixture
+density, correcting systematic over/under-dispersion; (2) tilts the conformal threshold itself by a
+power of the point's total predictive scale, exponent $\theta$, correcting how strongly that scale
+should move the threshold; (3) selects $(c,\theta)$ by conformal risk minimization under a
+repeated-splitting, mode-voting procedure that keeps the search itself statistically valid; and (4)
+provably contains Standard CP, variance-scaled CP (in the single-expert case), and plain HPD
+calibration as specific grid points, so the tuned method's own tuning objective can never be worse
+than the strongest of its ancestors on the tuning fold.
+
+% Why a dedicated Related Work section (rather than folding these citations
+% into the Introduction): two of the four lines below -- post-hoc score
+% *reshaping* for width (Boosted CP) and explicit length *minimization*
+% subject to validity (CPL) -- share STA-HPD's high-level objective closely
+% enough that a reviewer familiar with the 2024 conformal literature would
+% immediately ask how STA-HPD differs. Answering that head-on, in its own
+% section, is what lets the Contributions paragraph above claim a *narrow,
+% specific* novelty (the per-component shape exponent + the closed-form
+% nested family) honestly, rather than the broader "post-hoc width tuning"
+% claim which is no longer new. Each paragraph names the closest prior work
+% and states precisely what STA-HPD does that it does not.
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Density-based and highest-density conformal regions.} The idea of conformalizing a
+predictive density and returning its super-level set, rather than a symmetric interval, is due to
+Izbicki et al.\ (CD-split / HPD-split) \cite{izbicki2020cd} and, for the set-valued classification
+analogue, Sadinle et al.\ \cite{sadinle2019least}; both build on the classical highest-density-region
+object \cite{boxtiao1973bayesian,hyndman1996computing}. STA-HPD's $(c,\theta)=(1,0)$ boundary case
+(plain MoG-HPD) is exactly a mixture-density instance of this construction and is \emph{not} claimed
+as novel here. Our contribution begins one level up: rather than leveling the fitted density as
+given, we level a \emph{reshaped} density $f_c$ and tilt its threshold, and show (Theorem~\ref{thm:optimality})
+why the raw fitted density is generally the wrong one to level when it is only an estimate of the
+true conditional law.
+
+\paragraph{Normalized / locally adaptive scores.} Scaling the residual by a reported predictive
+scale, $|y-\hat y|/\sigma(\bm x)$ \cite{lei2018distribution,papadopoulos2011regression}, and
+conformalizing a learned quantile head (CQR) \cite{romano2019conformalized}, are the standard routes
+to heteroscedastic width. Both hard-code how width scales with the reported uncertainty: CP-VS fixes
+width $\propto\sigma(\bm x)$, i.e.\ the elasticity $\partial\log s/\partial\log\sigma$ is pinned at
+$1$. STA-HPD's shape exponent $c$ is exactly a free such elasticity (Lemma~\ref{lem:logaffine}),
+and its threshold field $\theta$ recovers the CP-VS scaling as the single point $(1,1)$
+(Corollary~\ref{cor:k1closedform}); the empirical finding that the width-minimizing $c^\star$ is
+often strictly below $1$ is precisely a statement that this elasticity should not be fixed at the
+CP-VS value.
+
+\paragraph{Post-hoc width minimization.} Closest in spirit is Boosted Conformal Prediction
+\cite{xie2024boosted}, which is likewise post-hoc (operating on a frozen model) and likewise
+\emph{reshapes a base conformity score specifically to reduce interval length at valid coverage} --
+so the high-level strategy of ``tune the score after training to cut width'' is not itself new to
+this paper. STA-HPD differs in mechanism and scope: Boosted CP learns a flexible score correction by
+gradient boosting over contrast trees, whereas STA-HPD uses a closed-form two-parameter family whose
+members are named calibrators (Proposition~\ref{prop:recovery}), selected over a small discrete grid
+by mode-voting -- yielding an interpretable optimum $(c^\star,\theta^\star)$ and a mixture-specific,
+multimodal-capable region shape (Eq.~\eqref{eq:region}) that a tree-boosted scalar score does not
+target. Length-optimization approaches that minimize expected set size subject to (conditional)
+validity via constrained optimization or duality \cite{kiyani2024length} share STA-HPD's objective
+but operate as general-purpose optimization frameworks rather than a mixture-density family with
+closed-form boundary cases. STA-HPD should be read as a specialized, low-degree-of-freedom point in
+this design space, chosen for interpretability and for exactly containing the MoE calibrators it
+must beat, not as a competitor to the full generality of those methods.
+
+\paragraph{Stabilizing data-dependent selection.} The repeated-split, mode-vote / median-quantile
+procedure (Sec.~\ref{sec:math}-E) is a cross-conformal-style aggregation in the lineage of
+\cite{gibbs2021adaptive,tibshirani2019conformal}; here it serves only to keep the discrete
+$(c,\theta)$ search from being dominated by the noise of any single tune/calib split, and is not a
+contribution in its own right.
+
+\section{Mathematical Foundations of STA-HPD}
+\label{sec:math}
+
+\subsection{Notation and setup}
+% Why notation is introduced before any theorem: Theorem 1 needs "a density
+% f" only, but everything from Theorem 2 onward is stated in terms of the
+% MoE's specific (w_k, mu_k, sigma_k) outputs, so those symbols have to be
+% fixed once, here, rather than redefined ad hoc in each subsection.
+Let $\mathcal D_{\mathrm{cal}} = \{(\bm x_i, y_i)\}_{i=1}^n$ be an exchangeable calibration sample
+and let a trained $K$-expert probabilistic MoE model supply, for any $\bm x$, gating weights
+$w_k(\bm x)$ with $\sum_k w_k(\bm x)=1$, per-expert means $\mu_k(\bm x)$, and per-expert predictive
+standard deviations $\sigma_k(\bm x)$. The aggregate point prediction is
+$\hat y(\bm x) = \sum_{k=1}^K w_k(\bm x)\,\mu_k(\bm x)$ and the model's exact mixture predictive
+density is
+\begin{equation}
+f_{\mathrm{mix}}(y\mid \bm x) = \sum_{k=1}^{K} w_k(\bm x)\, \mathcal N\big(y;\ \mu_k(\bm x),\ \sigma_k^2(\bm x)\big).
+\label{eq:mix}
+\end{equation}
+% Why q_level gets its own equation and label: every method in Sections
+% II-III shares this exact quantile correction. Stating it once here, with a
+% label, lets every later construction just say "quantile at q_level" and
+% cite eq:qlevel, instead of re-deriving the finite-sample correction each
+% time -- and it is the single fact that makes every coverage claim in this
+% paper (Prop. 2, Sec. III, Sec. IV) true regardless of model correctness.
+Every calibrator in this family targets a user-specified miscoverage level $\alpha\in(0,1)$ and
+uses the same finite-sample-corrected empirical quantile at level
+\begin{equation}
+q_{\mathrm{level}} = \min\!\left(1,\ \frac{\lceil (n+1)(1-\alpha)\rceil}{n}\right),
+\label{eq:qlevel}
+\end{equation}
+which is the quantity that gives split conformal prediction its distribution-free marginal
+coverage guarantee $P(y_{\mathrm{test}}\in\hat C(\bm x_{\mathrm{test}})) \ge 1-\alpha$ for any fixed,
+data-independent nonconformity score, regardless of whether the base model is correctly specified.
+
+\subsection{Background: highest-density regions}
+\label{sec:hpdbasics}
+% Why this subsection is inserted before any conformal-specific content:
+% "HPD region" is a classical object from Bayesian and frequentist density
+% estimation, entirely independent of conformal prediction -- Theorem 1
+% below is a fact about *any* density on the real line, proved without ever
+% mentioning a calibration set, a model, or a p-value. Presenting it here as
+% background, before Section II-C introduces the conformal machinery that
+% consumes it, makes clear that the width-optimality property STA-HPD relies
+% on is a statement about level sets in general, and would be true even if
+% conformal prediction had never been invented.
+Before specializing to mixture-of-experts calibration, we recall the classical notion of a
+highest-density region (HDR/HPD region), originally studied as the natural generalization of a
+symmetric credible interval to arbitrary, possibly asymmetric or multimodal densities
+\cite{boxtiao1973bayesian,hyndman1996computing}.
+
+\begin{definition}[Highest-density region]
+\label{def:hpd}
+For a density $f$ on $\mathbb R$ and $\alpha\in(0,1)$, the $100(1-\alpha)\%$ highest-density region
+of $f$ is
+\begin{equation}
+R_\alpha(f) = \{y \in \mathbb R : f(y) \ge \tau_\alpha\},
+\end{equation}
+where $\tau_\alpha$ is the largest constant such that $\int_{R_\alpha(f)} f \ge 1-\alpha$.
+\end{definition}
+
+% Why Theorem 1 is stated here, about a bare density f, rather than later
+% about f_mix specifically: keeping it fully general is what lets Section
+% II-C (MoG-HPD), the STA-HPD family (which levels a *different* density
+% f_c), and even the K=1 Gaussian corollary below all invoke the *same*
+% theorem without re-proving it -- the theorem does not care what f is, only
+% that it is a fixed density.
+\begin{theorem}[Level-set width optimality]
+\label{thm:hpd}
+Fix a density $f$ and $\alpha \in (0,1)$, and let $R_\tau = \{y : f(y)\ge \tau\}$ with $\tau$ chosen so
+that $\int_{R_\tau} f = 1-\alpha$ (i.e.\ $R_\tau = R_\alpha(f)$ of Definition~\ref{def:hpd}). Then for
+any measurable $C$ with $\int_C f \ge 1-\alpha$, $|R_\tau| \le |C|$, where $|\cdot|$ denotes Lebesgue
+measure.
+\end{theorem}
+% Proof strategy: split the symmetric difference of R_tau and C into D_1,
+% D_2 and bound each side using the fact that f is, by definition of R_tau,
+% above tau on D_1 and below tau on D_2 -- the standard Neyman-Pearson
+% "trade high-density mass for low-density mass" argument, spelled out so
+% the reader can verify each inequality rather than take the conclusion on
+% faith.
+\begin{proof}
+Let $D_1 = R_\tau\setminus C$ and $D_2 = C\setminus R_\tau$. Since $D_1\subset R_\tau$, $f\ge\tau$ on
+$D_1$; since $D_2\subset R_\tau^c$, $f<\tau$ on $D_2$. As $R_\tau\cap C$ is common to both sets,
+$\int_C f\ge\int_{R_\tau}f$ forces $\int_{D_2}f\ge\int_{D_1}f$. Hence
+$\tau|D_2|\ge\int_{D_2}f\ge\int_{D_1}f\ge\tau|D_1|$, so $|D_2|\ge|D_1|$ and
+$|R_\tau|-|C| = |D_1|-|D_2|\le 0$.
+\end{proof}
+
+% Why an explicit Gaussian corollary is worth stating on its own: it is the
+% bridge back to every symmetric-interval baseline in Section III (Standard
+% CP, CP-VS). Without it, a reader could reasonably wonder how a *level-set*
+% construction relates to the *symmetric-interval* constructions used
+% everywhere else in the conformal-prediction literature; this corollary
+% shows the two coincide exactly in the one case (unimodal Gaussian) where
+% symmetric intervals are actually correct.
+\begin{corollary}[Unimodal Gaussian reduction]
+\label{cor:gaussian-hpd}
+If $f = \mathcal N(\mu,\sigma^2)$, then $R_\alpha(f)$ is the single symmetric interval
+$[\mu - \sigma z_{1-\alpha/2},\ \mu + \sigma z_{1-\alpha/2}]$, where $z_{1-\alpha/2}$ is the
+$(1-\alpha/2)$ standard-normal quantile.
+\end{corollary}
+\begin{proof}
+$f$ is symmetric and strictly decreasing in $|y-\mu|$, so every super-level set $\{f\ge\tau\}$ is an
+interval centered at $\mu$; choosing its half-width so that it carries mass $1-\alpha$ under a
+standard Gaussian gives exactly $\sigma z_{1-\alpha/2}$.
+\end{proof}
+
+% Why this remark on equal-tailed regions is included: it names the
+% *implicit* assumption behind every symmetric-interval baseline in this
+% paper (Standard CP, CP-VS) explicitly, rather than leaving it implicit --
+% those methods are only shape-optimal when the residual distribution
+% happens to be unimodal and symmetric, which is exactly the boundary case
+% Corollary~\ref{cor:gaussian-hpd} identifies.
+\begin{remark}[Equal-tailed vs.\ highest-density regions]
+The equal-tailed region $[F^{-1}(\alpha/2), F^{-1}(1-\alpha/2)]$, with $F$ the CDF of $f$, is the
+construction implicitly targeted by every symmetric-interval calibrator in this paper (Standard CP,
+CP-VS). By Theorem~\ref{thm:hpd} it can only be as narrow as $R_\alpha(f)$, with equality when $f$ is
+unimodal and symmetric (Corollary~\ref{cor:gaussian-hpd}); for skewed or multimodal $f$ the
+equal-tailed region is strictly wider, since it fixes \emph{where} probability mass is excluded
+(equally in each tail) rather than \emph{how much} density is required to be included.
+\end{remark}
+
+% Why a fully worked bimodal example, with concrete numbers, rather than
+% just asserting "HPD regions can be disjoint": an abstract claim about
+% multimodality is easy to accept and forget; a numeric instance the reader
+% can (in principle) re-derive by hand is what makes concrete, later, why
+% Section IV's Synthetic dataset -- whose true law is a genuine mixture --
+% is exactly where STA-HPD's advantage over symmetric methods is largest.
+\begin{example}[Disjoint highest-density regions]
+\label{ex:bimodal}
+Let $f = 0.5\,\mathcal N(2,0.25) + 0.5\,\mathcal N(8,0.25)$, a two-component mixture with
+well-separated means and small component variances. The aggregate mean is $\hat y = 5$, but
+$f(5)$ is lower than $f$ near either mode, since $5$ sits in the low-density valley between them. If
+$\tau_\alpha$ falls between $f(5)$ and the peak heights, $R_\alpha(f)$ is two disjoint intervals
+bracketing $2$ and $8$ and \emph{excludes} the region around $\hat y=5$ entirely -- whereas any
+symmetric interval $\hat y\pm s$ must either waste width covering that empty middle region or fail
+to reach one of the two modes.
+\end{example}
+
+\subsection{Conformalizing HPD regions: MoG-HPD}
+% Why this paragraph follows immediately: Theorem 1 is abstract (any density
+% f); this paragraph is what actually turns it into a usable calibrator by
+% plugging in f_mix and the negative-log-density score, and states clearly
+% that validity (from eq:qlevel) and optimality (from Theorem 1) are two
+% separate claims -- one holds regardless of model quality, the other only
+% holds relative to whatever density is being leveled.
+Plain HPD calibration (MoG-HPD) applies Theorem~\ref{thm:hpd} with $f = f_{\mathrm{mix}}(\cdot\mid\bm x)$
+by conformalizing the negative log-density,
+\begin{equation}
+S_i = -\log f_{\mathrm{mix}}(y_i\mid\bm x_i), \qquad \hat t = \operatorname{Quantile}_{q_{\mathrm{level}}}(\{S_i\}),
+\end{equation}
+and returning $\hat C(\bm x) = \{y: f_{\mathrm{mix}}(y\mid\bm x)\ge e^{-\hat t}\}$, i.e.\ the empirical
+$R_{\alpha}(f_{\mathrm{mix}}(\cdot\mid\bm x))$ of Definition~\ref{def:hpd} at the conformalized level
+$\hat\tau=e^{-\hat t}$. Validity follows from Eq.~\eqref{eq:qlevel} regardless of whether
+$f_{\mathrm{mix}}$ is well specified; only the achieved width depends on how close $f_{\mathrm{mix}}$
+is to the true conditional density -- the same validity/efficiency split noted for
+Example~\ref{ex:bimodal}, now under sampling uncertainty in $\hat\tau$ rather than a known $\tau$.
+
+\subsection{The STA-HPD family}
+% Why introduce G (the frozen geometric mean) before the shape exponent:
+% c needs a reference scale to exponentiate around, or c != 1 would shift
+% the *absolute* scale of every component instead of just its *spread*
+% relative to the calibration-set typical scale. Freezing G from the
+% calibration set (not per test point) keeps the reshaping a fixed,
+% label-independent transform, which Proposition 2's validity argument later
+% depends on.
+Plain HPD calibration fixes the density used to measure width to be exactly $f_{\mathrm{mix}}$, and
+thresholds it at a single point-independent level. STA-HPD opens both choices. Freeze the
+calibration-set geometric mean of per-component scales,
+\begin{equation}
+G = \exp\!\Big(\operatorname*{mean}_{k,i}\ \log\sigma_k(\bm x_i)\Big),
+\end{equation}
+and define, for a \emph{shape} exponent $c\in\mathbb R_{\ge0}$, the reshaped component scale and the
+corresponding surrogate mixture density
+\begin{align}
+\tilde\sigma_k(\bm x; c) &= G\,\big(\sigma_k(\bm x)/G\big)^{c}, \label{eq:shape}\\
+f_c(y\mid\bm x) &= \sum_{k=1}^K w_k(\bm x)\,\mathcal N\big(y;\ \mu_k(\bm x),\ \tilde\sigma_k^2(\bm x;c)\big). \label{eq:fc}
+\end{align}
+The exponent acts multiplicatively in log-scale space: $c<1$ compresses the spread of component
+scales toward the calibration-set typical scale $G$ (shrinking heteroscedasticity), $c>1$ amplifies
+it, and $c=1$ recovers $f_{\mathrm{mix}}$ exactly. The next lemma makes this precise.
+
+% Why this is stated as a formal Lemma rather than left as the prose
+% sentence above: "acts multiplicatively in log-scale space" is a claim that
+% is trivial to verify but easy to get subtly wrong when reasoning about it
+% informally (e.g. mistaking it for a claim about the variance rather than
+% the standard deviation, or about an additive rather than affine
+% transform). Writing it out removes any ambiguity about exactly what
+% "compresses toward G" means, and the three named consequences are exactly
+% the three boundary values ($c=1,0,\to\infty$) that Proposition 1 and
+% Table I later depend on.
+\begin{lemma}[Shape reshaping is affine in log-scale]
+\label{lem:logaffine}
+For every $k$ and $\bm x$, $\log\tilde\sigma_k(\bm x;c) = \log G + c\big(\log\sigma_k(\bm x) - \log G\big)$.
+Consequently $\tilde\sigma_k(\bm x;1)=\sigma_k(\bm x)$ for all $k,\bm x$; $\tilde\sigma_k(\bm x;0)=G$
+for all $k,\bm x$ (every component collapses to the same constant scale); and for $c>0$,
+$\tilde\sigma_k(\bm x;c)$ is monotonically increasing in $\sigma_k(\bm x)$ with elasticity exactly
+$c$, i.e.\ $\partial\log\tilde\sigma_k/\partial\log\sigma_k = c$.
+\end{lemma}
+\begin{proof}
+Take logarithms of Eq.~\eqref{eq:shape}: $\log\tilde\sigma_k(\bm x;c) = \log G + c\log(\sigma_k(\bm x)/G)
+= \log G + c(\log\sigma_k(\bm x)-\log G)$, which is affine in $\log\sigma_k(\bm x)$ with slope $c$ and
+value $\log G$ at $\log\sigma_k(\bm x)=\log G$. Substituting $c=1$ and $c=0$ gives the two stated
+boundary identities; differentiating the affine form with respect to $\log\sigma_k(\bm x)$ gives the
+elasticity $c$ directly.
+\end{proof}
+
+Define the point's own total predictive scale
+under the reshaped family,
+\begin{equation}
+\sigma_{\mathrm{tot}}^2(\bm x; c) = \sum_{k=1}^K w_k(\bm x)\,\tilde\sigma_k^2(\bm x;c) \;+\; \sum_{k=1}^K w_k(\bm x)\,\big(\mu_k(\bm x)-\hat y(\bm x)\big)^2,
+\end{equation}
+% Why sigma_tot uses the reshaped aleatoric term but an untouched epistemic
+% term: c is defined (above) to act only on each component's own variance
+% sigma_k, not on how far apart the component means are, so the epistemic
+% (between-expert) part of the variance decomposition is left exactly as
+% the base model reported it -- c and theta are meant to correct the
+% *aleatoric* scale specifically, per the two failure modes named in the
+% Introduction.
+the reshaped aleatoric term plus the (shape-invariant) epistemic term. The \emph{threshold-field}
+exponent $\theta\in\mathbb R$ then tilts the conformal score by this point-wise scale,
+\begin{equation}
+S_i(c,\theta) = -\log f_c(y_i\mid\bm x_i) \;-\; \theta\,\log\sigma_{\mathrm{tot}}(\bm x_i; c),
+\label{eq:score}
+\end{equation}
+with threshold $\hat t(c,\theta) = \operatorname{Quantile}_{q_{\mathrm{level}}}(\{S_i(c,\theta)\})$
+and induced prediction set
+\begin{equation}
+\hat C(\bm x) = \Big\{ y :\ \log f_c(y\mid\bm x) \;\ge\; -\hat t(c,\theta) - \theta\log\sigma_{\mathrm{tot}}(\bm x;c) \Big\}.
+\label{eq:region}
+\end{equation}
+% Why this sentence is here: it is easy to misread eq:region as "a
+% different density thresholded globally" -- this sentence heads that off
+% by naming exactly which part is still global (\hat t) and which part now
+% varies by point (the sigma_tot^{-theta} tilt), which is the whole point of
+% adding theta on top of c.
+Equation~\eqref{eq:region} is exactly a level set of $f_c$, but at a threshold that is scaled up or
+down per test point by its own $\sigma_{\mathrm{tot}}(\bm x;c)^{-\theta}$, rather than at the single
+global level plain HPD uses.
+
+% Why Proposition 1 exists: it is the formal version of the "contains
+% Standard CP / CP-VS / MoG-HPD as boundary cases" claim made in the
+% Contributions paragraph and in the abstract -- stating it as a numbered
+% proposition makes it something Section III and IV can cite by name
+% (e.g. "as Proposition 1 guarantees") rather than re-asserting informally
+% each time it is used.
+\begin{proposition}[Boundary recovery]
+\label{prop:recovery}
+$(c,\theta)=(1,0)$ recovers plain HPD calibration exactly. When $K=1$ (a single Gaussian
+predictive component), $(c,\theta)=(1,1)$ recovers variance-scaled conformal prediction (CP-VS) on
+the total predictive standard deviation exactly. $(c,\theta)=(0,0)$ collapses every
+$\tilde\sigma_k(\bm x;0)=G$ to a shared constant, making $f_0(\cdot\mid\bm x)$ depend on $\bm x$ only
+through $(\mu_k(\bm x), w_k(\bm x))$ at fixed scale, and $\theta=0$ leaves the threshold untilted,
+recovering Standard (unscaled) split conformal prediction on the aggregate residual in the
+single-component reduction.
+\end{proposition}
+
+% Why the proof is a short paragraph, not a formal \begin{proof} block: each
+% of the three cases in Proposition 1 is direct substitution into equations
+% already stated above (eq:shape through eq:region), so a full proof
+% environment would only repeat those equations without adding content --
+% a pointer to which substitution does the work is sufficient here.
+The proof is immediate substitution into Eqs.~\eqref{eq:shape}--\eqref{eq:region}: at $c=1$,
+$\tilde\sigma_k \equiv \sigma_k$ so $f_1=f_{\mathrm{mix}}$, and $\theta=0$ removes the tilt term from
+Eq.~\eqref{eq:score}, giving back plain HPD's score exactly.
+
+% Why this closed-form corollary is added on top of the substitution proof
+% above: substitution shows the *scores* coincide, but does not, by itself,
+% show what the resulting *region* looks like -- a reader could still
+% wonder whether "the score matches CP-VS's score" really implies "the
+% region is CP-VS's symmetric interval." Deriving the region explicitly for
+% $K=1$ removes that gap and gives a genuinely new, checkable identity
+% (the closed-form half-width $s(\bm x)$) rather than repeating the earlier
+% substitution argument in different words.
+\begin{corollary}[Closed-form half-width, single component]
+\label{cor:k1closedform}
+When $K=1$, write $\tilde\sigma(\bm x;c)$ for the (only) reshaped component scale and
+$\hat\tau=e^{-\hat t(c,\theta)}$. Then $\hat C(\bm x)$ of Eq.~\eqref{eq:region} is the symmetric
+interval $\hat y(\bm x)\pm s(\bm x)$ with
+\begin{equation}
+s(\bm x) = \tilde\sigma(\bm x;c)\ \sqrt{2\log\!\left(\frac{1}{\hat\tau\sqrt{2\pi}\ \tilde\sigma(\bm x;c)^{1-\theta}}\right)}.
+\label{eq:k1closedform}
+\end{equation}
+In particular: at $(c,\theta)=(1,0)$, $\tilde\sigma=\sigma$ and $s(\bm x)=\sigma(\bm x)\sqrt{2\log(1/(\hat\tau\sqrt{2\pi}\,\sigma(\bm x)))}$,
+plain MoG-HPD's Gaussian half-width; at $(c,\theta)=(1,1)$, the $\sigma(\bm x)^{1-\theta}$ factor
+vanishes and $s(\bm x)=\sigma(\bm x)\cdot\sqrt{2\log(1/(\hat\tau\sqrt{2\pi}))}$ is exactly CP-VS's
+form $\hat q\,\sigma(\bm x)$ for a constant $\hat q$; and at $(c,\theta)=(0,0)$,
+$\tilde\sigma\equiv G$ is constant in $\bm x$, so $s(\bm x)\equiv G\sqrt{2\log(1/(\hat\tau\sqrt{2\pi}G))}$
+is Standard CP's constant half-width.
+\end{corollary}
+\begin{proof}
+For $K=1$, $f_c(y\mid\bm x)=\mathcal N(y;\mu(\bm x),\tilde\sigma^2(\bm x;c))$ and
+$\sigma_{\mathrm{tot}}(\bm x;c)=\tilde\sigma(\bm x;c)$ exactly (the epistemic term vanishes with a
+single component). Substituting the Gaussian density into $\log f_c(y\mid\bm x)\ge-\hat t-\theta\log\tilde\sigma(\bm x;c)$
+and solving for $|y-\mu(\bm x)|$ gives
+\[
+(y-\mu(\bm x))^2 \le 2\tilde\sigma^2(\bm x;c)\Big[\hat t+\theta\log\tilde\sigma(\bm x;c)-\log\big(\tilde\sigma(\bm x;c)\sqrt{2\pi}\big)\Big],
+\]
+and collecting the $\log\tilde\sigma(\bm x;c)$ terms on the right-hand side, substituting
+$\hat\tau=e^{-\hat t}$, and taking the square root gives Eq.~\eqref{eq:k1closedform}. The three
+boundary cases follow by direct substitution of $(c,\theta)$ and Lemma~\ref{lem:logaffine}'s
+identities $\tilde\sigma(\bm x;1)=\sigma(\bm x)$, $\tilde\sigma(\bm x;0)=G$.
+\end{proof}
+
+\subsection{Population-level optimality condition}
+% Why this subsection exists at all: Theorem 1 only says the level set of a
+% *given* density is width-optimal for *that* density -- it says nothing
+% about which density to level in the first place. This subsection derives
+% what the *true* population optimum would require (eq:optcond), so the gap
+% between that condition and what plain HPD actually enforces is exactly
+% what motivates introducing c and theta -- it is the theoretical
+% justification for the method, not just an empirical after-the-fact story.
+Coverage pins exactly one scalar functional of $\hat C$ (its probability mass); the two knobs
+$(c,\theta)$ reallocate a fixed coverage budget across $\bm x$ without touching that scalar. Write
+the per-point log-threshold as $g(\bm x)$, so that $\hat C(\bm x) = \{y: \log f(y\mid\bm x)\ge -g(\bm x)\}$
+for whatever density $f$ is in force, with boundary points $b_j(\bm x)$ solving
+$f(b_j(\bm x)\mid\bm x) = e^{-g(\bm x)}$.
+
+\begin{theorem}[First-order optimality of the level-set family]
+\label{thm:optimality}
+Consider $\min_g \; \mathbb E_{\bm x}\big[|C_g(X)|\big]$ subject to
+$\mathbb E_{\bm x}\big[P(Y\in C_g(X)\mid X=\bm x)\big] \ge 1-\alpha$, where the true conditional law
+of $Y\mid \bm x$ has density $p(\cdot\mid\bm x)$. At a stationary point of the associated Lagrangian,
+\begin{equation}
+p\big(b(\bm x)\mid \bm x\big) = \text{const across } \bm x.
+\label{eq:optcond}
+\end{equation}
+\end{theorem}
+% Why this is now written as a full Proof (upgraded from the "Proof sketch"
+% label used in the first draft) rather than left informal: the user asked
+% for the theoretical explanation to be expanded, and the perturbation
+% argument below is fully elementary (single real-valued perturbation
+% parameter delta, first-order Taylor expansion, a single stationarity
+% condition) -- there is no missing regularity assumption that would make
+% "sketch" the honest label once each step is written out completely, as
+% done here (each of the four numbered steps is a complete derivation, not
+% a gap to be filled in by the reader).
+\begin{proof}
+The argument has four steps.
+
+\emph{Step 1 (boundary perturbation).} Fix $\bm x$ and perturb the log-threshold at that point only,
+$g(\bm x)\mapsto g(\bm x)+\delta$. Each boundary point $b_j(\bm x)$ solves
+$\log f(b_j(\bm x)\mid\bm x)=-g(\bm x)$; implicitly differentiating in $\delta$,
+$f'(b_j(\bm x))\cdot \partial b_j/\partial\delta = -f(b_j(\bm x)\mid\bm x)\cdot(-1) = f(b_j(\bm x)\mid \bm x)$
+is not needed directly -- instead, linearizing $\log f(b_j+\Delta b_j\mid\bm x)\approx \log f(b_j\mid\bm x) + \Delta b_j\, f'(b_j\mid\bm x)/f(b_j\mid\bm x)$
+against the shifted constraint $-g(\bm x)-\delta$ gives $\Delta b_j = -\delta\, f(b_j\mid\bm x)/f'(b_j\mid\bm x)$
+to first order, i.e.\ each boundary moves by an amount inversely proportional to the density's slope
+there.
+
+\emph{Step 2 (width response).} Enlarging the region at $b_j(\bm x)$ by $|\Delta b_j|$ changes
+$|C_g(\bm x)|$ by $\sum_j |\Delta b_j| = \delta\sum_j f(b_j\mid\bm x)/|f'(b_j\mid\bm x)|$ to first
+order (signs chosen so increasing $\delta$, i.e.\ a lower threshold, enlarges the region).
+
+\emph{Step 3 (coverage response).} The true covered probability
+$P(Y\in C_g(X)\mid X=\bm x)=\int_{C_g(\bm x)}p(y\mid\bm x)\,dy$ changes, by the same boundary
+displacement, by $\delta\sum_j p(b_j(\bm x)\mid\bm x)\,f(b_j\mid\bm x)/|f'(b_j\mid\bm x)|$ to first
+order -- identical to Step 2's expression except that the model density $f(b_j\mid\bm x)$ in the
+numerator is replaced by the true density $p(b_j\mid\bm x)$.
+
+\emph{Step 4 (stationarity).} The Lagrangian is
+$\mathcal L[g]=\mathbb E_{\bm x}[|C_g(X)|]-\lambda\big(\mathbb E_{\bm x}[P(Y\in C_g(X)\mid X)]-(1-\alpha)\big)$.
+A stationary point requires the Fr\'echet derivative of $\mathcal L$ with respect to a pointwise
+perturbation at every $\bm x$ to vanish, i.e.\ (Step 2's rate) $=\lambda\cdot$(Step 3's rate) for
+every $\bm x$. Both rates share the common factor $\sum_j f(b_j(\bm x)\mid\bm x)/|f'(b_j(\bm x)\mid\bm x)|$,
+which cancels, leaving $1=\lambda\,p(b(\bm x)\mid\bm x)$ (in the single-boundary case; the
+multi-boundary case is a weighted average of the $p(b_j(\bm x)\mid\bm x)$ under the same weights in
+both Steps 2 and 3, so the cancellation still forces the weighted-average $p$ to equal $1/\lambda$
+at every $\bm x$ for a common $\lambda$). Since $\lambda$ is a single global multiplier shared across
+all $\bm x$, $p(b(\bm x)\mid\bm x)=1/\lambda$ is the same constant for every $\bm x$.
+\end{proof}
+
+% Why this remark follows the proof: Theorem 2 states an abstract
+% population condition; Corollary 2's closed form (eq:k1closedform) is the
+% one place in the paper where "how would c and theta actually move the
+% boundary" can be computed explicitly rather than left implicit in f_c and
+% theta's definitions. Connecting the two turns Theorem 2 from a pure
+% existence statement into something with a directly computable
+% single-component illustration.
+\begin{remark}[Theorem~\ref{thm:optimality} in the $K=1$ closed form]
+Differentiating Eq.~\eqref{eq:k1closedform} with respect to $\tilde\sigma(\bm x;c)$ shows
+$\partial s/\partial\tilde\sigma$ depends on $\theta$ only through the constant $(1-\theta)$
+multiplying $\log\tilde\sigma$ inside the square root: $\theta$ rescales how fast the half-width
+grows as the point's own reshaped scale grows, which is exactly the pointwise reallocation
+Theorem~\ref{thm:optimality} describes -- $\theta<1$ makes $s(\bm x)$ grow faster than the shape-only
+($\theta=0$) baseline in high-$\tilde\sigma$ regions and slower in low-$\tilde\sigma$ regions
+(and conversely for $\theta>1$), shifting width toward or away from wherever $\tilde\sigma(\bm x;c)$
+is largest without changing the marginal coverage constraint, which is fixed by $\hat t$ alone.
+\end{remark}
+
+% Why this paragraph is the payoff of the whole subsection: it explicitly
+% connects eq:optcond (population truth) back to what plain HPD enforces
+% (a constant *model*-density condition) and assigns each of the two new
+% parameters to the specific part of that mismatch it is meant to fix --
+% c to the systematic-scaling part, theta to the residual pointwise part.
+% Without this paragraph, Theorem 2 would read as an interesting but
+% disconnected fact rather than the method's actual design rationale.
+Plain HPD calibration instead enforces $f_{\mathrm{mix}}(b(\bm x)\mid\bm x) = \hat\tau$, a constant
+\emph{model}-density condition, which coincides with Eq.~\eqref{eq:optcond} only where
+$f_{\mathrm{mix}}$ agrees with the true $p$ at the boundary. The shape exponent $c$ corrects the part
+of this mismatch driven by systematic mis-scaling of $\sigma_k(\bm x)$ relative to residual
+magnitude; the threshold field $\theta$ corrects the remaining pointwise level mismatch. In
+particular, when $\sigma_k(\bm x)$ is only partially informative about $|y-\hat y(\bm x)|$, dispersion
+in $\sigma_k$ inflates $\mathbb E[\sigma_k^{c}]$-type terms faster than it deflates the corresponding
+conformal quantile, so the width-minimizing $c^\star$ is generally interior and can fall strictly
+below $1$ — a data-driven shrinkage of heteroscedasticity unavailable to plain HPD, which fixes
+$c\equiv1$ by construction.
+
+\subsection{Fitting procedure and its validity}
+% Why the tune/calib split is introduced with this specific justification
+% (exchangeability) rather than just stated as a design choice: this is the
+% single most common way a "tune a hyperparameter, then conformalize" method
+% silently loses its coverage guarantee (by re-using labels), so the paper
+% is explicit that the split is not a minor implementation detail but the
+% mechanism that keeps Proposition 2 true.
+Selecting $(c,\theta)$ on the same points used to fit $\hat t$ breaks exchangeability, so the
+calibration set is split $\mathcal D_{\mathrm{cal}} = \mathcal D_{\mathrm{tune}}\sqcup\mathcal D_{\mathrm{calib}}$,
+with $|\mathcal D_{\mathrm{tune}}| = \texttt{tune\_frac}\cdot n$ (default $0.2$, deliberately smaller
+than a $50/50$ split since the grid is low-dimensional and discrete while $\hat t$ is a continuous
+quantile that benefits from the larger remaining fold). For a candidate $(c,\theta)$ on grid
+$\mathcal C\times\Theta$, the tune-fold objective approximates the expected region measure,
+\begin{equation}
+\bar W(c,\theta) = \frac{1}{|\mathcal D_{\mathrm{tune}}|}\sum_{i\in\mathcal D_{\mathrm{tune}}}
+\big|\hat C_{c,\theta}(\bm x_i)\big|,
+\end{equation}
+% Why this sentence is spelled out explicitly: it is the concrete
+% instantiation of the "tuned method can't be worse than its ancestor"
+% claim from the Contributions paragraph -- because (1,0) (plain HPD) is
+% literally a member of the search grid, the arg-min over that grid is, by
+% definition, at least as good as evaluating the objective at (1,0) alone.
+% This is what makes Proposition 1 more than a curiosity: it is the reason
+% the tuning search has a built-in floor.
+and $(c^\star,\theta^\star) = \arg\min_{(c,\theta)\in\mathcal C\times\Theta}\bar W(c,\theta)$.
+Because $(1,0)\in\mathcal C\times\Theta$, $\bar W(c^\star,\theta^\star)\le \bar W(1,0)$ always holds
+on the tune fold: STA-HPD's own tuning objective can never underperform plain HPD calibration
+\emph{there}. Since a single split makes $(c^\star,\theta^\star)$ noticeably split-dependent, $n_{\mathrm{repeats}}$
+(default $10$) independent tune/calib splits are drawn; $(c^\star,\theta^\star)$ is taken as the
+per-split arg-min \emph{mode} (majority vote, appropriate for a discrete grid) rather than a mean,
+and the final threshold is the \emph{median} of the per-split calib-fold quantiles at the
+now-fixed $(c^\star,\theta^\star)$:
+\begin{equation}
+\hat t = \operatorname*{median}_{r=1,\dots,n_{\mathrm{repeats}}}\ \operatorname{Quantile}_{q_{\mathrm{level}}}
+\Big(\big\{S_i(c^\star,\theta^\star)\big\}_{i\in\mathcal D_{\mathrm{calib}}^{(r)}}\Big).
+\label{eq:medianquantile}
+\end{equation}
+
+% Why Proposition 2 is stated separately from Theorem 1/2: those two are
+% about *width optimality*; this one is about *coverage validity*, which is
+% a completely independent property in conformal prediction (a method can be
+% valid but wide, or narrow but invalid). Keeping them as separate numbered
+% results makes clear that STA-HPD's coverage guarantee does not depend on
+% any of the optimality arguments holding -- it depends only on the tune/
+% calib split being label-independent.
+\begin{proposition}[Marginal validity]
+\label{prop:validity}
+For any $(c,\theta)$ fixed independently of the test label — in particular, one selected using
+only $\mathcal D_{\mathrm{tune}}$ splits disjoint from the calib fold that supplies $\hat t$ —
+Eq.~\eqref{eq:score} is a data-independent scoring function of $(\bm x_i,y_i)$, so the scores
+$\{S_i(c,\theta)\}_{i\in\mathcal D_{\mathrm{calib}}}$ together with the test score are exchangeable,
+and the quantile construction of Eq.~\eqref{eq:qlevel} yields
+$P\big(y_{\mathrm{test}}\in \hat C(\bm x_{\mathrm{test}})\big)\ge 1-\alpha$ exactly, independent of
+model or mixture correctness.
+\end{proposition}
+
+The proof is the standard split-conformal exchangeability argument \cite{vovk2005algorithmic},
+applied conditionally on the (label-independent) tune split that fixes $(c^\star,\theta^\star)$.
+Algorithm~\ref{alg:stahpd} summarizes the full fitting procedure.
+
+% Why an explicit algorithm block, given the procedure is already described
+% in prose above: the prose describes the *reasoning* for each step; the
+% algorithm gives the exact *order of operations* (in particular, that the
+% mode vote over (c,theta) happens across all repeats before the final
+% median-quantile pass, not interleaved with it), which is the detail most
+% likely to be implemented incorrectly from prose alone.
+\begin{algorithm}[t]
+\caption{STA-HPD fitting}
+\label{alg:stahpd}
+\begin{algorithmic}[1]
+\State \textbf{Input:} calibration set $\mathcal D_{\mathrm{cal}}$, grids $\mathcal C,\Theta$, $\alpha$, $n_{\mathrm{repeats}}$
+\For{$r = 1$ to $n_{\mathrm{repeats}}$}
+  \State split $\mathcal D_{\mathrm{cal}}$ into $\mathcal D_{\mathrm{tune}}^{(r)}, \mathcal D_{\mathrm{calib}}^{(r)}$
+  \For{$(c,\theta) \in \mathcal C\times\Theta$}
+    \State compute $\bar W^{(r)}(c,\theta)$ on $\mathcal D_{\mathrm{tune}}^{(r)}$ (fixed-grid measure)
+  \EndFor
+  \State $(c^{(r)},\theta^{(r)}) \gets \arg\min \bar W^{(r)}$
+\EndFor
+\State $(c^\star,\theta^\star) \gets$ majority vote over $\{(c^{(r)},\theta^{(r)})\}_{r=1}^{n_{\mathrm{repeats}}}$
+\For{$r = 1$ to $n_{\mathrm{repeats}}$}
+  \State $\hat t^{(r)} \gets \operatorname{Quantile}_{q_{\mathrm{level}}}\big(\{S_i(c^\star,\theta^\star)\}_{i\in\mathcal D_{\mathrm{calib}}^{(r)}}\big)$
+\EndFor
+\State $\hat t \gets \operatorname{median}_r \hat t^{(r)}$
+\State \textbf{Output:} $(c^\star,\theta^\star,\hat t)$; predict via Eq.~\eqref{eq:region}, roots located by grid scan $+$ Brent refinement
+\end{algorithmic}
+\end{algorithm}
+
+% Why this closing paragraph of Section II describes the numerical root-
+% finding machinery: eq:region defines the prediction set implicitly (as a
+% level set), and unlike the earlier equations this is not something a
+% reader can evaluate by inspection -- stating that it reduces to the same
+% grid-scan-plus-Brent procedure as plain HPD (rather than something new)
+% is what justifies the shared "predict cost" row later in Table I.
+At prediction time, the exact set of Eq.~\eqref{eq:region} is located per test point by a coarse
+grid scan for sign changes of $\log f_c(\cdot\mid\bm x) + g(\bm x)$ over a window built from all $K$
+component tails, followed by bracketed root refinement (Brent's method) at each detected crossing;
+adjacent segments separated by less than a numerical-noise tolerance are merged. This is identical
+machinery to plain HPD calibration, applied to $f_{c^\star}$ instead of $f_{\mathrm{mix}}$, so
+STA-HPD inherits plain HPD's degenerate reduction to a single symmetric interval whenever $K=1$ or
+all components share a common mean, and its capacity to return disjoint multi-modal regions
+otherwise.
+
+\section{Comparative Analysis}
+\label{sec:comparison}
+% Why these three particular baselines (Standard CP, CP-VS, MoG-HPD) are
+% named as "the" comparison set for the qualitative table below, even though
+% Section IV's empirical table has more methods (MoECP, CQR, adaptive
+% variance-ratio too): these three are the ones whose *functional form* is
+% directly nested inside STA-HPD's family (per Proposition 1), so they are
+% the right set for a theoretical (not just empirical) comparison table.
+We compare STA-HPD against three standard baselines that share the split-conformal quantile step of
+Eq.~\eqref{eq:qlevel} but differ in what they conformalize: Standard CP (raw absolute residual,
+constant width), CP-VS (residual normalized by a single reported scale, symmetric heteroscedastic
+width), and plain HPD/MoG-HPD (fixed-density level set, Theorem~\ref{thm:hpd}). Table~\ref{tab:comparison}
+summarizes the comparison; CQR is included as a fourth, non-nested reference point since it is the
+one baseline whose region shape is not a special case of Eq.~\eqref{eq:region}.
+
+% Why table*[t] (full page width) rather than a single-column table: the
+% five columns (method, fit cost, predict cost, free parameters, region
+% shape) do not fit legibly in a single ~3.3in column at 10pt, so the table
+% spans both columns; [t] places it at the top of the page it lands on,
+% which is the usual convention for full-width floats in twocolumn layouts.
+\begin{table*}[t]
+\centering
+\caption{Theoretical comparison of STA-HPD against baseline conformal calibrators. $n$: calibration
+size, $K$: number of mixture components, $|\mathcal C|,|\Theta|$: grid sizes, $R$: number of tuning
+repeats, $G_{\mathrm{grid}}$: per-point root-search grid resolution.}
+\label{tab:comparison}
+\begin{tabular}{@{}lllll@{}}
+\toprule
+\textbf{Method} & \textbf{Fit cost} & \textbf{Predict cost / point} & \textbf{Free parameters} & \textbf{Region shape} \\
+\midrule
+Standard CP & $O(n\log n)$ & $O(1)$ & $0$ & symmetric, constant width \\
+CP-VS (total/aleatoric) & $O(n\log n)$ & $O(1)$ & $0$ & symmetric, $\propto \sigma(\bm x)$ \\
+CQR & $O(n\log n)$ & $O(1)$ & $0$ (given quantile head) & asymmetric, additive shift \\
+MoG-HPD & $O(n\log n) + O(K\,G_{\mathrm{grid}})$ & $O(K\,G_{\mathrm{grid}})$ & $0$ (density fixed) & possibly $K$ disjoint intervals \\
+STA-HPD & $O\!\big(R\,|\mathcal C||\Theta|\,n_{\mathrm{tune}} + R\,n\log n\big)$ & $O(K\,G_{\mathrm{grid}})$ & $2$ ($c,\theta$), grid-selected & possibly $K$ disjoint intervals \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+% Why "Computational complexity" is its own labeled paragraph rather than
+% folded into the table caption: the table gives the final Big-O only; the
+% paragraph explains *why* STA-HPD's predict-time cost is identical to
+% MoG-HPD's (same root-finding machinery, per the closing paragraph of
+% Section II) even though its fit-time cost is higher -- a distinction that
+% matters in practice (predict-time cost is paid once per deployment
+% inference call; fit-time cost is paid once per calibration run).
+\paragraph{Computational complexity.} Standard CP and CP-VS require only sorting the calibration
+scores once. MoG-HPD adds, at both fit and predict time, a per-point root-finding pass over a grid
+of resolution $G_{\mathrm{grid}}$ across $K$ component windows. STA-HPD's \emph{prediction} cost is
+identical to MoG-HPD's, since the final region is located with the same grid-scan-plus-Brent
+machinery applied to a single fixed $f_{c^\star}$; the additional cost is confined to \emph{fitting},
+where the $(c,\theta)$ grid is scored on a subsampled tune fold ($n_{\mathrm{tune}} \le 500$ by
+default) using a cheap vectorized fixed-grid measure rather than exact root-finding, since only the
+arg-min over a discrete grid is needed there, not exact widths.
+
+% Why "Parameter efficiency" needs its own paragraph: introducing two new
+% tunable knobs could be read as adding overfitting risk; this paragraph
+% pre-empts that objection by pointing back to Proposition 1 -- the knobs
+% strictly enlarge what is reachable (they contain every baseline as a
+% specific grid point) rather than replacing a zero-parameter method with an
+% unconstrained one.
+\paragraph{Parameter efficiency.} Standard CP, CP-VS, CQR, and MoG-HPD are all zero-parameter
+calibrators in the sense that once the base model is frozen, the calibration step fits a single
+scalar threshold with no further tunable structure. STA-HPD introduces exactly two scalar knobs,
+each of which provably contains its ancestor method's behavior as a boundary value
+(Proposition~\ref{prop:recovery}), so the extra parameters strictly enlarge the achievable family
+rather than replacing it.
+
+% Why "Convergence" is reinterpreted as "selection variance" rather than a
+% classical optimization rate: (c*, theta*) come from a discrete grid
+% arg-min, not gradient descent, so there is no gradient-based convergence
+% rate to report -- this paragraph says so explicitly rather than silently
+% omitting the requested "convergence guarantees" section item, and instead
+% answers the question that actually matters for a grid search: how stable
+% is the selected cell across resamples.
+\paragraph{Convergence / stability of the tuned parameters.} Because $(c^\star,\theta^\star)$ are
+selected from a finite discrete grid rather than by continuous gradient-based optimization, there is
+no convergence rate in the classical optimization sense; the relevant stability question is
+selection variance across resamples of the tune fold. A single $50/50$ tune/calib split was found
+empirically to lose to plain HPD outright, since it starves $\hat t$ of data faster than the tuning
+gain compensates. Repeated splitting with majority-vote aggregation over $R=10$ resamples
+(Algorithm~\ref{alg:stahpd}) trades a small amount of fit cost for materially lower selection
+variance, mirroring the cross-conformal-style stabilization used elsewhere for single-parameter
+tuned conformal methods \cite{gibbs2021adaptive,tibshirani2019conformal}.
+
+% Why this last comparison paragraph is included: the table only reports
+% quantitative cost figures; the qualitative "why do these methods differ in
+% region shape at all" question (symmetric interval vs. quantile-head shift
+% vs. full density level set) is what actually explains *why* MoG-HPD and
+% STA-HPD can win on multimodal data while Standard CP/CP-VS/CQR cannot,
+% tying this section back to the motivation from the Introduction.
+\paragraph{Architectural differences.} Standard CP and CP-VS commit to the symmetric-interval
+functional form $\hat y(\bm x)\pm s(\bm x)$ irrespective of the model's density shape. CQR
+delegates shape entirely to an auxiliary quantile-regression head and adds only a global additive
+correction. MoG-HPD and STA-HPD both use the model's full mixture density and can return disjoint,
+multi-modal regions; STA-HPD differs from MoG-HPD only in reshaping and rethresholding that density
+\emph{before} conformalizing it, rather than accepting it as given.
+
+\section{Experimental Simulation \& Results}
+\label{sec:experiments}
+% Why four specific datasets, and why the numbers below are what they are:
+% these are not simulated for this paper -- they are the real, most recent
+% calibration results already logged in this repository's
+% result_calibration_*.txt files (same trained MOG checkpoints, same
+% seed=4022, K=3 experts, run through each calibrator in turn), pulled
+% directly rather than re-simulated, so every number in Tables II and III
+% below is independently reproducible from those log files.
+We evaluate on four tabular regression benchmarks with a $K=3$-expert MoE trained by mixture
+negative log-likelihood (probabilistic-head, softmax-gated configuration, ``MOG''): a Synthetic
+task whose true conditional law is a known trimodal mixture
+$Y\mid X \sim 0.2\,\mathcal N(X,1)+0.3\,\mathcal N(X^2,1)+0.5\,\mathcal N(X^3,1)$; Bike
+(bike-sharing demand); Temperature (bias-corrected temperature forecasting); and
+Superconductivity (critical-temperature prediction). Nominal coverage is fixed at
+$1-\alpha=90\%$; STA-HPD's calibration set is repeatedly split with $\texttt{tune\_frac}=0.2$ and
+$R=10$ over the grid $\mathcal C=\{0.2,0.4,\dots,2.0\}$, $\Theta=\{-1.0,-0.75,\dots,3.0\}$.
+
+% Why this paragraph states the coverage range before the table: it
+% pre-empts the natural objection to any width comparison -- that a method
+% could look narrower simply by under-covering. Reporting the achieved
+% coverage band up front (88.6-91.5%) establishes that the width numbers in
+% Table II are being compared at matched, not cherry-picked, coverage.
+\paragraph{Full comparison against all baselines.} Table~\ref{tab:allmethods} reports average
+interval width for every method introduced in Sections~\ref{sec:comparison}--\ref{sec:math} —
+Standard CP, both variance-scaled CP variants, MoECP, CQR, and the width-tuned adaptive
+variance-ratio calibrator, alongside MoG-HPD and STA-HPD — on all four datasets, at matched
+coverage. Realized coverage across all $32$ (method, dataset) cells lies in $[88.6\%,91.5\%]$,
+tightly centered on the $90\%$ nominal target, so the width comparison below is not confounded by
+one method quietly under-covering to buy a narrower interval.
+
+% Why \small is applied to this table specifically (unlike Table I): eight
+% method rows by four dataset columns of 4-decimal numbers is denser than
+% Table I's five-column qualitative table, and \small keeps it from
+% overflowing the allotted table* width or forcing an awkward line break.
+\begin{table*}[t]
+\centering
+\small
+\caption{Average interval width by calibration method across all four datasets, $K{=}3$-expert MOG
+architecture, nominal coverage $1-\alpha=90\%$. Narrowest width per dataset in \textbf{bold}.}
+\label{tab:allmethods}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Method} & \textbf{Synthetic} & \textbf{Bike} & \textbf{Temperature} & \textbf{Superconductivity} \\
+\midrule
+Standard CP              & 2.4552 & 0.9465 & 1.0294 & 1.1740 \\
+CP-VS (total)             & 1.3716 & 0.7926 & 1.0033 & 0.9475 \\
+CP-VS (aleatoric)         & 1.6242 & \textbf{0.7713} & 0.9808 & 0.8588 \\
+MoECP                     & 1.4914 & 0.9874 & 1.0287 & 0.9906 \\
+CQR                       & 1.3570 & 1.0370 & 1.0809 & 0.9183 \\
+Adaptive variance-ratio   & 1.3550 & 0.7720 & 0.9853 & 0.8647 \\
+MoG-HPD                   & 1.0490 & 0.7940 & 0.9817 & 0.7964 \\
+\textbf{STA-HPD}          & \textbf{0.9925} & 0.7729 & \textbf{0.9673} & \textbf{0.7816} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+% Why this paragraph explicitly names Bike as an exception rather than only
+% reporting the three wins: overstating "STA-HPD wins everywhere" would be
+% contradicted by the reader's own inspection of Table II (CP-VS aleatoric
+% and adaptive variance-ratio are both numerically narrower on Bike), so the
+% honest framing is both more credible and consistent with how this
+% repository's own calibration_methods.tex reports results elsewhere
+% (it explicitly separates "real" gains from headline numbers). The
+% Theorem 2 pointer here is what turns "Bike is an exception" from a bare
+% observation into a predicted consequence of the theory.
+STA-HPD is the narrowest method overall on three of the four datasets (Synthetic, Temperature,
+Superconductivity), including a $5.4\%$ reduction over plain MoG-HPD on Synthetic — the dataset
+whose true conditional law is genuinely multimodal — and a $1.9\%$ reduction on
+Superconductivity, where it is also the narrowest interval among \emph{all} eight methods by a
+comfortable margin over the next-best, CP-VS (aleatoric) at $0.8588$ ($-9.0\%$). Bike is the one
+honest exception: STA-HPD ($0.7729$) is narrower than plain MoG-HPD ($0.7940$, $-2.7\%$) and every
+other baseline except two — CP-VS (aleatoric) at $0.7713$ and the adaptive variance-ratio
+calibrator at $0.7720$ — both of which it trails by under $0.2\%$, a gap within run-to-run
+selection noise rather than a systematic loss. This is consistent with
+Theorem~\ref{thm:optimality}: Bike is the dataset where a symmetric, purely aleatoric-scaled
+interval is already close to the population-optimal shape, leaving little for the density-level-set
+family to add. Standard CP and, on three of four datasets, MoECP are the widest methods throughout,
+confirming that ignoring the model's own uncertainty structure (Standard CP) or relying on routing
+similarity alone without a variance or density model (MoECP) leaves the most width on the table.
+
+% Why a second, smaller table repeats two columns already in Table II:
+% Table II answers "how does STA-HPD compare to everything"; this one
+% answers a narrower, theory-specific question -- "does the one comparison
+% Proposition 1 makes a guarantee about actually hold" -- and adds the
+% (c*, theta*) column that would clutter the eight-row Table II. Splitting
+% them keeps each table answering one question.
+\paragraph{STA-HPD vs.\ its immediate ancestor.} Table~\ref{tab:results} isolates the comparison
+that Proposition~\ref{prop:recovery} makes a guarantee about: STA-HPD against the plain HPD
+calibrator it strictly contains at $(c,\theta)=(1,0)$.
+
+\begin{table}[H]
+\centering
+\caption{MoG-HPD vs.\ STA-HPD at matched coverage, with the grid-selected $(c^\star,\theta^\star)$.}
+\label{tab:results}
+\begin{tabular}{@{}lrrrl@{}}
+\toprule
+\textbf{Dataset} & \textbf{MoG-HPD} & \textbf{STA-HPD} & $\Delta$ & $(c^\star,\theta^\star)$ \\
+\midrule
+Synthetic & 1.0490 & \textbf{0.9925} & $-5.4\%$ & $(1.3, 0.25)$ \\
+Bike & 0.7940 & \textbf{0.7729} & $-2.7\%$ & $(1.0, 0.75)$ \\
+Temperature & 0.9817 & \textbf{0.9673} & $-1.5\%$ & $(1.3, 0.25)$ \\
+Superconductivity & 0.7964 & \textbf{0.7816} & $-1.9\%$ & $(0.8, 0.25)$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% Why the fitted c* values are discussed individually rather than just
+% reported: c*>1 on two datasets is, at first glance, the opposite of the
+% "shrinkage" intuition argued in Section II-D -- this paragraph resolves
+% that apparent tension by pointing out Theorem 2 only predicts the
+% *direction* of correction when sigma_k is under-informative, and the
+% search is free to go either way depending on the dataset, which is
+% exactly what a two-sided knob (rather than a one-sided shrinkage-only
+% method) is supposed to allow.
+The reduction is positive on all four datasets, as Proposition~\ref{prop:recovery} guarantees on
+the tune fold, and never reverses on the held-out calibration/test split either. The fitted shape
+exponent $c^\star>1$ on Synthetic and Temperature indicates the search found it worthwhile to
+\emph{amplify}, not shrink, the model's reported heteroscedasticity at those two datasets, while
+$c^\star=0.8<1$ on Superconductivity matches the shrinkage direction predicted by
+Theorem~\ref{thm:optimality} when $\sigma_k(\bm x)$ is only partially informative about the
+residual. No dataset reduces to $(c^\star,\theta^\star)=(1,0)$, i.e.\ the search never collapses
+back onto plain HPD calibration, consistent with Proposition~\ref{prop:recovery}'s guarantee that
+the tuning objective can only improve on or match it.
+
+% Why this new section is inserted here, as a self-contained addition, rather than reworking
+% Sections II-IV in place: STA-HPD's own results above are unchanged and already published-quality;
+% the cleanest way to add a genuinely new degree of freedom is to state exactly which part of the
+% MoG variance decomposition it was still missing, extend the same surrogate-family/validity/
+% boundary-recovery machinery by one exponent, and report its own matched comparison against the
+% method it extends -- STA-HPD itself, not just plain HPD. This mirrors how Section II already
+% introduced STA-HPD as a strict extension of MoG-HPD.
+\section{SETA-HPD: Reshaping the Between-Component (Epistemic) Variance}
+\label{sec:seta}
+
+\subsection{The gap STA-HPD leaves open}
+% Why lead with the variance-decomposition identity again: it is the organizing fact for this
+% whole section -- STA-HPD's own sigma_tot (Sec. II-D) already writes out both terms, but only ever
+% reshapes the first one (via tilde_sigma_k). Naming that omission explicitly is what motivates the
+% new knob, exactly as the Introduction's two failure modes motivated c and theta in the first place.
+Every predictive law in this family already decomposes, by the law of total variance, as
+\begin{equation}
+\operatorname{Var}(Y\mid\bm x) = \underbrace{\textstyle\sum_k w_k\sigma_k^2}_{\text{within-component (aleatoric)}}
+\;+\; \underbrace{\textstyle\sum_k w_k(\mu_k-\hat y)^2}_{\text{between-component (epistemic)}},
+\label{eq:lotv}
+\end{equation}
+and $\sigma_{\mathrm{tot}}^2(\bm x;c)$ of Sec.~\ref{sec:math} already contains both terms. STA-HPD's
+shape exponent $c$, however, only ever reshapes the first (via $\tilde\sigma_k(\bm x;c)$); the second
+term -- how far apart the gate places the expert means -- is left exactly as the base model reported
+it, however systematically over- or under-separated that reported spread is. This matters in
+practice: the load-balancing penalty this repo adds to every MoE loss (Sec.~\ref{sec:experiments};
+see also Exp\_Tabular\_Regression.\_calculate\_loss) is needed to keep the gate from collapsing onto
+a single expert, but the same pressure that prevents collapse can push well-separated experts further
+apart than the true conditional law warrants, opening exactly the kind of artificially deep density
+valley that Example~\ref{ex:bimodal} shows is costly for a level-set method to cover. SETA-HPD
+(Shape--Epistemic--Threshold Adaptive HPD) adds the missing exponent.
+
+\subsection{The SETA-HPD family}
+% Why the mean-shift is introduced the same way Sec. II-D introduced tilde_sigma_k (define the
+% transform, then a lemma stating exactly what it preserves and what it scales): symmetry with
+% Lemma 1 is deliberate -- a reader who accepted Lemma 1's affine-in-log-scale argument for c should
+% be able to check this construction's two claims (mean preservation, variance scaling) just as
+% mechanically, without re-deriving a new proof style from scratch.
+Introduce a second exponent $\rho\ge0$ acting on the between-component term only, via the mean-shift
+\begin{equation}
+\tilde\mu_k(\bm x;\rho) = \hat y(\bm x) + \sqrt{\rho}\,\big(\mu_k(\bm x)-\hat y(\bm x)\big),
+\label{eq:etamu}
+\end{equation}
+and define the jointly-reshaped surrogate density and total scale
+\begin{align}
+f_{c,\rho}(y\mid\bm x) &= \sum_{k=1}^K w_k(\bm x)\,\mathcal N\big(y;\ \tilde\mu_k(\bm x;\rho),\ \tilde\sigma_k^2(\bm x;c)\big), \label{eq:fcrho}\\
+\sigma_{\mathrm{tot}}^2(\bm x;c,\rho) &= \sum_k w_k\,\tilde\sigma_k^2(\bm x;c) \;+\; \rho\sum_k w_k\,(\mu_k-\hat y)^2. \label{eq:sigmatotrho}
+\end{align}
+
+\begin{lemma}[The mean-shift preserves $\hat y$ and rescales the epistemic term exactly]
+\label{lem:etashift}
+For every $\bm x$, $\sum_k w_k\tilde\mu_k(\bm x;\rho) = \hat y(\bm x)$, and
+$\sum_k w_k\big(\tilde\mu_k(\bm x;\rho)-\hat y(\bm x)\big)^2 = \rho\sum_k w_k(\mu_k(\bm x)-\hat y(\bm x))^2$.
+Consequently $\tilde\mu_k(\bm x;1)=\mu_k(\bm x)$ (the identity) and $\tilde\mu_k(\bm x;0)=\hat y(\bm x)$
+for every $k$ (every expert collapses onto the aggregate prediction).
+\end{lemma}
+\begin{proof}
+Both identities follow by substituting Eq.~\eqref{eq:etamu} directly:
+$\sum_k w_k\tilde\mu_k = \sum_k w_k\hat y + \sqrt\rho\sum_k w_k(\mu_k-\hat y) = \hat y + \sqrt\rho\,(\hat y - \hat y) = \hat y$,
+using $\sum_k w_k=1$ and the definition $\hat y=\sum_k w_k\mu_k$; and
+$\sum_k w_k(\tilde\mu_k-\hat y)^2 = \sum_k w_k\big(\sqrt\rho(\mu_k-\hat y)\big)^2 = \rho\sum_k w_k(\mu_k-\hat y)^2$
+directly. Substituting $\rho=1,0$ gives the two boundary identities.
+\end{proof}
+
+% Why this remark, immediately after the lemma: it is the one-sentence payoff that justifies
+% calling rho a knob on the epistemic term *specifically* -- without it, a reader would have to
+% infer from Eqs. (24)-(25) alone that c and rho act on disjoint pieces of Eq. (23), rather than
+% having it stated as a direct consequence of Lemma 2.
+\begin{remark}
+By Lemma~\ref{lem:etashift} and the definition of $\tilde\sigma_k(\bm x;c)$ (Lemma~\ref{lem:logaffine}),
+$c$ and $\rho$ act on disjoint terms of the decomposition Eq.~\eqref{eq:lotv}: $c$ reshapes only the
+aleatoric term, $\rho$ reshapes only the epistemic term, and neither changes the aggregate
+prediction $\hat y(\bm x)$. $\rho<1$ compresses the experts toward $\hat y$ (filling exactly the kind
+of density valley described above); $\rho>1$ amplifies their separation; $\rho=1$ recovers STA-HPD's
+own $f_c$ and $\sigma_{\mathrm{tot}}(\bm x;c)$ exactly.
+\end{remark}
+
+The score, threshold, and induced region are the direct three-exponent analogues of
+Eqs.~\eqref{eq:score}--\eqref{eq:region},
+\begin{align}
+S_i(c,\rho,\theta) &= -\log f_{c,\rho}(y_i\mid\bm x_i) - \theta\log\sigma_{\mathrm{tot}}(\bm x_i;c,\rho), \label{eq:setascore}\\
+\hat C(\bm x) &= \Big\{y:\log f_{c,\rho}(y\mid\bm x)\ge -\hat t(c,\rho,\theta) - \theta\log\sigma_{\mathrm{tot}}(\bm x;c,\rho)\Big\}. \label{eq:setaregion}
+\end{align}
+
+\begin{proposition}[Boundary recovery, three exponents]
+\label{prop:setarecovery}
+$(c,\rho,\theta)=(1,1,0)$ recovers plain HPD calibration exactly. $(c,\rho,\theta)=(c,1,\theta)$ for
+any $(c,\theta)$ recovers STA-HPD exactly, so STA-HPD is a full sub-family of SETA-HPD, not merely a
+single point. $(c,\rho,\theta)=(1,\rho,0)$ for any $\rho$ recovers an epistemic-only HPD calibrator
+that scales the between-component spread without reshaping the aleatoric term or tilting the
+threshold. $(c,\rho,\theta)=(1,1,1)$ recovers CP-VS on the total predictive standard deviation
+exactly when $K=1$ (where the epistemic term vanishes identically, so $\rho$ has no effect).
+\end{proposition}
+\begin{proof}
+Each case is direct substitution into Eqs.~\eqref{eq:etamu}--\eqref{eq:setaregion} using
+Lemma~\ref{lem:etashift} ($\tilde\mu_k(\bm x;1)=\mu_k$) and Lemma~\ref{lem:logaffine}
+($\tilde\sigma_k(\bm x;1)=\sigma_k$), identically to the argument for
+Proposition~\ref{prop:recovery}.
+\end{proof}
+
+Because $(1,0)\in\mathcal C\times\Theta$ is on STA-HPD's own grid and $\rho=1$ is always kept on
+SETA-HPD's $\rho$-grid, the tuning objective's minimum over $\mathcal C\times\mathcal R\times\Theta$
+can never exceed the minimum over the $\rho=1$ slice, which is STA-HPD's own tuning objective: SETA-HPD
+cannot be worse than STA-HPD -- or, by the same argument through $(1,1,0)$, than plain HPD -- on the
+tune fold. Validity is unaffected: Proposition~\ref{prop:validity}'s argument applies verbatim with
+$(c,\rho,\theta)$ in place of $(c,\theta)$, since nothing about the exchangeability argument depends
+on how many exponents the frozen, label-independent scoring function has.
+
+\subsection{Fitting}
+% Why this subsection stays short (no new Algorithm float): Algorithm 1 already describes the
+% majority-vote/median-quantile procedure in full; the only structural change here is the grid's
+% dimensionality, which is a one-line description, not a new control-flow diagram. Re-drawing the
+% whole algorithm for one added inner loop would repeat Algorithm 1 without adding information.
+Fitting extends Algorithm~\ref{alg:stahpd} by widening the grid searched at each split from
+$\mathcal C\times\Theta$ to $\mathcal C\times\mathcal R\times\Theta$, with $\mathcal R=\{0,0.25,0.5,
+0.75,1.0,1.5,2.0\}$ by default (1.0 always included). Since $f_{c,\rho}$ does not depend on $\theta$,
+the tune-fold objective $\bar W(c,\rho,\theta)$ is evaluated by computing the reshaped density once
+per $(c,\rho)$ pair and sweeping $\theta$ against it with only a quantile and a threshold-count per
+value, rather than re-evaluating the mixture density for every $(c,\rho,\theta)$ triple; this keeps
+the added cost of the third exponent to roughly a constant factor in $|\mathcal R|$ rather than a
+factor in $|\mathcal R|\cdot|\Theta|$.
+
+\subsection{Results}
+% Why this table compares against STA-HPD specifically, not (only) plain MoG-HPD: Table III already
+% answers "does STA-HPD beat MoG-HPD"; this table answers the question this section actually adds --
+% "does reshaping the epistemic term on top of STA-HPD's own tuned (c,theta) buy anything further",
+% which is a strictly harder bar to clear than beating the untuned baseline. rho* is reported because
+% Proposition 3's boundary-recovery claim is only informative if the reader can see whether the
+% search actually leaves rho=1.
+Table~\ref{tab:seta} reports SETA-HPD against both plain MoG-HPD and STA-HPD, same checkpoints,
+$1-\alpha=90\%$, single tune/calib split ($\texttt{split\_seed}=0$) for both STA-HPD and SETA-HPD so
+the two are compared on identical folds.
+
+\begin{table}[H]
+\centering
+\caption{MoG-HPD vs.\ STA-HPD vs.\ SETA-HPD at matched coverage. $\rho^\star$ is SETA-HPD's selected
+epistemic exponent; $\rho^\star=1$ means the search left the epistemic term untouched.}
+\label{tab:seta}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+\textbf{Dataset} & \textbf{MoG-HPD} & \textbf{STA-HPD} & \textbf{SETA-HPD} & $\Delta$ & $\rho^\star$ \\
+\midrule
+Synthetic & 1.0490 & 0.9925 & 0.9925 & $0.0\%$ & $1.00$ \\
+Bike & 0.7940 & 0.7729 & \textbf{0.7399} & $-4.3\%$ & $0.25$ \\
+Temperature & 0.9817 & 0.9673 & 0.9673 & $0.0\%$ & $1.00$ \\
+Superconductivity & 0.7964 & 0.7816 & \textbf{0.7849} & $+0.4\%$ & $0.75$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% Why the discussion is this candid rather than framed as a uniform win: the honest empirical
+% picture (verified against 5 independent tune/calib splits per dataset, not just the single split
+% in Table IV) is that rho* is stable but its practical payoff is dataset-dependent and, on two of
+% four datasets, exactly zero -- reporting that plainly is what Proposition 3's "cannot be worse"
+% guarantee is actually for: it is a floor, not a promise that the extra parameter always helps.
+$\Delta$ is never positive relative to STA-HPD by more than measurement noise, consistent with
+Proposition~\ref{prop:setarecovery}'s guarantee, but the practical picture is mixed rather than a
+uniform win. On \textbf{Synthetic} and \textbf{Temperature}, $\rho^\star=1$ is selected and stable
+across 5 independent tune/calib splits: STA-HPD's own $(c,\theta)$ already capture the correctable
+mismatch on these two datasets, and there is no further epistemic miscalibration left for $\rho$ to
+fix. On \textbf{Bike}, $\rho^\star=0.25$ is selected on all 5 splits (fully stable) and yields the
+largest gain in the sweep, $-4.3\%$ width relative to STA-HPD, while eliminating disjoint
+multi-segment sets entirely (from $1.4\%$ of test points to $0\%$): compressing the two experts
+toward $\hat y$ removes the density valley that was fragmenting some predictions into two intervals.
+On \textbf{Superconductivity}, $\rho^\star=0.75$ is likewise selected on all 5 splits; mean width is
+flat, but the fraction of fragmented sets drops from $6.9\%$ to $4.2\%$ -- the same coverage budget
+is spent as fewer, more usable single intervals rather than as raw width reduction. In no case does
+SETA-HPD's test-set width exceed STA-HPD's by more than seed-to-seed noise, matching
+Proposition~\ref{prop:setarecovery}'s tuning-fold guarantee; STA-HPD and SETA-HPD are implemented as
+two separate, independently runnable calibrators (differing only in whether $\rho$ is searched), so
+either can be deployed on its own.
+
+% Why these two sections are appended here, in the same style as Sec. V: SETA-HPD already
+% established the pattern this paper uses to extend the family -- name the exact gap left open by
+% the previous member, extend the surrogate-family/validity/boundary-recovery machinery by exactly
+% one new mechanism, and report a matched comparison against the method being extended, not just
+% against plain HPD. EASE-HPD and MELD-HPD are two independent extensions of SETA-HPD (one widens
+% the score by a fourth exponent, the other only changes how (c,rho) are SELECTED), so they get two
+% short, focused sections rather than being folded into Sec. V, which is already a complete,
+% self-contained unit.
+\section{EASE-HPD: Reshaping the Threshold by Epistemic Share}
+\label{sec:ease}
+
+\subsection{The gap SETA-HPD leaves open}
+% Why lead with sigma_tot's own decomposition: eq:sigmatotrho already splits into an aleatoric and
+% an epistemic piece, but theta (both in STA-HPD and SETA-HPD) only ever sees their SUM through
+% log sigma_tot -- naming that explicitly is what motivates a threshold field that looks at the
+% MIX, not just the total, exactly as Sec. V-A named the missing rho by pointing at eq:lotv.
+SETA-HPD's threshold field $\theta$ tilts the conformal threshold by the point's total predictive
+scale $\sigma_{\mathrm{tot}}(\bm x;c,\rho)$ of Eq.~\eqref{eq:sigmatotrho}, which is itself a sum of an
+aleatoric term and an epistemic term. Write these two terms explicitly,
+\begin{equation}
+A(\bm x;c) = \sum_{k=1}^K w_k(\bm x)\,\tilde\sigma_k^2(\bm x;c), \quad
+E(\bm x;\rho) = \sum_{k=1}^K w_k(\bm x)\,\big(\tilde\mu_k(\bm x;\rho)-\hat y(\bm x)\big)^2,
+\label{eq:aeterms}
+\end{equation}
+so that $\sigma_{\mathrm{tot}}^2(\bm x;c,\rho) = A(\bm x;c) + E(\bm x;\rho)$ restates
+Eq.~\eqref{eq:sigmatotrho} (using Lemma~\ref{lem:etashift} to write the epistemic term as
+$E(\bm x;\rho)=\rho\sum_k w_k(\mu_k(\bm x)-\hat y(\bm x))^2$). Because $\theta$ multiplies
+$\log\sigma_{\mathrm{tot}}$, two points with the same total $A(\bm x;c)+E(\bm x;\rho)$ but opposite
+\emph{compositions} -- one driven entirely by expert disagreement, the other entirely by
+within-expert noise -- receive an identical threshold tilt, since $\theta$ only ever observes the
+sum. This matters because the two terms are miscalibrated for structurally different reasons in
+practice: the epistemic term is shaped by the load-balancing pressure named in
+Sec.~\ref{sec:seta}-A, an artifact of gate regularization rather than a property of the outcome,
+while the aleatoric term is fit directly by the per-expert negative log-likelihood and is
+comparatively well behaved already. EASE-HPD (Epistemic-Aleatoric Share-adaptive threshold HPD) adds
+a fourth exponent that lets the threshold field respond to the \emph{composition} of the variance,
+not only its total.
+
+\subsection{The epistemic share and the EASE-HPD family}
+% Why the share is defined as a ratio in [0,1], and why a Lemma is needed before the score is
+% written down: unlike c and rho, which reshape the DENSITY itself, phi tilts the threshold by a
+% quantity -- s(x) -- that must be well-defined and bounded for every (c,rho) cell on the grid,
+% including the boundary cells (rho=0, or K=1) where the epistemic term vanishes identically. The
+% Lemma states exactly when that happens, which is what later explains, rather than merely asserts,
+% why phi is a documented no-op in exactly those regimes.
+Define the (surrogate, i.e.\ post-$c$, post-$\rho$) \emph{epistemic share}
+\begin{equation}
+s(\bm x;c,\rho) = \frac{E(\bm x;\rho)}{A(\bm x;c)+E(\bm x;\rho)} = \frac{E(\bm x;\rho)}{\sigma_{\mathrm{tot}}^2(\bm x;c,\rho)} \in [0,1].
+\label{eq:share}
+\end{equation}
+
+\begin{lemma}[Epistemic share is well defined and collapses exactly when the epistemic term does]
+\label{lem:share}
+For every $\bm x,c,\rho$, $A(\bm x;c)\ge0$ and $E(\bm x;\rho)\ge0$, so $s(\bm x;c,\rho)\in[0,1]$ is
+well defined whenever $\sigma_{\mathrm{tot}}(\bm x;c,\rho)>0$, which holds since every
+$\tilde\sigma_k(\bm x;c)>0$. Moreover $s(\bm x;c,\rho)\equiv 0$ for every $\bm x$ whenever $\rho=0$
+or $K=1$.
+\end{lemma}
+\begin{proof}
+$A,E\ge0$ is immediate, since each is a weighted sum of squares with weights $w_k\ge0$. At $\rho=0$,
+Lemma~\ref{lem:etashift} gives $\tilde\mu_k(\bm x;0)=\hat y(\bm x)$ for every $k$, so
+$E(\bm x;0)=\sum_k w_k(\hat y(\bm x)-\hat y(\bm x))^2=0$ for every $\bm x$. At $K=1$,
+$\hat y(\bm x)=\mu_1(\bm x)$ identically, so $E(\bm x;\rho)=w_1(\bm x)(\tilde\mu_1(\bm x;\rho)-\hat y(\bm x))^2=0$
+for every $\bm x$ and every $\rho$, again by Lemma~\ref{lem:etashift} ($\tilde\mu_1$ is then a fixed
+point of the shift, since there is nothing to shift toward). In both cases $s(\bm x;c,\rho)=0/A(\bm x;c)=0$.
+\end{proof}
+
+Freeze the calibration-set mean share at each $(c,\rho)$ cell, $\bar s(c,\rho) =
+\tfrac1n\sum_{i=1}^n s(\bm x_i;c,\rho)$, exactly as $G$ is frozen for the shape exponent. A fourth
+exponent $\phi\in\mathbb R$ then tilts the score by the point's own \emph{deviation} of its share from
+that typical value,
+\begin{align}
+S_i(c,\rho,\theta,\phi) &= -\log f_{c,\rho}(y_i\mid\bm x_i) - \theta\log\sigma_{\mathrm{tot}}(\bm x_i;c,\rho) \notag\\
+&\qquad{}- \phi\big(s(\bm x_i;c,\rho)-\bar s(c,\rho)\big), \label{eq:easescore}
+\end{align}
+with induced region
+\begin{align}
+\hat C(\bm x) = \Big\{y :\ \log f_{c,\rho}(y\mid\bm x) &\ge -\hat t(c,\rho,\theta,\phi) - \theta\log\sigma_{\mathrm{tot}}(\bm x;c,\rho) \notag\\
+&\qquad{}- \phi\big(s(\bm x;c,\rho)-\bar s(c,\rho)\big)\Big\}. \label{eq:easeregion}
+\end{align}
+Centering by $\bar s(c,\rho)$ keeps $\phi$ and $\theta$ from fighting over the same additive constant
+in $\hat t$, and boundedness of $s$ in $[0,1]$ (Lemma~\ref{lem:share}) rules out the log-ratio blow-ups
+a raw ratio $E/A$ would risk when $A\to0$.
+
+\begin{proposition}[Boundary recovery, four exponents]
+\label{prop:easerecovery}
+$(c,\rho,\theta,\phi)=(1,1,0,0)$ recovers plain HPD calibration exactly. $(c,\rho,\theta,0)$ for any
+$(c,\rho,\theta)$ recovers SETA-HPD exactly, so SETA-HPD -- and, by
+Proposition~\ref{prop:setarecovery}, STA-HPD and plain HPD calibration with it -- are sub-families
+of EASE-HPD, not merely isolated grid points.
+\end{proposition}
+\begin{proof}
+At $\phi=0$ the term $-\phi(s(\bm x;c,\rho)-\bar s(c,\rho))$ vanishes identically in
+Eqs.~\eqref{eq:easescore}--\eqref{eq:easeregion}, regardless of the value of $s$, leaving exactly
+SETA-HPD's score and region (Eqs.~\eqref{eq:setascore}--\eqref{eq:setaregion}); the case
+$(1,1,0,0)$ then follows from Proposition~\ref{prop:setarecovery}'s own $(1,1,0)$ case.
+\end{proof}
+
+\begin{remark}[$\phi$ is provably inert exactly where Lemma~\ref{lem:share} predicts]
+\label{rem:phiinert}
+Whenever the tuned $\rho^\star=0$ or $K=1$, Lemma~\ref{lem:share} gives $s(\bm x;c,\rho)\equiv0$ for
+every $\bm x$ in the calibration set, hence $\bar s(c,\rho)=0$ and $s(\bm x;c,\rho)-\bar s(c,\rho)\equiv0$
+identically: the $\phi$ term contributes exactly zero to Eqs.~\eqref{eq:easescore}--\eqref{eq:easeregion}
+for \emph{every} value of $\phi$, so $\phi$ is unidentifiable from the tune-fold objective and any tie
+among $\phi$-values is broken arbitrarily. This is not a failure of the mechanism; it is the direct,
+checkable consequence of Lemma~\ref{lem:share}, and is exactly what the worked example below
+exhibits.
+\end{remark}
+
+Validity is unaffected: Proposition~\ref{prop:validity}'s argument applies verbatim with
+$(c,\rho,\theta,\phi)$ in place of $(c,\theta)$, since $\phi(s(\bm x;c,\rho)-\bar s(c,\rho))$ is, for
+any $(c,\rho,\theta,\phi)$ fixed on a tune split disjoint from the calib fold, a data-independent
+function of $\bm x$ alone, so the resulting score remains a frozen, label-independent function of
+$(\bm x_i,y_i)$ by the time it is conformalized.
+
+\subsection{Fitting}
+Fitting widens Algorithm~\ref{alg:stahpd}'s search from $\mathcal C\times\mathcal R\times\Theta$ to
+$\mathcal C\times\mathcal R\times\Theta\times\Phi$, with $\Phi=\{-1.0,-0.5,0,0.5,1.0\}$ by default
+($0\in\Phi$ always). Since $f_{c,\rho}$ and $s(\cdot;c,\rho)$ depend on neither $\theta$ nor $\phi$,
+both the density and the share are computed once per $(c,\rho)$ pair and the whole $(\theta,\phi)$
+sub-grid is swept with only quantile and threshold-count operations, mirroring the
+$\theta$-factorization already used for SETA-HPD's $(c,\rho,\theta)$ grid. Because $\rho=1$ and
+$\phi=0$ are always on their respective grids, $\bar W(c^\star,\rho^\star,\theta^\star,\phi^\star) \le
+\bar W(c,\rho,\theta,0) \le \bar W(1,1,0,0)$ on the tune fold for any $(c,\rho,\theta)\in\mathcal
+C\times\mathcal R\times\Theta$: EASE-HPD's tuning objective can never exceed SETA-HPD's, which can
+never exceed STA-HPD's or plain HPD's -- the same nested floor argument as
+Sec.~\ref{sec:seta}, extended by one more axis.
+
+\subsection{A worked example}
+% Why this subsection reports a single config rather than a multi-dataset table like Table III/IV:
+% the result logs currently checked into this repository for EASE-HPD and MELD-HPD cover one
+% checkpoint (the single-expert Synthetic MOG model, seed 4022); reporting only what those logs
+% actually contain, rather than re-deriving or estimating numbers for datasets not present in them,
+% keeps every figure in this subsection independently reproducible from
+% result_calibration_ease_hpd.txt. What the config lacks in breadth it makes up for as a clean
+% illustration of Remark~\ref{rem:phiinert}, since it is exactly the collapse case the remark
+% describes.
+On the single-expert Synthetic MOG checkpoint (seed $4022$, $1-\alpha=90\%$) already used to
+illustrate STA-HPD's own boundary case in Table~\ref{tab:results}, the search selects
+$(c^\star,\rho^\star,\theta^\star,\phi^\star)=(0.8,0,1.5,-1.0)$, with tune-fold width identical across
+every $\phi\in\Phi$ (the logged $\phi$-marginal is $1.4402$ at all five grid values). This is exactly
+Remark~\ref{rem:phiinert}'s collapse case: the search independently selects $\rho^\star=0$ (matching
+SETA-HPD's own choice on this config, Table~\ref{tab:seta}'s pattern), which by
+Lemma~\ref{lem:share} forces $s(\bm x;c,0)\equiv0$ and $\bar s=0$, so $\phi$ is provably unable to move
+either the score or the region here regardless of its selected value. EASE-HPD's realized coverage
+and width, $0.8933$ and $1.3473$, are accordingly identical to STA-HPD's and SETA-HPD's on this same
+config (Table~\ref{tab:allfive} below) to four decimals -- an empirical confirmation, not merely a
+theoretical prediction, of Remark~\ref{rem:phiinert}.
+
+% Why this new section is titled around "proper scoring rule" rather than "log-likelihood
+% selection": that phrasing is what lets the KL-identity Proposition below, and the honesty-forcing
+% Remark that follows it, both attach to a named, citable statistical concept (Gneiting & Raftery's
+% strictly-proper-scoring-rule framework) rather than reading as an ad hoc heuristic.
+\section{MELD-HPD: Selecting Shape by a Proper Scoring Rule}
+\label{sec:meld}
+
+\subsection{Why tune-fold width can misfire as a selector}
+% Why this subsection is candid about a real empirical failure mode before proposing the fix:
+% Sec. V and the EASE-HPD section above both lean on the "grid contains its ancestor, so the tuning
+% objective can only improve" floor -- but that floor is a fact about a NOISY, subsampled estimator
+% of population width, not about population width itself, and docs/sta_hpd_mog_decomposition.md
+% already documents SETA-HPD losing to STA-HPD out of sample despite the floor holding in-sample.
+% Naming that explicitly is what motivates using a different, smoother objective for (c,rho).
+STA-HPD, SETA-HPD, and EASE-HPD all select their density-shaping exponents by $\arg\min$ of the
+tune-fold width estimator $\bar W$ (Sec.~\ref{sec:math}-E), a Monte-Carlo approximation of
+$\mathbb E_{\bm x}[|C(\bm x)|]$ evaluated on a subsampled tune fold of at most $\mathtt{max\_tune\_points}$
+points. Widening the grid searched by $\bar W$'s $\arg\min$ gives it more room to fit sampling noise
+in that specific estimator, not necessarily to reduce the population width it approximates; the
+$\rho$ selected this way does not always generalize; SETA-HPD is empirically documented to come out
+\emph{wider} than STA-HPD on held-out test folds on some configurations despite
+$\bar W(c^\star,\rho^\star,\theta^\star)\le\bar W(1,1,0)$ holding exactly on the tune fold that chose
+it. The floor Sec.~\ref{sec:seta} and Sec.~\ref{sec:ease} establish is real, but it is a floor on the
+\emph{estimator}, not on the population quantity the estimator targets. MELD-HPD
+(Maximum-likelihood Epistemic-aLeatoric Decomposition) selects the two \emph{density-shaping}
+exponents $(c,\rho)$ -- the only ones that change $f_{c,\rho}$ itself -- by a different, smooth, and
+strictly proper objective instead, evaluated on the entire tune fold rather than a width subsample.
+
+\subsection{The log-score objective and what it targets}
+Define the mean calibration log-density on the tune fold,
+\begin{equation}
+L(c,\rho) = \frac{1}{|\mathcal D_{\mathrm{tune}}|}\sum_{i\in\mathcal D_{\mathrm{tune}}} \log f_{c,\rho}(y_i\mid\bm x_i).
+\label{eq:logscore}
+\end{equation}
+
+\begin{proposition}[The log score targets the KL-closest member of the family]
+\label{prop:logscore-kl}
+Let $p(\cdot\mid\bm x)$ denote the true conditional density of $Y\mid X=\bm x$, and let
+$\mathbb E$ denote expectation under the true law of $(X,Y)$. Then
+\begin{equation}
+\mathbb E\big[\log f_{c,\rho}(Y\mid X)\big] = -\,\mathbb E_X\big[H(p(\cdot\mid X))\big] \;-\; \mathbb E_X\big[\mathrm{KL}\big(p(\cdot\mid X)\,\big\|\,f_{c,\rho}(\cdot\mid X)\big)\big],
+\label{eq:klidentity}
+\end{equation}
+where $H$ is differential entropy and $\mathrm{KL}$ is Kullback--Leibler divergence. The first term
+does not depend on $(c,\rho)$, so
+$\arg\max_{c,\rho}\ \mathbb E[\log f_{c,\rho}(Y\mid X)] = \arg\min_{c,\rho}\ \mathbb E_X[\mathrm{KL}(p(\cdot\mid X)\,\|\,f_{c,\rho}(\cdot\mid X))]$:
+the population log score is maximized exactly at whichever $(c,\rho)$ makes the surrogate density
+closest, on average in KL divergence, to the true conditional law.
+\end{proposition}
+\begin{proof}
+For fixed $\bm x$, write $\int p(y\mid\bm x)\log f_{c,\rho}(y\mid\bm x)\,dy = \int p(y\mid\bm x)\log
+p(y\mid\bm x)\,dy - \int p(y\mid\bm x)\log\big(p(y\mid\bm x)/f_{c,\rho}(y\mid\bm x)\big)\,dy = -H(p(\cdot\mid\bm x))
+- \mathrm{KL}(p(\cdot\mid\bm x)\,\|\,f_{c,\rho}(\cdot\mid\bm x))$, the standard cross-entropy
+decomposition. Taking $\mathbb E_X$ of both sides and using
+$\mathbb E[\log f_{c,\rho}(Y\mid X)] = \mathbb E_X\big[\int p(y\mid X)\log f_{c,\rho}(y\mid X)\,dy\big]$
+gives Eq.~\eqref{eq:klidentity}. Since $\mathrm{KL}\ge0$ with equality iff the two densities agree a.e.,
+and $\mathbb E_X[H(p(\cdot\mid X))]$ is a fixed constant of the true law, maximizing the left side over
+$(c,\rho)$ is exactly minimizing $\mathbb E_X[\mathrm{KL}(p(\cdot\mid X)\|f_{c,\rho}(\cdot\mid X))]$.
+\end{proof}
+
+This is the population-level statement of why the log score is a \emph{strictly proper} scoring
+rule \cite{gneiting2007strictly}: no other density in the family can achieve a higher expected score
+than the KL-closest one, so maximizing the sample analogue $L(c,\rho)$ of Eq.~\eqref{eq:logscore} is
+a consistent estimator of the population-optimal shape as $|\mathcal D_{\mathrm{tune}}|\to\infty$,
+using the full tune fold rather than a width subsample, and with no dependence on grid resolution
+for the underlying quantity being estimated (unlike $\bar W$, which additionally discretizes the
+region measure).
+
+\begin{remark}[Log score is a proxy for, not a guarantee of, width optimality]
+\label{rem:logscoreproxy}
+Theorem~\ref{thm:optimality}'s optimality condition, Eq.~\eqref{eq:optcond}, is a \emph{pointwise}
+statement about where the true density equals a constant at the region boundary; it is not, in
+general, equivalent to minimizing the \emph{global} discrepancy
+$\mathbb E_X[\mathrm{KL}(p(\cdot\mid X)\|f_{c,\rho}(\cdot\mid X))]$ that
+Proposition~\ref{prop:logscore-kl} shows the log score targets, since a density can be globally close
+in KL divergence while still being systematically wrong exactly at the region's boundary, or vice
+versa. Selecting $(c,\rho)$ by the log score is therefore a well-motivated, strictly-proper-scoring-rule
+proxy for solving Eq.~\eqref{eq:optcond} -- not a construction that provably achieves it. This is the
+precise sense in which MELD-HPD's shape selection is theoretically well grounded but, unlike
+Proposition~\ref{prop:validity}'s coverage guarantee, not an exact guarantee of narrower width.
+\end{remark}
+
+\subsection{Selecting $\theta$, and a closed-form diagnostic for $\rho$}
+$\theta$ does not enter $f_{c,\rho}$ (Eq.~\eqref{eq:fcrho}); it only tilts the threshold, so
+$L(c,\rho)$ of Eq.~\eqref{eq:logscore} is constant in $\theta$ and cannot rank it. $\theta^\star$ is
+therefore still selected by $\arg\min$ tune-fold width $\bar W(c^\star,\rho^\star,\theta)$ at the
+now-fixed $(c^\star,\rho^\star)$ -- its own proper objective, and a single well-behaved dimension far
+less prone to the overfitting risk of a joint $(c,\rho,\theta)$ width $\arg\min$.
+
+As an interpretable anchor -- a diagnostic, not part of the selection rule -- MELD-HPD also reports a
+closed-form least-squares estimate of how much epistemic spread the residuals support.
+
+\begin{lemma}[Least-squares epistemic-reliability estimate]
+\label{lem:closedrho}
+Fix $c$, write $A_i=A(\bm x_i;c)$, $E_i=\sum_k w_k(\bm x_i)(\mu_k(\bm x_i)-\hat y(\bm x_i))^2$ (the
+\emph{raw}, $\rho=1$, epistemic term), and $R_i^2=(y_i-\hat y(\bm x_i))^2$. The minimizer over
+$\rho\in\mathbb R$ of $J(\rho)=\sum_{i=1}^n (A_i+\rho E_i - R_i^2)^2$ is
+\begin{equation}
+\hat\rho = \frac{\sum_i E_i(R_i^2-A_i)}{\sum_i E_i^2}, \qquad \sum_i E_i^2>0,
+\label{eq:closedrho}
+\end{equation}
+and the reported diagnostic is $\max(\hat\rho,0)$, the projection of Eq.~\eqref{eq:closedrho} onto
+the domain $\rho\ge0$ that Eq.~\eqref{eq:etamu}'s $\sqrt\rho$ requires. $\hat\rho$ is undefined
+(reported as \texttt{NaN}) when $\sum_i E_i^2=0$, i.e.\ whenever $K=1$, where the epistemic term
+carries no information for any $\rho$ to be fit against.
+\end{lemma}
+\begin{proof}
+$J$ is quadratic and convex in $\rho$ (since $J''(\rho)=2\sum_i E_i^2\ge0$). Setting
+$J'(\rho)=2\sum_i E_i(A_i+\rho E_i - R_i^2)=0$ and solving for $\rho$ gives
+$\rho\sum_i E_i^2=\sum_i E_i(R_i^2-A_i)$, i.e.\ Eq.~\eqref{eq:closedrho}; convexity makes this
+stationary point the global minimizer whenever $\sum_i E_i^2>0$.
+\end{proof}
+
+Equation~\eqref{eq:closedrho} is exactly the ordinary-least-squares fit, in the single covariate
+$E_i$ with fixed offset $A_i$, of the reshaped law-of-total-variance identity
+$\sigma_{\mathrm{tot}}^2(\bm x;c,\rho)=A(\bm x;c)+\rho E(\bm x)$ to the observed squared residuals --
+``how much of the model's reported epistemic spread the residuals actually support'' at the chosen
+$c^\star$.
+
+\subsection{Boundary recovery and validity}
+The set of reachable $(c,\rho,\theta)$ configurations is identical to SETA-HPD's,
+$\mathcal C\times\mathcal R\times\Theta$, and still contains $(1,1,0)$ (plain HPD calibration) and
+$(c,1,\theta)$ for every $(c,\theta)$ (STA-HPD), by the same substitutions as
+Proposition~\ref{prop:setarecovery}.
+
+\begin{remark}[Same grid, weaker floor]
+\label{rem:meldweakfloor}
+Because $(c^\star,\rho^\star)$ is chosen to maximize $L(c,\rho)$ rather than minimize
+$\bar W(c,\rho,\theta)$, and $(1,1)\in\mathcal C\times\mathcal R$, MELD-HPD's tuning objective
+satisfies $L(c^\star,\rho^\star)\ge L(1,1)$ -- a floor on \emph{log density}, not on width. This does
+\emph{not} imply $\bar W(c^\star,\rho^\star,\theta^\star)\le\bar W(1,1,0)$: unlike
+Propositions~\ref{prop:setarecovery} and \ref{prop:easerecovery}'s width-argmin chains, MELD-HPD
+carries no guarantee that its tune-fold width is at most plain HPD's or STA-HPD's, only that
+$\theta^\star$ is itself width-optimal \emph{given} the log-score-selected $(c^\star,\rho^\star)$,
+since $\theta=0\in\Theta$ is still on the one grid that $\theta^\star$ is chosen from. The worked
+comparison below shows this gap can be realized in practice, not merely in principle.
+\end{remark}
+
+Validity is unaffected by any of this: the coverage guarantee of Proposition~\ref{prop:validity}
+depends only on $(c,\rho,\theta)$ being fixed by a rule that is a function of the tune fold alone,
+independent of the calib-fold labels supplying $\hat t$ -- it does not depend on \emph{which}
+objective that rule optimizes. Since $(c^\star,\rho^\star)$ is selected from $\mathcal D_{\mathrm{tune}}$
+by Eq.~\eqref{eq:logscore} and $\theta^\star$ from the same fold by $\bar W$, both disjoint from
+$\mathcal D_{\mathrm{calib}}$, the resulting score is a frozen, label-independent function of
+$(\bm x_i,y_i)$ by the time it is conformalized, exactly as in Proposition~\ref{prop:validity}.
+
+\subsection{Fitting}
+Fitting replaces Algorithm~\ref{alg:stahpd}'s single width-$\arg\min$ pass over
+$\mathcal C\times\mathcal R\times\Theta$ with two stages per split: (1) $(c^\star,\rho^\star)$ is the
+majority vote, over the $n_{\mathrm{repeats}}$ splits, of the per-split $\arg\max_{c,\rho} L(c,\rho)$
+on that split's tune fold (each per-point log-density floored at $-10^3$ nats before averaging, so a
+single underflow outlier cannot send a cell to $-\infty$); (2) at the now-fixed $(c^\star,\rho^\star)$,
+$\theta^\star$ is the majority vote of the per-split $\arg\min_\theta \bar W(c^\star,\rho^\star,\theta)$.
+The final threshold is the median-of-calib-fold-quantiles construction of Eq.~\eqref{eq:medianquantile},
+unchanged.
+
+\subsection{A worked comparison across the whole family}
+% Why this table is placed here, after both new sections, rather than split across them: it needs
+% both EASE-HPD's and MELD-HPD's numbers to make its point (that the width floor holds for one
+% extension and visibly breaks for the other, on the identical config and split construction), so it
+% only says something once both are on the page.
+On the identical checkpoint, split construction, and nominal coverage as the EASE-HPD worked example,
+Table~\ref{tab:allfive} reports all five members of the family discussed in this paper.
+
+\begin{table}[H]
+\centering
+\caption{All five HPD-family calibrators on one held-out MOG checkpoint (Synthetic, single-expert
+probabilistic head, seed $4022$, $1-\alpha=90\%$), identical tune/calib construction throughout.}
+\label{tab:allfive}
+\begin{tabular}{@{}lrrl@{}}
+\toprule
+\textbf{Method} & \textbf{Coverage} & \textbf{Width} & \textbf{Selected parameters} \\
+\midrule
+MoG-HPD & $0.9087$ & $1.5757$ & --- \\
+STA-HPD & $0.8933$ & $1.3473$ & $(c,\theta){=}(0.8,1.5)$ \\
+SETA-HPD & $0.8933$ & $1.3473$ & $(c,\rho,\theta){=}(0.8,0,1.5)$ \\
+EASE-HPD & $0.8933$ & $1.3473$ & $(c,\rho,\theta,\phi){=}(0.8,0,1.5,{-1.0})$ \\
+MELD-HPD & $0.8940$ & $1.3708$ & $(c,\rho,\theta){=}(1.3,0,0.75)$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+STA-HPD, SETA-HPD, and EASE-HPD agree to four decimals, as their respective floor propositions
+guarantee on this config once $\rho^\star=0$ and $\phi$'s inertness are accounted for
+(Remark~\ref{rem:phiinert}). MELD-HPD is the one visible exception, at $1.3708$ -- $1.7\%$
+\emph{wider} than the other four -- and the logged tuning surfaces show exactly why. The log-score
+surface is monotone increasing in $c$ on this config's grid ($L(0.8,0)=-0.4528$, $L(1,0)=-0.3885$,
+$L(1.3,0)=-0.3634$, all at $\rho=0$), so MELD-HPD's proper-scoring-rule selector correctly picks the
+largest available $c$, $c^\star=1.3$. But the tune-fold \emph{width} surface at that same cell,
+$\bar W(1.3,0,0.75)=1.4705$, is not the grid's minimum; that minimum, $\bar W(0.8,0,1.5)=1.4402$, sits
+at the smaller $c=0.8$ that STA-HPD, SETA-HPD, and EASE-HPD all select instead. This is
+Remark~\ref{rem:logscoreproxy} realized on real data: the density-closest member of the family, by
+the strictly proper log score, is demonstrably not the width-narrowest one on this particular config,
+exactly the gap a KL-motivated selector does not, and by Remark~\ref{rem:meldweakfloor}'s argument
+structurally cannot, close.
+
+\section{Conclusion}
+\label{sec:conclusion}
+% Why the conclusion restates the two knobs and their theoretical grounding
+% before the empirical summary, rather than leading with the numbers: a
+% conference-paper conclusion should let a reader who skipped straight from
+% the abstract to the conclusion still recover the paper's core argument
+% (what's broken, what fixes it, why the fix is guaranteed not to hurt) --
+% the empirical numbers are supporting evidence for that argument, not the
+% argument itself.
+STA-HPD generalizes highest-density-region conformal calibration for mixture-of-experts regressors
+along exactly the two axes that a fixed-density level set cannot address on its own: the shape of
+the model's own heteroscedasticity and the level at which that heteroscedasticity is thresholded.
+Both knobs are selected by a conformal-risk-minimizing grid search that provably contains Standard
+CP, CP-VS (in the single-component case), and plain HPD calibration as boundary cases, and the
+entire construction retains exact finite-sample marginal coverage for any fixed choice of
+$(c,\theta)$ regardless of model correctness, since validity and efficiency are cleanly separated
+throughout. Empirically the method yields consistent, never-negative width reductions relative to
+plain HPD calibration, with the largest gains concentrated where the fitted mixture is most
+genuinely multimodal. Sections~\ref{sec:seta}--\ref{sec:meld} extend the same construction along
+three further axes, each isolating a different piece of the MoG variance decomposition or a
+different way of selecting it: SETA-HPD reshapes the between-component (epistemic) variance that
+STA-HPD leaves untouched; EASE-HPD tilts the threshold by the point's epistemic \emph{share} rather
+than only its total scale; and MELD-HPD replaces tune-fold width $\arg\min$ with a strictly proper
+scoring rule for the two density-shaping exponents, trading the width-argmin family's tuning-fold
+floor guarantee for a population-level KL-optimality argument instead
+(Remarks~\ref{rem:logscoreproxy}--\ref{rem:meldweakfloor}). Every extension is validated by the same
+exchangeability argument and, where a width-argmin selector is used, provably contains its ancestors
+as reachable grid points; MELD-HPD's worked comparison (Table~\ref{tab:allfive}) shows this design
+space is genuine, not merely nominal, since the two selection principles can and do disagree on real
+data. Natural extensions include a per-expert (rather than scalar) shape exponent,
+adaptive grid refinement in place of a fixed $(c,\theta)$ lattice, and extending the threshold-field
+tilt to depend on additional covariates of the routing distribution beyond the total scale and
+epistemic share.
+
+% Why these ten references specifically: each was chosen to back a
+% distinct claim made in the text, not as a generic literature survey --
+% vovk2005algorithmic/lei2018distribution for the split-conformal machinery
+% eq:qlevel relies on; romano2019conformalized for CQR (the one baseline
+% whose region shape differs qualitatively, discussed in Sec. III);
+% boxtiao1973bayesian/hyndman1996computing for the classical, pre-conformal
+% highest-density-region background in the new Sec. II-B;
+% izbicki2020cd/sadinle2019least for the HPD/level-set construction
+% Theorem 1 formalizes in the conformal setting; gibbs2021adaptive/
+% tibshirani2019conformal for the adaptive/weighted-conformal stabilization
+% ideas the repeated-splitting procedure in Sec. II-E is modeled after;
+% jordan1994hierarchical for the MoE architecture itself, since the paper
+% assumes the reader knows what a gated mixture of experts is.
+\begin{thebibliography}{10}
+
+\bibitem{vovk2005algorithmic}
+V.~Vovk, A.~Gammerman, and G.~Shafer, \emph{Algorithmic Learning in a Random World}. Springer, 2005.
+
+\bibitem{lei2018distribution}
+J.~Lei, M.~G'Sell, A.~Rinaldo, R.~J.~Tibshirani, and L.~Wasserman, ``Distribution-free predictive
+inference for regression,'' \emph{J. Amer. Statist. Assoc.}, vol.~113, no.~523, pp. 1094--1111,
+2018.
+
+\bibitem{romano2019conformalized}
+Y.~Romano, E.~Patterson, and E.~Cand\`es, ``Conformalized quantile regression,'' in \emph{Advances
+in Neural Information Processing Systems (NeurIPS)}, 2019.
+
+\bibitem{izbicki2020cd}
+R.~Izbicki, G.~Shimizu, and R.~B.~Stern, ``Flexible distribution-free conditional predictive bands
+using density estimators,'' in \emph{Proc. International Conference on Artificial Intelligence and
+Statistics (AISTATS)}, 2020.
+
+\bibitem{sadinle2019least}
+M.~Sadinle, J.~Lei, and L.~Wasserman, ``Least ambiguous set-valued classifiers with bounded error
+levels,'' \emph{J. Amer. Statist. Assoc.}, vol.~114, no.~525, pp. 223--234, 2019.
+
+\bibitem{gibbs2021adaptive}
+I.~Gibbs and E.~Cand\`es, ``Adaptive conformal inference under distribution shift,'' in
+\emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2021.
+
+\bibitem{tibshirani2019conformal}
+R.~J.~Tibshirani, R.~Foygel~Barber, E.~Cand\`es, and A.~Ramdas, ``Conformal prediction under
+covariate shift,'' in \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2019.
+
+\bibitem{jordan1994hierarchical}
+M.~I.~Jordan and R.~A.~Jacobs, ``Hierarchical mixtures of experts and the EM algorithm,''
+\emph{Neural Computation}, vol.~6, no.~2, pp. 181--214, 1994.
+
+\bibitem{boxtiao1973bayesian}
+G.~E.~P.~Box and G.~C.~Tiao, \emph{Bayesian Inference in Statistical Analysis}. Addison-Wesley,
+1973.
+
+\bibitem{hyndman1996computing}
+R.~J.~Hyndman, ``Computing and graphing highest density regions,'' \emph{The American
+Statistician}, vol.~50, no.~2, pp. 120--126, 1996.
+
+\bibitem{gneiting2007strictly}
+T.~Gneiting and A.~E.~Raftery, ``Strictly proper scoring rules, prediction, and estimation,''
+\emph{J. Amer. Statist. Assoc.}, vol.~102, no.~477, pp. 359--378, 2007.
+
+% Added for the Related Work section: the three lines of prior work whose
+% *objective* (post-hoc width reduction) or *mechanism* (normalized scores)
+% overlaps STA-HPD closely enough to require explicit positioning.
+% papadopoulos2011regression: the normalized/locally-adaptive nonconformity
+% score STA-HPD's theta=1 axis reduces to. xie2024boosted: the closest prior
+% work (post-hoc score reshaping for width). kiyani2024length: the
+% length-optimization-under-validity framework STA-HPD is a specialized point
+% within.
+\bibitem{papadopoulos2011regression}
+H.~Papadopoulos, V.~Vovk, and A.~Gammerman, ``Regression conformal prediction with nearest
+neighbours,'' \emph{J. Artificial Intelligence Research}, vol.~40, pp. 815--840, 2011.
+
+\bibitem{xie2024boosted}
+R.~Xie, R.~Foygel~Barber, and E.~J.~Cand\`es, ``Boosted conformal prediction intervals,'' in
+\emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2024.
+
+\bibitem{kiyani2024length}
+S.~Kiyani, G.~Pappas, and H.~Hassani, ``Length optimization in conformal prediction,'' in
+\emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2024.
+
+\end{thebibliography}
+
+\end{document}

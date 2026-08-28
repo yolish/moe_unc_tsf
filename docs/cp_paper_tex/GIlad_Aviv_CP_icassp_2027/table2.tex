@@ -1,0 +1,20 @@
+\begin{algorithm}[t]
+\begin{algorithmic}
+ \caption{ CP-MoG  algorithm } \label{alg1}
+\State   \textbf{input:} A labeled dataset divided into training and calibration subsets, a confidence level $1\!-\!\alpha$, a window size $W$ and a forecast horizon $h$.
+\State - Train a time-series MoGE network:
+$$   x  \rightarrow  ( w_i(x), \mu_i(x), \sigma^2_i(x)), \hspace{1cm} i=1,...,k. $$
+by minimizing the loss (\ref{nll}) on the training set.
+\State  - Compute the conformal scores on the calibration set:
+ $$s_t = \max\Big(0,\frac{(y_t-\hat{y}(x_t))^2-\sigma_e^2(x_t)}{\sigma_a^2(x_t)}\Big) , \hspace{4mm} t=1,...,n$$
+\State - Initialize the calibration window with the $W$ most recent scores $S=(s_{n-W+1},...,s_n)$.
+\State - At each test step $t$, sort the scores in $S$ and set $q^2$ to the $\lceil (W\!+\!1)(1\!-\!\alpha)\rceil$ smallest one.
+\State - The prediction interval for the test point $x_t$ is:
+  $$ [\hat{y}(x_t) - \sigma_q(x_t),
+      \hat{y}(x_t) + \sigma_q(x_t)], 
+    $$
+    where $\sigma_q^2(x)= q^2 \sigma_a^2(x) + \sigma_e^2(x)$.
+
+
+   \end{algorithmic}
+\end{algorithm}

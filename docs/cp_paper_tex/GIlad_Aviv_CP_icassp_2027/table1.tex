@@ -1,0 +1,38 @@
+\begin{table}[t]
+  \caption{ACI-adapted calibration intervals at a $0.90$ target coverage, ETT datasets, aggregated over 5 training seeds as mean $\pm$ sample standard deviation.  Bold marks the narrowest mean width. }
+  \label{tab:ett_aci} 
+  \vspace{0.1cm} 
+           \scalebox{0.8}{
+  \begin{tabular}{l  l  r r}
+  \hline
+   \textbf{Dataset} &  \textbf{Calibration} & \textbf{Coverage} $\uparrow$ & \textbf{Avg. Width} $\downarrow$ \\
+
+  \hline
+  \multirow{5}{*}{ETTm1}   &CP-MoG   & $0.901 \pm 0.000$ & $\mathbf{1.670 \pm 0.030}$ \\*
+         & CP-MoG-a & $0.901 \pm 0.001$ & $1.672 \pm 0.029$ \\*
+    & CP-G  & $0.901 \pm 0.000$ & $1.704 \pm 0.017$ \\
+     & CQR  & $0.899 \pm 0.002$  & $2.774 \pm 0.215$ \\*
+     & CQR (retrained) & $0.899 \pm 0.001$ & $1.985 \pm 0.059$ \\
+  \hline
+  \multirow{5}{*}{ETTm2} &  CP-MoG   & $0.900 \pm 0.000$ &$\mathbf{ 1.538 \pm 0.059}$ \\*
+       & CP-MoG-a & $0.900 \pm 0.001$ & $1.540 \pm 0.059$ \\*
+      & CP-G  & $0.901 \pm 0.000$ & $1.647 \pm 0.072$ \\*
+       & CQR  & $0.890 \pm 0.007$ & $3.943 \pm 0.763$ \\*
+     & CQR (retrained)  & $0.897 \pm 0.001$ & $2.209 \pm 0.605$ \\
+      \hline
+  \multirow{5}{*}{ETTh1} & CP-MoG  & $0.898 \pm 0.001$ & $\mathbf{1.740 \pm 0.004}$ \\*
+  & CP-MoG-a & $0.898 \pm 0.001$ & $1.741 \pm 0.004$ \\
+     & CP-G  & $0.898 \pm 0.001$ & $1.762 \pm 0.011$ \\*
+        & CQR & $0.894 \pm 0.009$ & $3.786 \pm 0.168$ \\*
+     & CQR (retrained)  & $0.886 \pm 0.007$ & $2.511 \pm 0.228$ \\
+  \hline
+  \multirow{5}{*}{ETTh2}  &CP-MoG   & $0.892 \pm 0.001$ & $\mathbf{1.875 \pm 0.036}$ \\*
+     & CP-MoG-a & $0.893 \pm 0.001$ & $1.880 \pm 0.035$ \\*
+   &  CP-G   & $0.892 \pm 0.001$ & $1.896 \pm 0.066$ \\
+ 
+     & CQR  & $0.886 \pm 0.009$ & $4.460 \pm 0.271$ \\*
+     & CQR (retrained) & $0.883 \pm 0.011$ & $3.233 \pm 0.644$ \\
+     \hline
+   \end{tabular}
+   }
+\end{table}

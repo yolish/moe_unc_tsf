@@ -1,0 +1,31 @@
+\begin{table}
+  \caption{ACI-adapted calibration intervals at a $0.90$ target coverage, ETT datasets, aggregated over 5 training seeds as mean $\pm$ sample standard deviation.  Configuration: iTransformer, multivariate, seeds $4021$--$4025$, $\alpha=0.1$, $\gamma=0.001$, window $=1000$, $L=96$, $H=96$. Bold marks the narrowest mean width. }
+  \label{tab:ett_aci} 
+  \begin{tabular}{l  l  r r}
+  \hline
+   \textbf{Dataset} &  \textbf{Calibration} & \textbf{Coverage} $\uparrow$ & \textbf{Avg. Width} $\downarrow$ \\
+ \hline
+  \multirow{4}{*}{ETTh1} & CPVS  & $0.8983 \pm 0.0007$ & $\mathbf{1.7400 \pm 0.0043}$ \\*
+     & CP-G  & $0.8978 \pm 0.0008$ & $1.7623 \pm 0.0109$ \\*
+        & CQR & $0.8941 \pm 0.0090$ & $3.7858 \pm 0.1681$ \\*
+     & CQR (retrained)  & $0.8863 \pm 0.0065$ & $2.5106 \pm 0.2284$ \\
+  \hline
+  \multirow{4}{*}{ETTh2}  &CPVS   & $0.8919 \pm 0.0006$ & $\mathbf{1.8754 \pm 0.0359}$ \\*
+     &  & CPVS-aleatoric + ACI & $0.2884 \pm 0.0028$ & $0.3392 \pm 0.0013$ & $0.8919 \pm 0.0006$ & $1.8801 \pm 0.0354$ \\*
+
+   &  CP-G   & $0.8921 \pm 0.0005$ & $1.8956 \pm 0.0655$ \\
+ 
+     & CQR  & $0.8861 \pm 0.0094$ & $4.4603 \pm 0.2712$ \\*
+     & CQR (retrained) & $0.8828 \pm 0.0111$ & $3.2334 \pm 0.6439$ \\
+  \hline
+  \multirow{4}{*}{ETTm1}   &CPVS   & $0.9006 \pm 0.0003$ & $\mathbf{1.6700 \pm 0.0302}$ \\*
+    & CP-G  & $0.9007 \pm 0.0003$ & $1.7035 \pm 0.0166$ \\
+     & CQR  & $0.8120 \pm 0.1151$  & $2.7737 \pm 0.2151$ \\*
+     & CQR (retrained) & $0.8991 \pm 0.0005$ & $1.9846 \pm 0.0589$ \\
+  \hline
+  \multirow{4}{*}{ETTm2} &  CPVS   & $0.9004 \pm 0.0003$ & $1.5381 \pm 0.0590$ \\*
+      & CP-G  & $0.9006 \pm 0.0004$ & $1.6469 \pm 0.0722$ \\*
+       & CQR  & $0.8900 \pm 0.0074$ & $3.9429 \pm 0.7633$ \\*
+     & CQR (retrained)  & $0.8966 \pm 0.0012$ & $2.2090 \pm 0.6045$ \\
+   \end{tabular}
+\end{table}

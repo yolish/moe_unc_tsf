@@ -1,0 +1,31 @@
+\begin{table*}[t]
+\centering
+\scriptsize
+\caption{Efficiency of conformal prediction predictive intervals (Mean $\pm$ Std) for a 0.90 target coverage.}
+\label{tab:calibration_comparison}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{6pt} % Slightly reduced to fit the extra column comfortably
+\resizebox{0.78\textwidth}{!}{
+\begin{tabular}{lll cc}
+\toprule
+\textbf{Dataset} & \textbf{Model} & \textbf{Calibration} & \textbf{Coverage} $\uparrow$ & \textbf{Avg. Width} $\downarrow$ \\
+\midrule
+\multirow{6}{*}{ETTh1} 
+%& \textbf{MoGU} & CP-MoG & 0.9073 $\pm$ 0.0009 & \textbf{1.8005 $\pm$ 0.0121}\\
+& MoGE & CP-MoG & 0.9077 $\pm$ 0.0012 & 1.8128 $\pm$ 0.0203 \\
+& Single Gaussian & CP-MoG & 0.9071 $\pm$ 0.0006 & 1.8423 $\pm$ 0.0149 \\
+& MoE & CP-fixed & 0.9087 $\pm$ 0.0005 & 2.0005 $\pm$ 0.0125 \\
+& Single Expert & CP-fixed & 0.9086 $\pm$ 0.0003 & 2.0098 $\pm$ 0.0128 \\
+& Single Expert & CQR & 0.8811 $\pm$ 0.0098 & 3.7513 $\pm$ 0.2973\\
+\midrule
+\multirow{6}{*}{ETTm1} 
+%& \textbf{MoGU} & CP-MoG & 0.8982 $\pm$ 0.0002 & \textbf{1.5083 $\pm$ 0.0101}\\
+& MoGE & CP-MoG & 0.8979 $\pm$ 0.0001 & 1.5485 $\pm$ 0.0092 \\
+& Single Gaussian & CP-MoG & 0.8978 $\pm$ 0.0003 & 1.5792 $\pm$ 0.0106 \\
+& MoE & CP-fixed & 0.8991 $\pm$ 0.0003 & 1.7151 $\pm$ 0.0234 \\
+& Single Expert & CP-fixed & 0.8993 $\pm$ 0.0004 & 1.7180 $\pm$ 0.0261 \\
+& Single Expert & CQR & 0.8891 $\pm$ 0.0011 & 2.9467 $\pm$ 0.1967 \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}

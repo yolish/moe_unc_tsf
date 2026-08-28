@@ -5,17 +5,17 @@ models=("iTransformer")
 root_paths=("./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/" "./data/long_term_forecast/ETT/")
 #data_paths=("ETTm1.csv" "ETTh1.csv") 
 #datasets=("ETTm1" "ETTh1")
-data_paths=("ETTh2.csv" "ETTm2.csv" "ETTm1.csv" "ETTh1.csv") 
+data_paths=("ETTh2.csv" "ETTm2.csv" "ETTm1.csv" "ETTh1.csv")
 datasets=("ETTh2" "ETTm2" "ETTm1" "ETTh1")
 # Optional $2: space-separated dataset indices into the arrays above, so the grid
 # can be split across GPUs (e.g. "0 1" on one card, "2 3" on another).
+# Defaults to all four datasets.
 dataset_idx=(${2:-0 1 2 3})
 #pred_lengths=(720 336 192 96)
 pred_lengths=(96)
-num_experts=(1 2 3 4 5)
-# 4 = CQR (split-conformal quantile), 5 = CQR with periodic retraining.
+num_experts=(3)
 configurations=(4 5)
-#configurations=(1 2 3)
+#configurations=(4)
 #seeds=(2351 2352 2353 2354 2355)
 seeds=(4021 4022 4023 4024 4025)
 model_id="test"
@@ -162,11 +162,10 @@ do
                         --do_cqr_calibration
                     fi
                     if [ $config -eq 5 ]; then
-                        # Configs 4 and 5 build an identical "setting" string (same
-                        # model_id="cqr", same arch), so is_training=1 here would hit the
-                        # results/{setting} skip-check that config 4 just satisfied and do
-                        # nothing. Evaluate-only reuses config 4's checkpoint and always
-                        # runs calibrate_cqr_retrain, which has no skip-check.
+                        # config 4 and 5 share the same "setting" string (same model_id="cqr",
+                        # same arch), so is_training=1 here would see config 4's just-written
+                        # results/ dir and silently skip. Evaluate-only reuses that checkpoint
+                        # and always runs calibrate_cqr_retrain (no skip-check on that path).
                         echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --use_quantile_loss --do_cqr_retrain_calibration --seed $seed"
                         python -u run.py \
                         --task_name long_term_forecast \

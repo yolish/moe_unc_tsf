@@ -11,11 +11,12 @@ datasets=("ETTh2" "ETTm2" "ETTm1" "ETTh1")
 # can be split across GPUs (e.g. "0 1" on one card, "2 3" on another).
 dataset_idx=(${2:-0 1 2 3})
 #pred_lengths=(720 336 192 96)
-pred_lengths=(96)
+pred_lengths=(336)
 num_experts=(1 2 3 4 5)
+# 1 = MoE (deterministic experts, pe0/ug0), 2 = MoG (prob_expert, pe1/ug0),
 # 4 = CQR (split-conformal quantile), 5 = CQR with periodic retraining.
-configurations=(4 5)
-#configurations=(1 2 3)
+# Config 3 (MoGU, unc_gating/ug1) is deliberately excluded from this pl336 grid.
+configurations=(1 2 4 5)
 #seeds=(2351 2352 2353 2354 2355)
 seeds=(4021 4022 4023 4024 4025)
 model_id="test"
@@ -61,6 +62,7 @@ do
                         --pred_len $pred_len \
                         --seed $seed \
                         --num_experts $ne \
+                        --overwrite \
                         --do_cp_calibration
                     fi
                     if [ $config -eq 2 ]; then
@@ -81,11 +83,17 @@ do
                         --seed $seed \
                         --num_experts $ne \
                         --prob_expert \
+                        --overwrite \
                         --do_cp_calibration \
                         --do_cpvs_calibration \
                         --do_aleatoric_mog_calibration \
                         --do_aleatoric_mog_calibration_second_option \
-                        --do_aleatoric_only_calibration
+                        --do_aleatoric_only_calibration \
+                        --do_aleatoric_scale_calibration \
+                        --do_adaptive_variance_calibration \
+                        --do_adaptive_window_calibration \
+                        --do_cp_dvs_calibration \
+                        --do_moecp_calibration
                     fi
                     if [ $config -eq 3 ]; then
                         if [ $pred_len -eq 96 ]; then

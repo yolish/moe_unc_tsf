@@ -52,7 +52,7 @@ do
                         --num_experts $ne 
                     fi
                     if [ $config -eq 2 ]; then
-                        echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --prob_expert"
+                        echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --prob_expert --do_aleatoric_mog_calibration --do_aleatoric_mog_calibration_second_option --do_aleatoric_only_calibration"
                         python -u run.py \
                         --task_name long_term_forecast \
                         --is_training 1 \
@@ -70,10 +70,13 @@ do
                         --num_experts $ne \
                         --prob_expert \
                         --learning_rate 0.001 \
-                        --max_grad_norm 1
+                        --max_grad_norm 1 \
+                        --do_aleatoric_mog_calibration \
+                        --do_aleatoric_mog_calibration_second_option \
+                        --do_aleatoric_only_calibration
                     fi
                     if [ $config -eq 3 ]; then
-                        echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --prob_expert --unc_gating"
+                        echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --prob_expert --unc_gating --do_aleatoric_mog_calibration --do_aleatoric_mog_calibration_second_option --do_aleatoric_only_calibration"
                         python -u run.py \
                         --task_name long_term_forecast \
                         --is_training 1 \
@@ -92,7 +95,10 @@ do
                         --prob_expert \
                         --unc_gating \
                         --learning_rate 0.001 \
-                        --max_grad_norm 1
+                        --max_grad_norm 1 \
+                        --do_aleatoric_mog_calibration \
+                        --do_aleatoric_mog_calibration_second_option \
+                        --do_aleatoric_only_calibration
                     fi
                     
                 done

@@ -217,3 +217,23 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# cached MoG decompositions for the calibration benchmark
+cache_mog/
+
+# state snapshot for scripts/collect_calibration_results.py (delta tracking)
+docs/.calibration_results_state.json
+
+# run logs mined by scripts/collect_calibration_results.py (regenerated, ~120MB)
+logs/
+
+# superseded experiment code and results, kept locally only
+archive/
+calibration/archive/
+*.removed.txt
+
+# spreadsheet exports of tables that live in docs/ as text
+*.xlsx

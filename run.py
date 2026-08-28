@@ -2,6 +2,7 @@ import argparse
 import os
 import torch
 import torch.backends
+from exp import exp_long_term_forecasting
 from exp.exp_long_term_forecasting import Exp_Long_Term_Forecast
 from utils.print_args import print_args
 import random
@@ -23,7 +24,11 @@ if __name__ == '__main__':
     parser.add_argument('--num_experts', type=int, default=1, help="value > 1 indicates MoE")
     parser.add_argument('--prob_expert', action='store_true', help='construct probabilistic experts', default=False)
     parser.add_argument('--unc_gating', action='store_true', help='use uncertainty derived gating', default=False)
-    parser.add_argument('--max_grad_norm',type=int, help='value for max grad norm for prob MoE only, ignored if <=0 ', default=0)
+    parser.add_argument('--use_quantile_loss', action='store_true', default=False, help='train a true quantile-regression head via pinball loss (mutually exclusive with prob_expert)')
+    parser.add_argument('--max_grad_norm',type=float, help='value for max grad norm for prob MoE only, ignored if <=0 ', default=0)
+    parser.add_argument('--load_balance_weight', type=float, default=0.05,
+                        help='coefficient for the MoE load-balancing penalty (Shazeer et al. 2017 importance '
+                             'loss) applied when num_experts>1; 0.05 preserves the original/current behavior.')
     parser.add_argument('--save_expert_outputs', action='store_true', help='save weights and per expert outputs', default=False)
     parser.add_argument('--save_unc', action='store_true', help='save moe uncertainties', default=False)
     parser.add_argument('--save_outputs', action='store_true', help='save predictions and ground truth', default=False)
@@ -145,15 +150,80 @@ if __name__ == '__main__':
     parser.add_argument('--do_cpvs_calibration', default=False, action='store_true', help='whether to perform CPVS calibration')
     parser.add_argument('--do_cqr_calibration', default=False, action='store_true', help='Whether to perform CQR calibration')
     parser.add_argument('--do_cp_calibration', default=False, action='store_true', help='Whether to perform CP calibration')
-    
-    # Pinball loss
-    parser.add_argument('--use_quantile_loss', action='store_true', help='Use Pinball loss for quantile regression instead of MSE', default=False)
+    parser.add_argument('--do_cqr_retrain_calibration', default=False, action='store_true',
+                        help='Whether to perform rolling-window retrained CQR calibration. The model is periodically '
+                             're-fit on a trailing window of recent history as the test stream advances, following the '
+                             'rolling re-estimation protocol of Gibbs & Candes (Adaptive Conformal Inference, NeurIPS '
+                             '2021, Sec 2.2), with the retrain cadence of EnCQR (Jensen et al., IEEE TNNLS 2022). '
+                             'Requires --use_quantile_loss.')
+    parser.add_argument('--do_aci_aleatoric_scale_calibration', default=False, action='store_true',
+                        help='Whether to perform ACI Aleatoric Scale calibration: the Aleatoric Scale '
+                             'score/interval with the target level driven by Adaptive Conformal '
+                             'Inference (Gibbs & Candes 2021), alpha_t <- alpha_t + gamma*(alpha - err_t) '
+                             'per (horizon, channel) cell, so realized coverage is steered back to '
+                             'nominal under drift. gamma=0 recovers Aleatoric Scale. Requires --prob_expert.')
+    parser.add_argument('--aci_gamma', type=float, default=0.01,
+                        help='ACI step size, shared by every --do_aci_*_calibration method. Larger '
+                             'tracks distribution shift faster at the cost of noisier interval '
+                             'widths. Note the delayed-update protocol feeds back errors that stay '
+                             'correlated across a whole horizon, so the effective step is '
+                             '~pred_len*gamma; on long horizons consider scaling this down '
+                             '(0.1/pred_len keeps alpha_t off the clip on ETTh1, i.e. ~0.001 at '
+                             'pred_len=96).')
+    parser.add_argument('--do_aci_aleatoric_scale_g001_calibration', default=False, action='store_true',
+                        help='Second ACI Aleatoric Scale variant with gamma fixed at 0.001 regardless '
+                             'of --aci_gamma, run alongside --do_aci_aleatoric_scale_calibration for '
+                             'side-by-side comparison. Writes to a separate result file. Requires '
+                             '--prob_expert.')
+    parser.add_argument('--aci_alpha', type=float, default=0.1,
+                        help='Nominal miscoverage the ACI recursion targets; intervals aim for '
+                             '1 - alpha coverage. Shared by every --do_aci_*_calibration method, '
+                             'including ACI MoECP (which uses this, NOT --moecp_alpha).')
+    parser.add_argument('--do_aci_cp_calibration', default=False, action='store_true',
+                        help='ACI-adaptive standard CP: AdaptiveCP\'s absolute-residual score with the '
+                             'target level driven by the Gibbs & Candes (2021) recursion per (horizon, '
+                             'channel) cell. Uses --aci_gamma/--aci_alpha. gamma=0 recovers '
+                             '--do_cp_calibration exactly. Ungated: works for any model.')
+    parser.add_argument('--do_aci_cpvs_calibration', default=False, action='store_true',
+                        help='ACI-adaptive CP-VS: AdaptiveCPVS\'s sigma-normalized residual score with '
+                             'the ACI level recursion, width = q*sigma. gamma=0 recovers '
+                             '--do_cpvs_calibration exactly. Requires --prob_expert for a meaningful '
+                             'sigma.')
+    parser.add_argument('--do_aci_cqr_calibration', default=False, action='store_true',
+                        help='ACI-adaptive CQR: OnlineCQRQuantile\'s signed conformity score with the '
+                             'ACI level recursion. gamma=0 recovers --do_cqr_calibration exactly. '
+                             'Requires --use_quantile_loss.')
+    parser.add_argument('--do_aci_cqr_retrain_calibration', default=False, action='store_true',
+                        help='ACI-adaptive retrained CQR: the rolling model re-fit of Gibbs & Candes '
+                             'Sec 2.2 plus the level recursion of their Sec 2.1, i.e. both halves of '
+                             'the paper rather than only the retraining half. Uses --retrain_* and '
+                             '--aci_gamma/--aci_alpha. gamma=0 recovers '
+                             '--do_cqr_retrain_calibration exactly. Requires --use_quantile_loss.')
+    parser.add_argument('--cp_dvs_alpha', type=float, default=0.1,
+                        help='Miscoverage level for CP-DVS; intervals target 1 - alpha coverage.')
+    parser.add_argument('--retrain_mode', type=str, default='finetune', choices=['finetune', 'scratch'],
+                        help='finetune: warm-start from current weights (default; keeps the ACI-faithful shared '
+                             'window trainable). scratch: re-initialize the model each retrain - pair with a larger '
+                             '--retrain_window (>=5000), which forfeits the single-shared-window property.')
+    parser.add_argument('--retrain_interval', type=int, default=None,
+                        help='Retrain every this many test steps. Defaults to pred_len.')
+    parser.add_argument('--retrain_window', type=int, default=1000,
+                        help='Size of the trailing window (in samples) used for BOTH the model re-fit and the '
+                             'conformal score buffer, per ACI Sec 2.2.')
+    parser.add_argument('--retrain_epochs', type=int, default=3, help='Epochs per retrain (no early stopping)')
+    parser.add_argument('--retrain_lr', type=float, default=None,
+                        help='Learning rate used when retraining. Defaults to --learning_rate.')
+
+
+    # Overwrite existing checkpoints and force retraining
+    parser.add_argument('--overwrite', action='store_true', default=False, help='Overwrite existing checkpoints and force retraining')
+
+    # Regression specific args
+    parser.add_argument('--tau', type=int, default=100)
 
     args = parser.parse_args()
 
-
-    # MOE and uncertainty currently supported only for time long term forecasting
-    assert(args.task_name =='long_term_forecast'), "Current supporting only time series forecasting"
+    assert args.task_name == 'long_term_forecast', "Task not supported"
     args.moe = (args.num_experts > 1) or (args.prob_expert) 
 
     if args.unc_gating and args.num_experts == 1:
@@ -161,7 +231,11 @@ if __name__ == '__main__':
         exit()
     if args.unc_gating:
         assert(args.prob_expert), "uncertainty based gating required probabilstic experts"
-        
+
+    if getattr(args, 'use_quantile_loss', False) and args.prob_expert:
+        print(">> SKIPPING: Incompatible experiment (Quantile Loss + Probabilistic Experts).")
+        exit()
+
 
     if torch.cuda.is_available() and args.use_gpu:
         args.device = torch.device('cuda:{}'.format(args.gpu))
@@ -187,7 +261,12 @@ if __name__ == '__main__':
     torch.manual_seed(fix_seed)
     np.random.seed(fix_seed)
 
-    Exp = Exp_Long_Term_Forecast # only supporting this task for now
+    if args.task_name == 'long_term_forecast':
+        Exp = Exp_Long_Term_Forecast
+    # --------------------------
+    else:
+        Exp = Exp_Long_Term_Forecast # fallback
+
     dataset_name = args.data_path.replace(".csv","").replace("_","-")
     if args.is_training:
         for ii in range(args.itr):
@@ -218,7 +297,7 @@ if __name__ == '__main__':
                 args.des, ii,
                 args.seed)
             
-            if os.path.isdir("results/{}".format(setting)):
+            if os.path.isdir("results/{}".format(setting)) and not args.overwrite:
                 print("Already run this experiment! skip training and testing for: {}".format(setting))
             else:
 
@@ -230,17 +309,60 @@ if __name__ == '__main__':
                 print('>>>>>>>analyze_and_save_weights : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
 
                 print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-                if args.moe and args.prob_expert and args.do_cpvs_calibration:
-                    exp.calibrate_cpvs(setting)
-                if args.use_quantile_loss and args.do_cqr_calibration:
-                    if args.prob_expert:
-                        print(f"Skipping CQR for setting {setting}: Pinball loss is incompatible with prob experts")
-                    else:
-                        print(f"Running CQR calibration for {setting}...")
-                        exp.calibrate_cqr(setting)
-                if args.do_cp_calibration:
-                    print(f"Running CP calibration for {setting}...")
-                    exp.calibrate_cp(setting)
+                if isinstance(exp, Exp_Long_Term_Forecast):
+                    if args.moe and args.prob_expert and args.do_cpvs_calibration:
+                        exp.calibrate_cpvs(setting)
+                    if args.use_quantile_loss and args.do_cqr_calibration:
+                        if args.prob_expert:
+                            print(f"Skipping CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                        else:
+                            print(f"Running CQR calibration for {setting}...")
+                            exp.calibrate_cqr(setting)
+                    if args.do_cp_calibration:
+                        print(f"Running CP calibration for {setting}...")
+                        exp.calibrate_cp(setting)
+                    if args.use_quantile_loss and args.do_cqr_retrain_calibration:
+                        if args.prob_expert:
+                            print(f"Skipping Retrained CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                        else:
+                            print(f"Running Retrained CQR calibration for {setting}...")
+                            exp.calibrate_cqr_retrain(setting)
+                    if args.do_aci_aleatoric_scale_calibration:
+                        if not (args.moe and args.prob_expert):
+                            print(f"Skipping ACI Aleatoric Scale calibration for {setting}: requires --prob_expert "
+                                  f"(no separated aleatoric/epistemic uncertainty otherwise).")
+                        else:
+                            print(f"Running ACI Aleatoric Scale calibration for {setting}...")
+                            exp.calibrate_aci_aleatoric_scale(setting)
+                    if args.do_aci_aleatoric_scale_g001_calibration:
+                        if not (args.moe and args.prob_expert):
+                            print(f"Skipping ACI Aleatoric Scale (g=0.001) calibration for {setting}: requires "
+                                  f"--prob_expert (no separated aleatoric/epistemic uncertainty otherwise).")
+                        else:
+                            print(f"Running ACI Aleatoric Scale (g=0.001) calibration for {setting}...")
+                            exp.calibrate_aci_aleatoric_scale_g001(setting)
+
+                    # ACI-adaptive variants. Gating conditions are copied verbatim from each
+                    # base method's block above so the two stay in lockstep.
+                    if args.do_aci_cp_calibration:
+                        print(f"Running ACI CP calibration for {setting}...")
+                        exp.calibrate_aci_cp(setting)
+                    if args.moe and args.prob_expert and args.do_aci_cpvs_calibration:
+                        print(f"Running ACI CP-VS calibration for {setting}...")
+                        exp.calibrate_aci_cpvs(setting)
+                    if args.use_quantile_loss and args.do_aci_cqr_calibration:
+                        if args.prob_expert:
+                            print(f"Skipping ACI CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                        else:
+                            print(f"Running ACI CQR calibration for {setting}...")
+                            exp.calibrate_aci_cqr(setting)
+                    if args.use_quantile_loss and args.do_aci_cqr_retrain_calibration:
+                        if args.prob_expert:
+                            print(f"Skipping ACI Retrained CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                        else:
+                            print(f"Running ACI Retrained CQR calibration for {setting}...")
+                            exp.calibrate_aci_cqr_retrain(setting)
+
 
             if args.gpu_type == 'mps':
                 torch.backends.mps.empty_cache()
@@ -277,18 +399,60 @@ if __name__ == '__main__':
         print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
         exp.test(setting, test=1)
         print('>>>>>>>calibrating : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-        if args.moe and args.prob_expert and args.do_cpvs_calibration:
-            exp.calibrate_cpvs(setting)
+        if isinstance(exp, Exp_Long_Term_Forecast):
+            if args.moe and args.prob_expert and args.do_cpvs_calibration:
+                exp.calibrate_cpvs(setting)
+            if args.use_quantile_loss and args.do_cqr_calibration:
+                if args.prob_expert:
+                    print(f"Skipping CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                else:
+                    print(f"Running CQR calibration for {setting}...")
+                    exp.calibrate_cqr(setting)
+            if args.do_cp_calibration:
+                print(f"Running CP calibration for {setting}...")
+                exp.calibrate_cp(setting)
+            if args.use_quantile_loss and args.do_cqr_retrain_calibration:
+                if args.prob_expert:
+                    print(f"Skipping Retrained CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                else:
+                    print(f"Running Retrained CQR calibration for {setting}...")
+                    exp.calibrate_cqr_retrain(setting)
+            if args.do_aci_aleatoric_scale_calibration:
+                if not (args.moe and args.prob_expert):
+                    print(f"Skipping ACI Aleatoric Scale calibration for {setting}: requires --prob_expert "
+                          f"(no separated aleatoric/epistemic uncertainty otherwise).")
+                else:
+                    print(f"Running ACI Aleatoric Scale calibration for {setting}...")
+                    exp.calibrate_aci_aleatoric_scale(setting)
+            if args.do_aci_aleatoric_scale_g001_calibration:
+                if not (args.moe and args.prob_expert):
+                    print(f"Skipping ACI Aleatoric Scale (g=0.001) calibration for {setting}: requires "
+                          f"--prob_expert (no separated aleatoric/epistemic uncertainty otherwise).")
+                else:
+                    print(f"Running ACI Aleatoric Scale (g=0.001) calibration for {setting}...")
+                    exp.calibrate_aci_aleatoric_scale_g001(setting)
 
-        if args.use_quantile_loss and args.do_cqr_calibration:
-            if args.prob_expert:
-                print(f"Skipping CQR for setting {setting}: Pinball loss is incompatible with prob experts")
-            else:
-                print(f"Running CQR calibration for {setting}...")
-                exp.calibrate_cqr(setting)
-        if args.do_cp_calibration:
-            print(f"Running CP calibration for {setting}...")
-            exp.calibrate_cp(setting)
+            # ACI-adaptive variants. Gating conditions are copied verbatim from each base
+            # method's block above so the two stay in lockstep.
+            if args.do_aci_cp_calibration:
+                print(f"Running ACI CP calibration for {setting}...")
+                exp.calibrate_aci_cp(setting)
+            if args.moe and args.prob_expert and args.do_aci_cpvs_calibration:
+                print(f"Running ACI CP-VS calibration for {setting}...")
+                exp.calibrate_aci_cpvs(setting)
+            if args.use_quantile_loss and args.do_aci_cqr_calibration:
+                if args.prob_expert:
+                    print(f"Skipping ACI CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                else:
+                    print(f"Running ACI CQR calibration for {setting}...")
+                    exp.calibrate_aci_cqr(setting)
+            if args.use_quantile_loss and args.do_aci_cqr_retrain_calibration:
+                if args.prob_expert:
+                    print(f"Skipping ACI Retrained CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                else:
+                    print(f"Running ACI Retrained CQR calibration for {setting}...")
+                    exp.calibrate_aci_cqr_retrain(setting)
+
 
         if args.gpu_type == 'mps':
             torch.backends.mps.empty_cache()

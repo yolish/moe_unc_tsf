@@ -1,0 +1,852 @@
+long_term_forecast_cqr_DLinear_exchange-rate_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.4703, Coverage: 0.9626, Width: 4.5574
+
+long_term_forecast_cqr_DLinear_exchange-rate_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.7929, Coverage: 0.8098, Width: 2.9790
+
+long_term_forecast_cqr_DLinear_exchange-rate_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.6124, Coverage: 0.6287, Width: 2.1167
+
+long_term_forecast_cqr_DLinear_exchange-rate_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.2899, Coverage: 0.8598, Width: 2.8424
+
+long_term_forecast_cqr_DLinear_exchange-rate_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.0155, Coverage: 0.7177, Width: 2.6997
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.8643, Coverage: 0.6748, Width: 5.4583
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.6096, Coverage: 0.6534, Width: 5.3400
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.6524, Coverage: 0.6155, Width: 5.2429
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.5351, Coverage: 0.5878, Width: 5.1794
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.8084, Coverage: 0.6768, Width: 5.5457
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.0644, Coverage: 0.7102, Width: 5.3043
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.7504, Coverage: 0.7876, Width: 4.8564
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.9579, Coverage: 0.6295, Width: 4.4802
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.4128, Coverage: 0.6861, Width: 4.6919
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.0259, Coverage: 0.6779, Width: 4.9132
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.0426, Coverage: 0.6379, Width: 4.7102
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.7366, Coverage: 0.6182, Width: 4.3092
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.8170, Coverage: 0.6718, Width: 5.6652
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.7135, Coverage: 0.6370, Width: 5.3819
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.5232, Coverage: 0.6053, Width: 5.0075
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.2235, Coverage: 0.5874, Width: 4.7125
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.5830, Coverage: 0.6374, Width: 6.3316
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.5299, Coverage: 0.6819, Width: 5.3706
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.6060, Coverage: 0.5507, Width: 5.0749
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.7916, Coverage: 0.6886, Width: 5.3281
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.9139, Coverage: 0.6065, Width: 5.5328
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.3811, Coverage: 0.6580, Width: 4.6188
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.4934, Coverage: 0.6459, Width: 6.1778
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.2322, Coverage: 0.5503, Width: 4.3019
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.9033, Coverage: 0.6511, Width: 5.8077
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.2555, Coverage: 0.6337, Width: 4.8020
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.6277, Coverage: 0.6249, Width: 5.0205
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.4275, Coverage: 0.5970, Width: 4.8690
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6044, Coverage: 0.7797, Width: 5.4909
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.0694, Coverage: 0.6714, Width: 4.4513
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.6384, Coverage: 0.5940, Width: 5.1982
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.8849, Coverage: 0.7070, Width: 6.0169
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.0664, Coverage: 0.7158, Width: 5.3882
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.9382, Coverage: 0.6936, Width: 6.6748
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6634, Coverage: 0.6543, Width: 5.5329
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.1213, Coverage: 0.4814, Width: 3.9358
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.8970, Coverage: 0.6499, Width: 5.8973
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.4870, Coverage: 0.6445, Width: 5.1113
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.4407, Coverage: 0.6138, Width: 5.0566
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.3455, Coverage: 0.6002, Width: 4.6886
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.1576, Coverage: 0.6484, Width: 5.2907
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.9991, Coverage: 0.7106, Width: 4.7023
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.7238, Coverage: 0.6596, Width: 5.1839
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.0295, Coverage: 0.6513, Width: 5.4162
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.5840, Coverage: 0.6843, Width: 5.7964
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.3345, Coverage: 0.6562, Width: 4.7800
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.9111, Coverage: 0.6487, Width: 4.9228
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.3560, Coverage: 0.5768, Width: 4.9444
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.8329, Coverage: 0.6576, Width: 5.8581
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.4673, Coverage: 0.6499, Width: 5.1881
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.4881, Coverage: 0.6132, Width: 5.1707
+
+long_term_forecast_cqr_DLinear_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.3637, Coverage: 0.5855, Width: 4.6659
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.5487, Coverage: 0.6997, Width: 5.3212
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.2528, Coverage: 0.7420, Width: 7.2637
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.5172, Coverage: 0.6588, Width: 4.9957
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6738, Coverage: 0.7079, Width: 4.5841
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.1464, Coverage: 0.6319, Width: 4.9380
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.6366, Coverage: 0.5878, Width: 6.2471
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.0874, Coverage: 0.6832, Width: 5.8168
+
+long_term_forecast_cqr_PatchTST_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.7583, Coverage: 0.6471, Width: 5.6613
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed1193 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.1720, Coverage: 0.9165, Width: 3.8793
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed1193 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.5809, Coverage: 0.8958, Width: 5.0941
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed1193 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1076, Coverage: 0.8939, Width: 2.5203
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed1193 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6162, Coverage: 0.8635, Width: 4.4036
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2041, Coverage: 0.8773, Width: 4.3842
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2041, Coverage: 0.8773, Width: 4.3842
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.1242, Coverage: 0.8860, Width: 4.0543
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed1193 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.1576, Coverage: 0.9115, Width: 3.9217
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed1193 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6308, Coverage: 0.8975, Width: 4.9155
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.1240, Coverage: 0.8929, Width: 4.1239
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed1193 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1066, Coverage: 0.8943, Width: 2.4916
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1735, Coverage: 0.8768, Width: 3.7395
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed1193 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6873, Coverage: 0.8639, Width: 4.3891
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0820, Coverage: 0.8773, Width: 3.1421
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0735, Coverage: 0.8776, Width: 3.1628
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.6929, Coverage: 0.8821, Width: 2.9131
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2645, Coverage: 0.8884, Width: 2.4709
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.6720, Coverage: 0.8832, Width: 3.1125
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.5185, Coverage: 0.8638, Width: 3.5391
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0707, Coverage: 0.8884, Width: 3.3027
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.3624, Coverage: 0.8609, Width: 3.4822
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.3542, Coverage: 0.8871, Width: 4.9529
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.4091, Coverage: 0.8850, Width: 4.8989
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.3616, Coverage: 0.8844, Width: 4.8706
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.3040, Coverage: 0.8722, Width: 4.0136
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.3013, Coverage: 0.8710, Width: 3.9877
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2976, Coverage: 0.8701, Width: 3.9879
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.5519, Coverage: 0.8845, Width: 2.9175
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.6733, Coverage: 0.8823, Width: 2.7253
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1031, Coverage: 0.8921, Width: 2.6524
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.4389, Coverage: 0.8488, Width: 3.0445
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.4827, Coverage: 0.8550, Width: 3.0545
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2485, Coverage: 0.9214, Width: 3.8353
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.8892, Coverage: 0.8926, Width: 4.3160
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.9720, Coverage: 0.8849, Width: 4.2668
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.1159, Coverage: 0.8720, Width: 4.5063
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.3111, Coverage: 0.8632, Width: 3.7022
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2034, Coverage: 0.8700, Width: 3.6337
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1325, Coverage: 0.8742, Width: 3.9601
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2627, Coverage: 0.8711, Width: 4.3483
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2627, Coverage: 0.8711, Width: 4.3483
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0482, Coverage: 0.8917, Width: 2.6409
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1210, Coverage: 0.8793, Width: 4.6293
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1827, Coverage: 0.8762, Width: 3.8015
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1903, Coverage: 0.8760, Width: 3.7775
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1903, Coverage: 0.8760, Width: 3.7775
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0668, Coverage: 0.8936, Width: 2.5086
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1044, Coverage: 0.8804, Width: 3.6734
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.8242, Coverage: 0.8640, Width: 4.5506
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2509, Coverage: 0.8869, Width: 3.6649
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2751, Coverage: 0.8719, Width: 3.9818
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.7913, Coverage: 0.8695, Width: 4.5891
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.7913, Coverage: 0.8695, Width: 4.5891
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1684, Coverage: 0.8913, Width: 2.6089
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1520, Coverage: 0.8923, Width: 2.5233
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.5727, Coverage: 0.8466, Width: 4.5390
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.5727, Coverage: 0.8466, Width: 4.5390
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.3435, Coverage: 0.9204, Width: 4.0054
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.8087, Coverage: 0.8534, Width: 4.4371
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.7896, Coverage: 0.8716, Width: 4.2259
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2805, Coverage: 0.9191, Width: 4.0263
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.4561, Coverage: 0.8890, Width: 2.6229
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.6640, Coverage: 0.8985, Width: 4.3533
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1557, Coverage: 0.8925, Width: 2.5991
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1359, Coverage: 0.8499, Width: 3.2540
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6093, Coverage: 0.8800, Width: 4.5389
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.5989, Coverage: 0.8852, Width: 2.8760
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.1860, Coverage: 0.8594, Width: 3.6837
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.1860, Coverage: 0.8594, Width: 3.6837
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1272, Coverage: 0.8780, Width: 3.8437
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.6182, Coverage: 0.8852, Width: 2.8405
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1972, Coverage: 0.8891, Width: 2.4621
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.4243, Coverage: 0.8867, Width: 3.0091
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0126, Coverage: 0.8928, Width: 3.4582
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.0131, Coverage: 0.8737, Width: 4.9548
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0452, Coverage: 0.8514, Width: 3.3330
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1050, Coverage: 0.8492, Width: 3.2247
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6511, Coverage: 0.8827, Width: 4.4811
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6158, Coverage: 0.8841, Width: 4.4913
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6158, Coverage: 0.8841, Width: 4.4913
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2126, Coverage: 0.8722, Width: 2.9574
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.6977, Coverage: 0.8515, Width: 3.7904
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.5941, Coverage: 0.8808, Width: 4.5011
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.5941, Coverage: 0.8808, Width: 4.5011
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2894, Coverage: 0.8698, Width: 3.2441
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.5931, Coverage: 0.8819, Width: 4.5049
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.5931, Coverage: 0.8819, Width: 4.5049
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2004, Coverage: 0.8896, Width: 2.3912
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6405, Coverage: 0.8527, Width: 3.9157
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6405, Coverage: 0.8527, Width: 3.9157
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2875, Coverage: 0.8845, Width: 2.1567
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1943, Coverage: 0.8892, Width: 2.4608
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1546, Coverage: 0.8766, Width: 3.7764
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1546, Coverage: 0.8766, Width: 3.7764
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0255, Coverage: 0.8657, Width: 3.6986
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1983, Coverage: 0.8893, Width: 2.3693
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6231, Coverage: 0.8647, Width: 3.8690
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6231, Coverage: 0.8647, Width: 3.8690
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1816, Coverage: 0.8896, Width: 2.4119
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0986, Coverage: 0.8757, Width: 3.2830
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0986, Coverage: 0.8757, Width: 3.2830
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0044, Coverage: 0.8925, Width: 3.4129
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0174, Coverage: 0.8916, Width: 3.4032
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0555, Coverage: 0.8929, Width: 3.3421
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.9311, Coverage: 0.8358, Width: 3.6321
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.9311, Coverage: 0.8358, Width: 3.6321
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.9414, Coverage: 0.8674, Width: 4.6059
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.9077, Coverage: 0.8682, Width: 4.5903
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0386, Coverage: 0.8941, Width: 3.4017
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6526, Coverage: 0.8732, Width: 4.9442
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6526, Coverage: 0.8732, Width: 4.9442
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.4698, Coverage: 0.8925, Width: 2.9900
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.7034, Coverage: 0.8812, Width: 4.9827
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.7034, Coverage: 0.8812, Width: 4.9827
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.4708, Coverage: 0.8928, Width: 2.9366
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2600, Coverage: 0.8771, Width: 2.5656
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2600, Coverage: 0.8771, Width: 2.5656
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2074, Coverage: 0.8767, Width: 2.8692
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2080, Coverage: 0.8769, Width: 2.8574
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1840, Coverage: 0.8882, Width: 2.6829
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.2750, Coverage: 0.8628, Width: 4.3161
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.2750, Coverage: 0.8628, Width: 4.3161
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1815, Coverage: 0.8887, Width: 2.6436
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.3245, Coverage: 0.8635, Width: 4.2640
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.3245, Coverage: 0.8635, Width: 4.2640
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.3486, Coverage: 0.8623, Width: 3.6169
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0539, Coverage: 0.8652, Width: 3.6813
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0480, Coverage: 0.9192, Width: 3.8069
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0617, Coverage: 0.9150, Width: 3.5560
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.1961, Coverage: 0.9026, Width: 5.2738
+
+long_term_forecast_cqr_DLinear_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.7354, Coverage: 0.8153, Width: 3.3841
+
+long_term_forecast_cqr_DLinear_ETTh2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.7198, Coverage: 0.8131, Width: 3.3774
+
+long_term_forecast_cqr_DLinear_ETTh2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.7252, Coverage: 0.8593, Width: 3.6306
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne2_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.7259, Coverage: 0.8281, Width: 4.3649
+
+long_term_forecast_cqr_DLinear_ETTh2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.3609, Coverage: 0.8489, Width: 3.5842
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne3_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6713, Coverage: 0.8322, Width: 4.5489
+
+long_term_forecast_cqr_DLinear_ETTh2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.4963, Coverage: 0.8059, Width: 3.9303
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne4_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6613, Coverage: 0.8324, Width: 4.4599
+
+long_term_forecast_cqr_DLinear_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.3269, Coverage: 0.8781, Width: 2.2410
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne5_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.7122, Coverage: 0.8101, Width: 4.3647
+
+long_term_forecast_cqr_DLinear_ETTm2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.3053, Coverage: 0.8789, Width: 2.2210
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0174, Coverage: 0.8681, Width: 3.4650
+
+long_term_forecast_cqr_DLinear_ETTm2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.3274, Coverage: 0.8781, Width: 2.2506
+
+long_term_forecast_cqr_DLinear_ETTm2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0101, Coverage: 0.8813, Width: 2.1423
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne2_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0023, Coverage: 0.8707, Width: 3.5132
+
+long_term_forecast_cqr_DLinear_ETTm2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0293, Coverage: 0.8804, Width: 2.1904
+
+long_term_forecast_cqr_DLinear_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0765, Coverage: 0.8910, Width: 1.9872
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne3_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0087, Coverage: 0.8696, Width: 3.4619
+
+long_term_forecast_cqr_DLinear_ETTm1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0607, Coverage: 0.8888, Width: 1.7474
+
+long_term_forecast_cqr_DLinear_ETTm1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0680, Coverage: 0.8890, Width: 1.7501
+
+long_term_forecast_cqr_DLinear_ETTm1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0628, Coverage: 0.8888, Width: 1.7312
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne4_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2061, Coverage: 0.8684, Width: 3.4719
+
+long_term_forecast_cqr_DLinear_ETTm1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0363, Coverage: 0.8891, Width: 1.7473
+
+long_term_forecast_cqr_DLinear_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.1213, Coverage: 0.8937, Width: 3.0593
+
+long_term_forecast_cqr_DLinear_ETTh1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.5674, Coverage: 0.8862, Width: 3.3500
+
+long_term_forecast_cqr_DLinear_ETTh1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.5598, Coverage: 0.8862, Width: 3.3468
+
+long_term_forecast_cqr_DLinear_ETTh1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.3818, Coverage: 0.8861, Width: 3.3462
+
+long_term_forecast_cqr_DLinear_ETTh1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.3821, Coverage: 0.8863, Width: 3.3489
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne5_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0594, Coverage: 0.8762, Width: 3.5472
+
+long_term_forecast_cqr_PatchTST_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0501, Coverage: 0.8627, Width: 3.7816
+
+long_term_forecast_cqr_PatchTST_ETTh2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0724, Coverage: 0.8643, Width: 3.7928
+
+long_term_forecast_cqr_PatchTST_ETTh2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0625, Coverage: 0.8656, Width: 3.7952
+
+long_term_forecast_cqr_PatchTST_ETTh2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.4560, Coverage: 0.8710, Width: 4.0194
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0887, Coverage: 0.8825, Width: 2.8726
+
+long_term_forecast_cqr_PatchTST_ETTh2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.2783, Coverage: 0.8430, Width: 3.6582
+
+long_term_forecast_cqr_iTransformer_weather_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0439, Coverage: 0.8774, Width: 1.0216
+
+long_term_forecast_cqr_iTransformer_exchange-rate_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.4788, Coverage: 0.7225, Width: 2.6061
+
+long_term_forecast_cqr_iTransformer_national-illness_ne3_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.9558, Coverage: 0.6700, Width: 6.3018
+
+long_term_forecast_cqr_PatchTST_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0035, Coverage: 0.8832, Width: 2.4457
+
+long_term_forecast_cqr_iTransformer_electricity_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1492, Coverage: 0.8751, Width: 1.3851
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne2_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1174, Coverage: 0.8865, Width: 3.0195
+
+long_term_forecast_cqr_PatchTST_ETTm2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0094, Coverage: 0.8842, Width: 2.4109
+
+long_term_forecast_cqr_iTransformer_traffic_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2536, Coverage: 0.8877, Width: 1.5770
+
+long_term_forecast_cqr_iTransformer_synth-moe3_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0223, Coverage: 0.8948, Width: 2.6471
+
+long_term_forecast_cqr_PatchTST_ETTm2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0106, Coverage: 0.8839, Width: 2.4127
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne3_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1558, Coverage: 0.8885, Width: 2.9777
+
+long_term_forecast_cqr_PatchTST_ETTm2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.4280, Coverage: 0.8826, Width: 2.4618
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne4_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1376, Coverage: 0.8870, Width: 3.1115
+
+long_term_forecast_cqr_PatchTST_ETTm2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0306, Coverage: 0.8782, Width: 2.7111
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne5_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1399, Coverage: 0.8861, Width: 2.9657
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1473, Coverage: 0.9140, Width: 3.9146
+
+long_term_forecast_cqr_PatchTST_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.5289, Coverage: 0.8855, Width: 2.0834
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne2_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1783, Coverage: 0.9096, Width: 4.0595
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne3_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1464, Coverage: 0.9005, Width: 4.1176
+
+long_term_forecast_cqr_PatchTST_ETTm1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.5243, Coverage: 0.8859, Width: 2.1164
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne4_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0180, Coverage: 0.9080, Width: 3.6031
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne5_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0031, Coverage: 0.9063, Width: 3.9508
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.5711, Coverage: 0.8649, Width: 4.7643
+
+long_term_forecast_cqr_PatchTST_ETTm1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.5103, Coverage: 0.8861, Width: 2.0873
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne2_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1314, Coverage: 0.8692, Width: 4.4170
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne3_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.4413, Coverage: 0.8619, Width: 4.1311
+
+long_term_forecast_cqr_iTransformer_exchange-rate_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 2.6690, Coverage: 0.8861, Width: 5.6851
+
+long_term_forecast_cqr_iTransformer_weather_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0613, Coverage: 0.8770, Width: 1.0271
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne4_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1839, Coverage: 0.8697, Width: 4.4644
+
+long_term_forecast_cqr_PatchTST_ETTm1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0373, Coverage: 0.8919, Width: 2.4443
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne5_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.8751, Coverage: 0.8638, Width: 4.2294
+
+long_term_forecast_cqr_iTransformer_electricity_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1390, Coverage: 0.8872, Width: 1.4536
+
+long_term_forecast_cqr_iTransformer_traffic_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.2592, Coverage: 0.8920, Width: 1.6853
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.6043, Coverage: 0.8515, Width: 4.0089
+
+long_term_forecast_cqr_PatchTST_ETTm1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.4913, Coverage: 0.8856, Width: 2.0620
+
+long_term_forecast_cqr_PatchTST_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.6077, Coverage: 0.8700, Width: 3.4979
+
+long_term_forecast_cqr_PatchTST_ETTh1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.6811, Coverage: 0.8680, Width: 3.4625
+
+long_term_forecast_cqr_PatchTST_ETTh1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.5124, Coverage: 0.8750, Width: 3.9905
+
+long_term_forecast_cqr_PatchTST_ETTh1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0935, Coverage: 0.8869, Width: 3.6357
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne2_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0862, Coverage: 0.8538, Width: 3.6909
+
+long_term_forecast_cqr_PatchTST_ETTh1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.6957, Coverage: 0.8544, Width: 3.2311
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne3_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 1.4017, Coverage: 0.8589, Width: 3.4763
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne4_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0994, Coverage: 0.8575, Width: 3.6681
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne5_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0852, Coverage: 0.8570, Width: 3.6406
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1397, Coverage: 0.8859, Width: 2.7395
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne2_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1078, Coverage: 0.8873, Width: 2.7702
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne3_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1068, Coverage: 0.8886, Width: 2.7792
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne4_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.1690, Coverage: 0.8822, Width: 2.8373
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne5_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.0681, Coverage: 0.8851, Width: 2.7864
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0059, Coverage: 0.9205, Width: 3.8401
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne2_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0636, Coverage: 0.9193, Width: 3.8174
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne3_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0471, Coverage: 0.9230, Width: 3.8598
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne4_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: -0.0460, Coverage: 0.9173, Width: 3.7853
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne5_pe0_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR Quantile alpha=0.1, Delayed Update)
+q_mean: 0.4933, Coverage: 0.9178, Width: 4.2515
+

@@ -1,0 +1,840 @@
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 10.4865, Coverage: 0.7033, Width: 2.1013
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 9.7736, Coverage: 0.6896, Width: 1.9834
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 7.0247, Coverage: 0.6831, Width: 2.2064
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 9.1848, Coverage: 0.6749, Width: 2.0883
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 7.5390, Coverage: 0.6844, Width: 2.2080
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 8.6649, Coverage: 0.6722, Width: 2.1124
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 8.2026, Coverage: 0.6600, Width: 2.4744
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 9.1769, Coverage: 0.6605, Width: 2.5101
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 9.9721, Coverage: 0.6964, Width: 2.0474
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 10.5538, Coverage: 0.6830, Width: 2.0157
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 7.8087, Coverage: 0.6860, Width: 2.0960
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 9.0473, Coverage: 0.6831, Width: 2.1791
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 8.1539, Coverage: 0.6812, Width: 2.1833
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 8.5402, Coverage: 0.6744, Width: 2.1428
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 8.7113, Coverage: 0.6682, Width: 2.4453
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 8.9376, Coverage: 0.6594, Width: 2.4333
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 9.9146, Coverage: 0.7082, Width: 1.9965
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 10.8232, Coverage: 0.6931, Width: 2.0492
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 8.7413, Coverage: 0.6918, Width: 2.0639
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 8.6434, Coverage: 0.6740, Width: 2.0129
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 7.4921, Coverage: 0.6865, Width: 2.1947
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 8.0567, Coverage: 0.6777, Width: 2.1497
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 7.4457, Coverage: 0.6612, Width: 2.5121
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 8.1562, Coverage: 0.6582, Width: 2.4221
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 8.6621, Coverage: 0.6926, Width: 2.0425
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 10.6529, Coverage: 0.6948, Width: 1.9869
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 7.0842, Coverage: 0.6802, Width: 2.1739
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 9.0951, Coverage: 0.6810, Width: 2.0835
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 7.8247, Coverage: 0.6713, Width: 2.1801
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 8.4135, Coverage: 0.6733, Width: 2.1559
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 8.5440, Coverage: 0.6667, Width: 2.4818
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 8.6516, Coverage: 0.6603, Width: 2.4909
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 10.6657, Coverage: 0.6962, Width: 2.0382
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 11.5443, Coverage: 0.6891, Width: 2.0869
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 9.1481, Coverage: 0.6954, Width: 2.1152
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 9.3792, Coverage: 0.6858, Width: 2.0869
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 7.3718, Coverage: 0.6784, Width: 2.1919
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 8.1077, Coverage: 0.6661, Width: 2.1076
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 8.7580, Coverage: 0.6652, Width: 2.4657
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 9.5779, Coverage: 0.6548, Width: 2.4357
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.7846, Coverage: 0.8365, Width: 1.8095
+
+long_term_forecast_test_DLinear_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.4606, Coverage: 0.8767, Width: 1.4985
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.7846, Coverage: 0.8365, Width: 1.8095
+
+long_term_forecast_test_DLinear_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.5596, Coverage: 0.8814, Width: 1.5089
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.6531, Coverage: 0.8843, Width: 1.6242
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.8160, Coverage: 0.8830, Width: 1.5850
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.7245, Coverage: 0.8924, Width: 1.5592
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.2742, Coverage: 0.8848, Width: 1.6063
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.5361, Coverage: 0.8455, Width: 1.8571
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.8295, Coverage: 0.8819, Width: 1.6123
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.7787, Coverage: 0.8824, Width: 1.6145
+
+long_term_forecast_test_DLinear_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.6066, Coverage: 0.8809, Width: 1.5359
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.5541, Coverage: 0.8939, Width: 1.5591
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 5.0080, Coverage: 0.8901, Width: 1.3653
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.7317, Coverage: 0.8930, Width: 1.5262
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 3.7703, Coverage: 0.8882, Width: 1.2935
+
+long_term_forecast_test_DLinear_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.7150, Coverage: 0.8823, Width: 1.5301
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.6055, Coverage: 0.8418, Width: 1.7804
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.6128, Coverage: 0.8920, Width: 1.4866
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.7688, Coverage: 0.8877, Width: 1.2746
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.6651, Coverage: 0.8929, Width: 1.5105
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 4.2362, Coverage: 0.8873, Width: 1.2935
+
+long_term_forecast_test_DLinear_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.5641, Coverage: 0.8809, Width: 1.5270
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.9083, Coverage: 0.9002, Width: 1.7605
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.7178, Coverage: 0.9009, Width: 1.7694
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.5461, Coverage: 0.8991, Width: 1.7280
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 4.2519, Coverage: 0.8865, Width: 1.3309
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.8084, Coverage: 0.9005, Width: 1.7341
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.5911, Coverage: 0.9007, Width: 1.7286
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.4459, Coverage: 0.8394, Width: 1.7990
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 3.2639, Coverage: 0.8822, Width: 1.7184
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 3.1293, Coverage: 0.8925, Width: 1.5601
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 3.1339, Coverage: 0.8864, Width: 1.6992
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.6717, Coverage: 0.8836, Width: 1.6351
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.4084, Coverage: 0.8800, Width: 1.5627
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.7561, Coverage: 0.8824, Width: 1.5834
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.8519, Coverage: 0.8922, Width: 1.5468
+
+long_term_forecast_test_DLinear_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.7100, Coverage: 0.8899, Width: 1.2302
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 4.0767, Coverage: 0.8884, Width: 1.3538
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.7414, Coverage: 0.8918, Width: 1.5403
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.7493, Coverage: 0.8887, Width: 1.3294
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 3.1001, Coverage: 0.8466, Width: 1.8821
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.4638, Coverage: 0.8921, Width: 1.4933
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 4.3618, Coverage: 0.8883, Width: 1.3050
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.4933, Coverage: 0.8925, Width: 1.5204
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 3.1257, Coverage: 0.8900, Width: 1.3225
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.9432, Coverage: 0.8984, Width: 1.7443
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.8874, Coverage: 0.8995, Width: 1.7547
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.6386, Coverage: 0.8997, Width: 1.7378
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.8887, Coverage: 0.8998, Width: 1.7291
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 3.3752, Coverage: 0.8886, Width: 1.3566
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.5185, Coverage: 0.8989, Width: 1.7290
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 2.8996, Coverage: 0.8918, Width: 1.5724
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 2.4735, Coverage: 0.8842, Width: 1.6344
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 2.6228, Coverage: 0.8823, Width: 1.5925
+
+long_term_forecast_test_DLinear_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.8316, Coverage: 0.8897, Width: 1.2505
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 2.6854, Coverage: 0.8838, Width: 1.5985
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 3.0358, Coverage: 0.8844, Width: 1.6990
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 3.5260, Coverage: 0.8927, Width: 1.5590
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 2.3804, Coverage: 0.8851, Width: 1.6654
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 3.6202, Coverage: 0.8657, Width: 1.8869
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 4.3305, Coverage: 0.8892, Width: 1.3522
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 2.5533, Coverage: 0.8925, Width: 1.4907
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 3.9053, Coverage: 0.8891, Width: 1.3589
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 2.8677, Coverage: 0.8921, Width: 1.5247
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 4.1311, Coverage: 0.8889, Width: 1.3373
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 2.6442, Coverage: 0.8923, Width: 1.5216
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 3.1166, Coverage: 0.8978, Width: 1.7417
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 2.6516, Coverage: 0.8982, Width: 1.7523
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 4.0867, Coverage: 0.8895, Width: 1.3630
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 2.8373, Coverage: 0.8991, Width: 1.7219
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 2.7072, Coverage: 0.8998, Width: 1.7410
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 2.8320, Coverage: 0.9004, Width: 1.7359
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 3.6992, Coverage: 0.8895, Width: 1.3122
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 2.8849, Coverage: 0.8917, Width: 1.5328
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 2.3235, Coverage: 0.8847, Width: 1.6327
+
+long_term_forecast_test_DLinear_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.7212, Coverage: 0.8894, Width: 1.2495
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 2.7691, Coverage: 0.8833, Width: 1.5862
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 2.7622, Coverage: 0.8922, Width: 1.5353
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 2.6320, Coverage: 0.8850, Width: 1.6372
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 2.2657, Coverage: 0.8825, Width: 1.5605
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 3.4922, Coverage: 0.8798, Width: 1.6396
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 2.4981, Coverage: 0.8916, Width: 1.5404
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 4.2933, Coverage: 0.8907, Width: 1.3658
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 2.4746, Coverage: 0.8934, Width: 1.5213
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 4.2356, Coverage: 0.8904, Width: 1.4005
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 2.4700, Coverage: 0.8923, Width: 1.5195
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 4.9416, Coverage: 0.8873, Width: 1.2980
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 2.9725, Coverage: 0.8989, Width: 1.7678
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 2.8627, Coverage: 0.8994, Width: 1.7384
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 2.7316, Coverage: 0.8980, Width: 1.7330
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 3.3432, Coverage: 0.8899, Width: 1.3181
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 2.8632, Coverage: 0.8999, Width: 1.7337
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 2.5105, Coverage: 0.8983, Width: 1.7194
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 5.4748, Coverage: 0.8651, Width: 1.8085
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Aleatoric Only CP Delayed)
+q_mean: 4.6236, Coverage: 0.8861, Width: 1.3475
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 2.7203, Coverage: 0.8923, Width: 1.5393
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 2.3543, Coverage: 0.8860, Width: 1.7274
+
+long_term_forecast_test_DLinear_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.7938, Coverage: 0.8897, Width: 1.2544
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 2.5018, Coverage: 0.8831, Width: 1.6623
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 2.4340, Coverage: 0.8927, Width: 1.5217
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 2.9177, Coverage: 0.8836, Width: 1.6309
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 2.3120, Coverage: 0.8810, Width: 1.5702
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 2.1215, Coverage: 0.8843, Width: 1.6335
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 2.7124, Coverage: 0.8915, Width: 1.5369
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 4.2793, Coverage: 0.8883, Width: 1.3131
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 2.6196, Coverage: 0.8919, Width: 1.5222
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 3.9611, Coverage: 0.8880, Width: 1.3134
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 2.7569, Coverage: 0.8921, Width: 1.5222
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 4.2019, Coverage: 0.8882, Width: 1.3524
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 2.7597, Coverage: 0.9012, Width: 1.7510
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 2.8586, Coverage: 0.8998, Width: 1.7355
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 2.7300, Coverage: 0.9003, Width: 1.7283
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 3.4516, Coverage: 0.8901, Width: 1.3287
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 2.5522, Coverage: 0.9006, Width: 1.7271
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 2.7271, Coverage: 0.9007, Width: 1.7268
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Aleatoric Only CP Delayed)
+q_mean: 4.0685, Coverage: 0.8877, Width: 1.3656
+
+long_term_forecast_test_DLinear_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.7580, Coverage: 0.8897, Width: 1.2523
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 4.2560, Coverage: 0.8670, Width: 1.8603
+
+long_term_forecast_test_DLinear_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.1368, Coverage: 0.8936, Width: 1.5547
+
+long_term_forecast_test_DLinear_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.0527, Coverage: 0.8930, Width: 1.5400
+
+long_term_forecast_test_DLinear_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.2519, Coverage: 0.8930, Width: 1.5379
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 3.4586, Coverage: 0.8668, Width: 1.7388
+
+long_term_forecast_test_DLinear_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.1506, Coverage: 0.8937, Width: 1.5302
+
+long_term_forecast_test_DLinear_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.1504, Coverage: 0.8930, Width: 1.5322
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 4.1550, Coverage: 0.8636, Width: 1.7266
+
+long_term_forecast_test_DLinear_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.5315, Coverage: 0.9018, Width: 1.7391
+
+long_term_forecast_test_DLinear_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.4369, Coverage: 0.9015, Width: 1.7275
+
+long_term_forecast_test_DLinear_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.5208, Coverage: 0.9007, Width: 1.7187
+
+long_term_forecast_test_DLinear_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.5798, Coverage: 0.9008, Width: 1.7323
+
+long_term_forecast_test_DLinear_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.4791, Coverage: 0.9005, Width: 1.7480
+
+long_term_forecast_test_PatchTST_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 3.4175, Coverage: 0.8796, Width: 1.7246
+
+long_term_forecast_test_PatchTST_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 3.3685, Coverage: 0.8803, Width: 1.7707
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.3649, Coverage: 0.8860, Width: 1.7297
+
+long_term_forecast_test_PatchTST_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.3407, Coverage: 0.8821, Width: 1.6669
+
+long_term_forecast_test_iTransformer_exchange-rate_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.9431, Coverage: 0.8842, Width: 1.0019
+
+long_term_forecast_test_PatchTST_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 3.6328, Coverage: 0.8809, Width: 1.7145
+
+long_term_forecast_test_PatchTST_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.8027, Coverage: 0.8817, Width: 1.7018
+
+long_term_forecast_test_PatchTST_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 3.2147, Coverage: 0.8858, Width: 1.3347
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.5423, Coverage: 0.8874, Width: 1.7372
+
+long_term_forecast_test_PatchTST_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 4.2788, Coverage: 0.8849, Width: 1.4682
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.3711, Coverage: 0.8860, Width: 1.7275
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.7642, Coverage: 0.9002, Width: 1.7464
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.7769, Coverage: 0.8991, Width: 1.7168
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.5809, Coverage: 0.8992, Width: 1.7211
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.7337, Coverage: 0.8986, Width: 1.7072
+
+long_term_forecast_test_PatchTST_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.6825, Coverage: 0.8844, Width: 1.2871
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.6641, Coverage: 0.8855, Width: 1.6365
+
+long_term_forecast_test_iTransformer_synth-moe3_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.4015, Coverage: 0.8865, Width: 2.2085
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.1717, Coverage: 0.8821, Width: 1.5709
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.4060, Coverage: 0.8835, Width: 1.5965
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.0956, Coverage: 0.8825, Width: 1.5180
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.4455, Coverage: 0.8928, Width: 1.5314
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.3620, Coverage: 0.8926, Width: 1.4800
+
+long_term_forecast_test_iTransformer_exchange-rate_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.8115, Coverage: 0.8814, Width: 0.9230
+
+long_term_forecast_test_iTransformer_weather_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.4604, Coverage: 0.8715, Width: 1.0291
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.2109, Coverage: 0.8926, Width: 1.4868
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.2850, Coverage: 0.8921, Width: 1.4668
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.9411, Coverage: 0.8901, Width: 1.2873
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.5371, Coverage: 0.8895, Width: 1.2602
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.4594, Coverage: 0.8865, Width: 1.7207
+
+long_term_forecast_test_PatchTST_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 3.8693, Coverage: 0.8852, Width: 1.3945
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.8755, Coverage: 0.8888, Width: 1.2724
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.4335, Coverage: 0.8887, Width: 1.2353
+
+long_term_forecast_test_iTransformer_exchange-rate_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.1942, Coverage: 0.8861, Width: 0.9313
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug1_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 8.1210, Coverage: 0.6949, Width: 2.0311
+
+long_term_forecast_test_iTransformer_weather_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.2825, Coverage: 0.8667, Width: 1.1235
+
+long_term_forecast_test_iTransformer_weather_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.1441, Coverage: 0.8650, Width: 1.1395
+
+long_term_forecast_test_iTransformer_electricity_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.3026, Coverage: 0.8931, Width: 1.0460
+
+long_term_forecast_test_PatchTST_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 3.5402, Coverage: 0.8847, Width: 1.4104
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.3267, Coverage: 0.8859, Width: 1.7367
+
+long_term_forecast_test_iTransformer_electricity_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.3098, Coverage: 0.8939, Width: 1.0366
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 3.6466, Coverage: 0.8905, Width: 2.1670
+
+long_term_forecast_test_PatchTST_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.7562, Coverage: 0.8952, Width: 1.5484
+
+long_term_forecast_test_iTransformer_electricity_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.1552, Coverage: 0.8944, Width: 1.0121
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 3.6547, Coverage: 0.8877, Width: 2.1657
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 3.2670, Coverage: 0.8881, Width: 2.1111
+
+long_term_forecast_test_PatchTST_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.0923, Coverage: 0.8957, Width: 1.5668
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 3.6699, Coverage: 0.8867, Width: 2.1324
+
+long_term_forecast_test_iTransformer_traffic_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.3019, Coverage: 0.8886, Width: 1.1107
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 3.4877, Coverage: 0.8883, Width: 2.1320
+
+long_term_forecast_test_PatchTST_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.9315, Coverage: 0.8947, Width: 1.5262
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.7285, Coverage: 0.8432, Width: 1.8356
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.9507, Coverage: 0.8441, Width: 1.8830
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.6120, Coverage: 0.8438, Width: 1.8303
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 3.0575, Coverage: 0.8403, Width: 1.8035
+
+long_term_forecast_test_PatchTST_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.1765, Coverage: 0.8956, Width: 1.5742
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.2867, Coverage: 0.8388, Width: 1.7889
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 3.9000, Coverage: 0.8668, Width: 1.7406
+
+long_term_forecast_test_PatchTST_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.7912, Coverage: 0.8943, Width: 1.5191
+
+long_term_forecast_test_iTransformer_traffic_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.1713, Coverage: 0.8884, Width: 1.0535
+
+long_term_forecast_test_PatchTST_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.2580, Coverage: 0.9023, Width: 1.8149
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 4.2473, Coverage: 0.8689, Width: 1.8511
+
+long_term_forecast_test_PatchTST_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.2764, Coverage: 0.9011, Width: 1.7982
+
+long_term_forecast_test_PatchTST_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.3234, Coverage: 0.9034, Width: 1.7817
+
+long_term_forecast_test_PatchTST_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.3724, Coverage: 0.9046, Width: 1.7655
+
+long_term_forecast_test_iTransformer_traffic_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.8624, Coverage: 0.8884, Width: 1.0383
+
+long_term_forecast_test_PatchTST_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.0886, Coverage: 0.9031, Width: 1.8041
+
+long_term_forecast_test_TimeMixer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.8590, Coverage: 0.8805, Width: 1.6219
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 3.0992, Coverage: 0.8654, Width: 1.7328
+
+long_term_forecast_test_TimeMixer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.3033, Coverage: 0.8818, Width: 1.6190
+
+long_term_forecast_test_iTransformer_exchange-rate_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.4419, Coverage: 0.8928, Width: 1.0074
+
+long_term_forecast_test_iTransformer_exchange-rate_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.5534, Coverage: 0.8882, Width: 0.9377
+
+long_term_forecast_test_iTransformer_exchange-rate_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.1036, Coverage: 0.8964, Width: 0.9743
+
+long_term_forecast_test_iTransformer_exchange-rate_ne4_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.8495, Coverage: 0.8857, Width: 0.9337
+
+long_term_forecast_test_iTransformer_exchange-rate_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.1497, Coverage: 0.8947, Width: 0.9973
+
+long_term_forecast_test_TimeMixer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.3621, Coverage: 0.8807, Width: 1.6326
+
+long_term_forecast_test_iTransformer_exchange-rate_ne5_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.8541, Coverage: 0.8964, Width: 0.9499
+
+long_term_forecast_test_iTransformer_national-illness_ne2_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 9.7784, Coverage: 0.6922, Width: 2.0486
+
+long_term_forecast_test_iTransformer_national-illness_ne2_pe1_ug1_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 8.8149, Coverage: 0.7014, Width: 2.0642
+
+long_term_forecast_test_iTransformer_national-illness_ne4_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 10.8107, Coverage: 0.6914, Width: 1.9807
+
+long_term_forecast_test_iTransformer_national-illness_ne4_pe1_ug1_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 7.6853, Coverage: 0.6989, Width: 1.9887
+
+long_term_forecast_test_iTransformer_national-illness_ne5_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 10.8275, Coverage: 0.6877, Width: 2.0026
+
+long_term_forecast_test_iTransformer_national-illness_ne5_pe1_ug1_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 7.8550, Coverage: 0.7004, Width: 2.0105
+
+long_term_forecast_test_TimeMixer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.3144, Coverage: 0.8836, Width: 1.5430
+
+long_term_forecast_test_iTransformer_weather_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.0410, Coverage: 0.8721, Width: 1.0361
+
+long_term_forecast_test_TimeMixer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.0918, Coverage: 0.8833, Width: 1.5441
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 3.6308, Coverage: 0.8652, Width: 1.6514
+
+long_term_forecast_test_iTransformer_weather_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.4274, Coverage: 0.8721, Width: 1.0132
+
+long_term_forecast_test_TimeMixer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.4791, Coverage: 0.8865, Width: 1.2506
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 3.5569, Coverage: 0.8676, Width: 1.7123
+
+long_term_forecast_test_TimeMixer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.4345, Coverage: 0.8859, Width: 1.2658
+
+long_term_forecast_test_TimeMixer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.8572, Coverage: 0.8849, Width: 1.2699
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.4253, Coverage: 0.8860, Width: 1.7240
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.4179, Coverage: 0.8858, Width: 1.7205
+
+long_term_forecast_test_TimeMixer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.3997, Coverage: 0.8838, Width: 1.2917
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.5554, Coverage: 0.8872, Width: 1.7193
+
+long_term_forecast_test_TimeMixer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.2471, Coverage: 0.8863, Width: 1.2660
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.5124, Coverage: 0.8861, Width: 1.7166
+
+long_term_forecast_test_TimeMixer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.9739, Coverage: 0.8939, Width: 1.5190
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 2.3960, Coverage: 0.8860, Width: 1.7098
+
+long_term_forecast_test_TimeMixer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.0905, Coverage: 0.8949, Width: 1.4558
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 3.9531, Coverage: 0.8897, Width: 2.1923
+
+long_term_forecast_test_TimeMixer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 1.9224, Coverage: 0.8944, Width: 1.4742
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 3.2302, Coverage: 0.8857, Width: 2.1158
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 3.5219, Coverage: 0.8874, Width: 2.1187
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 3.4114, Coverage: 0.8900, Width: 2.1710
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric Only CP Delayed)
+q_mean: 3.5768, Coverage: 0.8866, Width: 2.1240
+
+long_term_forecast_test_TimeMixer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric Only CP Delayed)
+q_mean: 2.2093, Coverage: 0.8944, Width: 1.4867
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric Only CP Delayed)
+q_mean: 3.2621, Coverage: 0.8408, Width: 1.8250
+

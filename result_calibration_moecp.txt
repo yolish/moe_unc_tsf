@@ -1,0 +1,60 @@
+tabular_regression_tabular_exp_MOG_Synthetic_MoE_Synthetic_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.9133, Width: 2.7621, Median Width: 2.7621
+
+tabular_regression_tabular_exp_ClassicMoE_Synthetic_MoE_Synthetic_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.9100, Width: 2.6563, Median Width: 2.6563
+
+tabular_regression_tabular_exp_ClassicMoE_Synthetic_MoE_Synthetic_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8960, Width: 1.5792, Median Width: 0.8854
+
+tabular_regression_tabular_exp_MOGU_Synthetic_MoE_Synthetic_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8987, Width: 1.4852, Median Width: 0.8326
+
+tabular_regression_tabular_exp_MOG_Synthetic_MoE_Synthetic_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8920, Width: 1.4749, Median Width: 0.7519
+
+tabular_regression_tabular_exp_ClassicMoE_Bike_MoE_Bike_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8982, Width: 0.8230, Median Width: 0.8230
+
+tabular_regression_tabular_exp_MOGU_Bike_MoE_Bike_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.9088, Width: 0.7742, Median Width: 0.8944
+
+tabular_regression_tabular_exp_MOG_Bike_MoE_Bike_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8979, Width: 0.9565, Median Width: 0.9565
+
+tabular_regression_tabular_exp_MOG_Bike_MoE_Bike_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.9137, Width: 0.9886, Median Width: 1.1385
+
+tabular_regression_tabular_exp_ClassicMoE_Bike_MoE_Bike_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8993, Width: 0.7844, Median Width: 0.9402
+
+tabular_regression_tabular_exp_ClassicMoE_Temperature_MoE_Temperature_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8972, Width: 0.9806, Median Width: 0.9806
+
+tabular_regression_tabular_exp_MOG_Temperature_MoE_Temperature_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8958, Width: 1.0479, Median Width: 1.0479
+
+tabular_regression_tabular_exp_MOG_Temperature_MoE_Temperature_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8919, Width: 1.0274, Median Width: 0.9744
+
+tabular_regression_tabular_exp_ClassicMoE_Temperature_MoE_Temperature_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8833, Width: 0.9849, Median Width: 0.9619
+
+tabular_regression_tabular_exp_MOGU_Temperature_MoE_Temperature_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8945, Width: 1.0225, Median Width: 1.0536
+
+tabular_regression_tabular_exp_MOG_Superconductivity_MoE_Superconductivity_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8951, Width: 0.9935, Median Width: 1.1396
+
+tabular_regression_tabular_exp_MOG_Superconductivity_MoE_Superconductivity_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8965, Width: 1.4300, Median Width: 1.4300
+
+tabular_regression_tabular_exp_ClassicMoE_Superconductivity_MoE_Superconductivity_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8958, Width: 0.9619, Median Width: 0.9619
+
+tabular_regression_tabular_exp_ClassicMoE_Superconductivity_MoE_Superconductivity_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8930, Width: 0.8356, Median Width: 0.9092
+
+tabular_regression_tabular_exp_MOGU_Superconductivity_MoE_Superconductivity_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoECP)
+Coverage: 0.8930, Width: 1.1667, Median Width: 1.4108
+

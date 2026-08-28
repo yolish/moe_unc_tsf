@@ -1,0 +1,36 @@
+tabular_regression_tabular_exp_MOG_Synthetic_MoE_Synthetic_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CP Aleatoric Scale)
+Coverage: 0.8973, Width: 1.3459, Median Width: 0.8053, q_sq: 1.6607
+
+tabular_regression_tabular_exp_MOGU_Synthetic_MoE_Synthetic_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CP Aleatoric Scale)
+Coverage: 0.8947, Width: 1.3745, Median Width: 0.8662, q_sq: 1.4326
+
+tabular_regression_tabular_exp_MOG_Synthetic_MoE_Synthetic_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CP Aleatoric Scale)
+Coverage: 0.9140, Width: 1.4047, Median Width: 0.9719, q_sq: 3.9035
+
+tabular_regression_tabular_exp_MOGU_Bike_MoE_Bike_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CP Aleatoric Scale)
+Coverage: 0.8921, Width: 0.6629, Median Width: 0.5775, q_sq: 0.7236
+
+tabular_regression_tabular_exp_MOG_Bike_MoE_Bike_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CP Aleatoric Scale)
+Coverage: 0.9010, Width: 0.7674, Median Width: 0.6387, q_sq: 1.5429
+
+tabular_regression_tabular_exp_MOG_Bike_MoE_Bike_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CP Aleatoric Scale)
+Coverage: 0.9005, Width: 0.7838, Median Width: 0.6415, q_sq: 1.6682
+
+tabular_regression_tabular_exp_MOG_Temperature_MoE_Temperature_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CP Aleatoric Scale)
+Coverage: 0.8926, Width: 1.0108, Median Width: 1.0039, q_sq: 2.3545
+
+tabular_regression_tabular_exp_MOG_Temperature_MoE_Temperature_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CP Aleatoric Scale)
+Coverage: 0.8893, Width: 0.9813, Median Width: 0.9640, q_sq: 2.6196
+
+tabular_regression_tabular_exp_MOGU_Temperature_MoE_Temperature_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CP Aleatoric Scale)
+Coverage: 0.9018, Width: 1.0068, Median Width: 0.9951, q_sq: 2.1546
+
+tabular_regression_tabular_exp_MOG_Superconductivity_MoE_Superconductivity_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CP Aleatoric Scale)
+Coverage: 0.8949, Width: 0.8786, Median Width: 0.8612, q_sq: 2.7884
+
+tabular_regression_tabular_exp_MOG_Superconductivity_MoE_Superconductivity_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CP Aleatoric Scale)
+Coverage: 0.8989, Width: 1.0210, Median Width: 0.8358, q_sq: 1.9025
+
+tabular_regression_tabular_exp_MOGU_Superconductivity_MoE_Superconductivity_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CP Aleatoric Scale)
+Coverage: 0.8972, Width: 1.1415, Median Width: 1.0324, q_sq: 2.6443
+

@@ -1,0 +1,96 @@
+tabular_regression_tabular_exp_MOG_Synthetic_MoE_Synthetic_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD)
+Coverage: 0.8933, Width: 1.3473, Median Width: 0.8079, c: 0.8000, theta: 1.5000, t_hat: 2.2162, avg_segments: 1.000, frac_multi: 0.0000, frac_empty: 0.0000, single_fold: False
+
+tabular_regression_tabular_exp_MOG_Synthetic_MoE_Synthetic_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD Diagnostics)
+boundary=False, chosen_c=0.8000, chosen_theta=1.5000, single_fold=False, ref_mog_hpd: coverage=0.9087 width=1.5757 | sta_hpd: coverage=0.8933 width=1.3473
+votes (c,theta):n_splits: (0.8,1.5):7, (1,1):3
+tuning_surface ((c,theta):tune_width): (0.4,-0.5):2.0749, (0.4,0):2.0171, (0.4,0.25):1.9878, (0.4,0.5):1.9577, (0.4,0.75):1.9258, (0.4,1):1.8936, (0.4,1.5):1.8273, (0.4,2):1.7587, (0.6,-0.5):1.9100, (0.6,0):1.8246, (0.6,0.25):1.7801, (0.6,0.5):1.7422, (0.6,0.75):1.6948, (0.6,1):1.6490, (0.6,1.5):1.5494, (0.6,2):1.4799, (0.8,-0.5):1.8142, (0.8,0):1.7141, (0.8,0.25):1.6561, (0.8,0.5):1.6018, (0.8,0.75):1.5413, (0.8,1):1.5030, (0.8,1.5):1.4402, (0.8,2):1.5885, (1,-0.5):1.7637, (1,0):1.6402, (1,0.25):1.5792, (1,0.5):1.5226, (1,0.75):1.4739, (1,1):1.4424, (1,1.5):1.6316, (1,2):1.9580, (1.3,-0.5):1.7099, (1.3,0):1.5936, (1.3,0.25):1.5394, (1.3,0.5):1.4839, (1.3,0.75):1.4705, (1.3,1):1.6430, (1.3,1.5):2.2902, (1.3,2):2.8456
+
+tabular_regression_tabular_exp_MOGU_Synthetic_MoE_Synthetic_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD)
+Coverage: 0.8900, Width: 1.3578, Median Width: 0.8262, c: 1.0000, theta: 1.0000, t_hat: 1.6757, avg_segments: 1.000, frac_multi: 0.0000, frac_empty: 0.0000, single_fold: False
+
+tabular_regression_tabular_exp_MOGU_Synthetic_MoE_Synthetic_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD Diagnostics)
+boundary=False, chosen_c=1.0000, chosen_theta=1.0000, single_fold=False, ref_mog_hpd: coverage=0.9080 width=1.5614 | sta_hpd: coverage=0.8900 width=1.3578
+votes (c,theta):n_splits: (1,1):4, (1.3,0.5):2, (1.3,0):1, (1.3,0.75):1, (0.6,2):1, (1,0.75):1
+tuning_surface ((c,theta):tune_width): (0.4,-0.5):2.1088, (0.4,0):2.0296, (0.4,0.25):1.9882, (0.4,0.5):1.9450, (0.4,0.75):1.9002, (0.4,1):1.8522, (0.4,1.5):1.7582, (0.4,2):1.6511, (0.6,-0.5):1.9508, (0.6,0):1.8463, (0.6,0.25):1.7912, (0.6,0.5):1.7357, (0.6,0.75):1.6767, (0.6,1):1.6234, (0.6,1.5):1.5041, (0.6,2):1.4564, (0.8,-0.5):1.8355, (0.8,0):1.7171, (0.8,0.25):1.6536, (0.8,0.5):1.5958, (0.8,0.75):1.5356, (0.8,1):1.4839, (0.8,1.5):1.4509, (0.8,2):1.6208, (1,-0.5):1.7518, (1,0):1.6276, (1,0.25):1.5590, (1,0.5):1.4998, (1,0.75):1.4651, (1,1):1.4433, (1,1.5):1.5949, (1,2):1.9710, (1.3,-0.5):1.6406, (1.3,0):1.5274, (1.3,0.25):1.4851, (1.3,0.5):1.4515, (1.3,0.75):1.4669, (1.3,1):1.5489, (1.3,1.5):2.1397, (1.3,2):2.6828
+
+tabular_regression_tabular_exp_MOG_Synthetic_MoE_Synthetic_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD)
+Coverage: 0.9060, Width: 0.9925, Median Width: 0.7638, c: 1.3000, theta: 0.2500, t_hat: 1.1860, avg_segments: 1.507, frac_multi: 0.2740, frac_empty: 0.0000, single_fold: False
+
+tabular_regression_tabular_exp_MOG_Synthetic_MoE_Synthetic_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD Diagnostics)
+boundary=True, chosen_c=1.3000, chosen_theta=0.2500, single_fold=False, ref_mog_hpd: coverage=0.9147 width=1.0490 | sta_hpd: coverage=0.9060 width=0.9925
+votes (c,theta):n_splits: (1.3,0.25):3, (0.6,0.5):2, (0.8,0.5):2, (0.8,0.25):1, (1,0.5):1, (1.3,0):1
+tuning_surface ((c,theta):tune_width): (0.4,-0.5):1.1950, (0.4,0):1.0679, (0.4,0.25):1.0273, (0.4,0.5):1.0061, (0.4,0.75):1.0347, (0.4,1):1.0959, (0.4,1.5):1.2727, (0.4,2):1.4255, (0.6,-0.5):1.1775, (0.6,0):1.0554, (0.6,0.25):1.0169, (0.6,0.5):0.9998, (0.6,0.75):1.0517, (0.6,1):1.1343, (0.6,1.5):1.3376, (0.6,2):1.4895, (0.8,-0.5):1.1843, (0.8,0):1.0490, (0.8,0.25):1.0040, (0.8,0.5):0.9946, (0.8,0.75):1.0785, (0.8,1):1.1814, (0.8,1.5):1.4119, (0.8,2):1.5644, (1,-0.5):1.1891, (1,0):1.0432, (1,0.25):1.0029, (1,0.5):1.0085, (1,0.75):1.1160, (1,1):1.2383, (1,1.5):1.4834, (1,2):1.6471, (1.3,-0.5):1.1945, (1.3,0):1.0307, (1.3,0.25):0.9952, (1.3,0.5):1.0144, (1.3,0.75):1.1719, (1.3,1):1.3403, (1.3,1.5):1.6063, (1.3,2):1.7560
+
+tabular_regression_tabular_exp_MOG_Bike_MoE_Bike_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD)
+Coverage: 0.8984, Width: 0.7353, Median Width: 0.7099, c: 1.3000, theta: 0.5000, t_hat: 1.1853, avg_segments: 0.997, frac_multi: 0.0000, frac_empty: 0.0032, single_fold: False
+
+tabular_regression_tabular_exp_MOG_Bike_MoE_Bike_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD Diagnostics)
+boundary=True, chosen_c=1.3000, chosen_theta=0.5000, single_fold=False, ref_mog_hpd: coverage=0.8993 width=0.7593 | sta_hpd: coverage=0.8984 width=0.7353
+votes (c,theta):n_splits: (1.3,0.5):5, (1,0.75):2, (1.3,0.25):2, (0.4,2):1
+tuning_surface ((c,theta):tune_width): (0.4,-0.5):0.8386, (0.4,0):0.8274, (0.4,0.25):0.8163, (0.4,0.5):0.8045, (0.4,0.75):0.7924, (0.4,1):0.7781, (0.4,1.5):0.7582, (0.4,2):0.7346, (0.6,-0.5):0.8146, (0.6,0):0.7917, (0.6,0.25):0.7756, (0.6,0.5):0.7598, (0.6,0.75):0.7497, (0.6,1):0.7384, (0.6,1.5):0.7307, (0.6,2):0.7608, (0.8,-0.5):0.8091, (0.8,0):0.7618, (0.8,0.25):0.7461, (0.8,0.5):0.7338, (0.8,0.75):0.7333, (0.8,1):0.7353, (0.8,1.5):0.7588, (0.8,2):0.9014, (1,-0.5):0.8037, (1,0):0.7483, (1,0.25):0.7252, (1,0.5):0.7220, (1,0.75):0.7299, (1,1):0.7510, (1,1.5):0.8680, (1,2):1.1015, (1.3,-0.5):0.8474, (1.3,0):0.7588, (1.3,0.25):0.7290, (1.3,0.5):0.7159, (1.3,0.75):0.7549, (1.3,1):0.8356, (1.3,1.5):1.1678, (1.3,2):1.5265
+
+tabular_regression_tabular_exp_MOGU_Bike_MoE_Bike_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD)
+Coverage: 0.9010, Width: 0.6402, Median Width: 0.6715, c: 1.0000, theta: 0.2500, t_hat: 0.8983, avg_segments: 0.986, frac_multi: 0.0000, frac_empty: 0.0141, single_fold: False
+
+tabular_regression_tabular_exp_MOG_Bike_MoE_Bike_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD)
+Coverage: 0.9019, Width: 0.7729, Median Width: 0.6640, c: 1.0000, theta: 0.7500, t_hat: 1.5307, avg_segments: 1.014, frac_multi: 0.0144, frac_empty: 0.0000, single_fold: False
+
+tabular_regression_tabular_exp_MOGU_Bike_MoE_Bike_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD Diagnostics)
+boundary=False, chosen_c=1.0000, chosen_theta=0.2500, single_fold=False, ref_mog_hpd: coverage=0.8944 width=0.6424 | sta_hpd: coverage=0.9010 width=0.6402
+votes (c,theta):n_splits: (1,0.25):4, (1,0.5):3, (1.3,0):1, (0.8,0.5):1, (1.3,-0.5):1
+tuning_surface ((c,theta):tune_width): (0.4,-0.5):0.9770, (0.4,0):0.8670, (0.4,0.25):0.8096, (0.4,0.5):0.7510, (0.4,0.75):0.6998, (0.4,1):0.6662, (0.4,1.5):0.7552, (0.4,2):0.9831, (0.6,-0.5):0.8758, (0.6,0):0.7825, (0.6,0.25):0.7380, (0.6,0.5):0.6878, (0.6,0.75):0.6557, (0.6,1):0.6413, (0.6,1.5):0.7650, (0.6,2):0.9958, (0.8,-0.5):0.7758, (0.8,0):0.7048, (0.8,0.25):0.6701, (0.8,0.5):0.6342, (0.8,0.75):0.6293, (0.8,1):0.6408, (0.8,1.5):0.7478, (0.8,2):0.9681, (1,-0.5):0.6922, (1,0):0.6430, (1,0.25):0.6251, (1,0.5):0.6238, (1,0.75):0.6323, (1,1):0.6481, (1,1.5):0.7445, (1,2):0.9122, (1.3,-0.5):0.6411, (1.3,0):0.6427, (1.3,0.25):0.6496, (1.3,0.5):0.6699, (1.3,0.75):0.7061, (1.3,1):0.7454, (1.3,1.5):0.8360, (1.3,2):0.9484
+
+tabular_regression_tabular_exp_MOG_Bike_MoE_Bike_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD Diagnostics)
+boundary=False, chosen_c=1.0000, chosen_theta=0.7500, single_fold=False, ref_mog_hpd: coverage=0.9016 width=0.7940 | sta_hpd: coverage=0.9019 width=0.7729
+votes (c,theta):n_splits: (1,0.75):4, (0.8,1):3, (1,0.25):2, (1,0.5):1
+tuning_surface ((c,theta):tune_width): (0.4,-0.5):0.9025, (0.4,0):0.8744, (0.4,0.25):0.8595, (0.4,0.5):0.8475, (0.4,0.75):0.8319, (0.4,1):0.8136, (0.4,1.5):0.7932, (0.4,2):0.7831, (0.6,-0.5):0.8688, (0.6,0):0.8271, (0.6,0.25):0.8208, (0.6,0.5):0.8098, (0.6,0.75):0.7990, (0.6,1):0.7742, (0.6,1.5):0.7701, (0.6,2):0.8769, (0.8,-0.5):0.8489, (0.8,0):0.7984, (0.8,0.25):0.7863, (0.8,0.5):0.7763, (0.8,0.75):0.7654, (0.8,1):0.7597, (0.8,1.5):0.8311, (0.8,2):0.9951, (1,-0.5):0.8262, (1,0):0.7805, (1,0.25):0.7680, (1,0.5):0.7673, (1,0.75):0.7620, (1,1):0.7914, (1,1.5):0.9449, (1,2):1.1588, (1.3,-0.5):0.8290, (1.3,0):0.8005, (1.3,0.25):0.7960, (1.3,0.5):0.7954, (1.3,0.75):0.8566, (1.3,1):0.9369, (1.3,1.5):1.1986, (1.3,2):1.5035
+
+tabular_regression_tabular_exp_MOG_Temperature_MoE_Temperature_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD)
+Coverage: 0.8926, Width: 1.0133, Median Width: 1.0063, c: 1.0000, theta: 1.0000, t_hat: 2.1019, avg_segments: 1.000, frac_multi: 0.0000, frac_empty: 0.0000, single_fold: False
+
+tabular_regression_tabular_exp_MOG_Temperature_MoE_Temperature_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD Diagnostics)
+boundary=False, chosen_c=1.0000, chosen_theta=1.0000, single_fold=False, ref_mog_hpd: coverage=0.8985 width=1.0288 | sta_hpd: coverage=0.8926 width=1.0133
+votes (c,theta):n_splits: (1,1):3, (0.8,-0.5):1, (1.3,0):1, (1.3,0.5):1, (1,1.5):1, (0.4,1):1, (0.6,1):1, (0.8,1.5):1
+tuning_surface ((c,theta):tune_width): (0.4,-0.5):1.0244, (0.4,0):1.0179, (0.4,0.25):1.0165, (0.4,0.5):1.0159, (0.4,0.75):1.0127, (0.4,1):1.0083, (0.4,1.5):1.0021, (0.4,2):0.9986, (0.6,-0.5):1.0156, (0.6,0):1.0121, (0.6,0.25):1.0064, (0.6,0.5):1.0007, (0.6,0.75):1.0014, (0.6,1):0.9957, (0.6,1.5):0.9941, (0.6,2):0.9880, (0.8,-0.5):1.0110, (0.8,0):1.0023, (0.8,0.25):0.9989, (0.8,0.5):0.9980, (0.8,0.75):0.9940, (0.8,1):0.9886, (0.8,1.5):0.9846, (0.8,2):0.9953, (1,-0.5):1.0073, (1,0):0.9979, (1,0.25):0.9946, (1,0.5):0.9917, (1,0.75):0.9854, (1,1):0.9831, (1,1.5):0.9976, (1,2):1.0068, (1.3,-0.5):1.0046, (1.3,0):0.9880, (1.3,0.25):0.9894, (1.3,0.5):0.9832, (1.3,0.75):0.9996, (1.3,1):1.0003, (1.3,1.5):1.0160, (1.3,2):1.0509
+
+tabular_regression_tabular_exp_MOG_Temperature_MoE_Temperature_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD)
+Coverage: 0.8860, Width: 0.9673, Median Width: 0.9567, c: 1.3000, theta: 0.2500, t_hat: 1.2140, avg_segments: 1.009, frac_multi: 0.0086, frac_empty: 0.0000, single_fold: False
+
+tabular_regression_tabular_exp_MOG_Temperature_MoE_Temperature_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD Diagnostics)
+boundary=True, chosen_c=1.3000, chosen_theta=0.2500, single_fold=False, ref_mog_hpd: coverage=0.8952 width=0.9817 | sta_hpd: coverage=0.8860 width=0.9673
+votes (c,theta):n_splits: (1.3,0.25):4, (1.3,1):1, (1.3,-0.5):1, (1,0.75):1, (1.3,0):1, (1.3,0.5):1, (1,0.5):1
+tuning_surface ((c,theta):tune_width): (0.4,-0.5):1.0034, (0.4,0):1.0002, (0.4,0.25):0.9947, (0.4,0.5):0.9943, (0.4,0.75):0.9956, (0.4,1):0.9963, (0.4,1.5):0.9979, (0.4,2):0.9982, (0.6,-0.5):0.9962, (0.6,0):0.9928, (0.6,0.25):0.9879, (0.6,0.5):0.9856, (0.6,0.75):0.9861, (0.6,1):0.9851, (0.6,1.5):0.9902, (0.6,2):0.9849, (0.8,-0.5):0.9928, (0.8,0):0.9783, (0.8,0.25):0.9748, (0.8,0.5):0.9764, (0.8,0.75):0.9747, (0.8,1):0.9667, (0.8,1.5):0.9706, (0.8,2):0.9884, (1,-0.5):0.9871, (1,0):0.9720, (1,0.25):0.9661, (1,0.5):0.9582, (1,0.75):0.9591, (1,1):0.9639, (1,1.5):0.9788, (1,2):0.9857, (1.3,-0.5):0.9788, (1.3,0):0.9587, (1.3,0.25):0.9482, (1.3,0.5):0.9535, (1.3,0.75):0.9637, (1.3,1):0.9698, (1.3,1.5):0.9900, (1.3,2):1.0140
+
+tabular_regression_tabular_exp_MOGU_Temperature_MoE_Temperature_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD)
+Coverage: 0.8932, Width: 0.9937, Median Width: 1.0189, c: 1.3000, theta: -0.5000, t_hat: 0.5162, avg_segments: 1.000, frac_multi: 0.0000, frac_empty: 0.0000, single_fold: False
+
+tabular_regression_tabular_exp_MOGU_Temperature_MoE_Temperature_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD Diagnostics)
+boundary=True, chosen_c=1.3000, chosen_theta=-0.5000, single_fold=False, ref_mog_hpd: coverage=0.8932 width=0.9951 | sta_hpd: coverage=0.8932 width=0.9937
+votes (c,theta):n_splits: (1.3,-0.5):2, (1.3,0):1, (0.4,-0.5):1, (1.3,1):1, (0.6,1):1, (0.8,0):1, (1,0.75):1, (1.3,0.25):1, (1.3,0.75):1
+tuning_surface ((c,theta):tune_width): (0.4,-0.5):0.9979, (0.4,0):0.9906, (0.4,0.25):0.9900, (0.4,0.5):0.9885, (0.4,0.75):0.9882, (0.4,1):0.9860, (0.4,1.5):0.9867, (0.4,2):0.9843, (0.6,-0.5):0.9948, (0.6,0):0.9870, (0.6,0.25):0.9846, (0.6,0.5):0.9831, (0.6,0.75):0.9826, (0.6,1):0.9784, (0.6,1.5):0.9828, (0.6,2):0.9781, (0.8,-0.5):0.9889, (0.8,0):0.9809, (0.8,0.25):0.9788, (0.8,0.5):0.9756, (0.8,0.75):0.9799, (0.8,1):0.9787, (0.8,1.5):0.9754, (0.8,2):0.9819, (1,-0.5):0.9830, (1,0):0.9753, (1,0.25):0.9785, (1,0.5):0.9761, (1,0.75):0.9722, (1,1):0.9754, (1,1.5):0.9851, (1,2):1.0062, (1.3,-0.5):0.9749, (1.3,0):0.9751, (1.3,0.25):0.9691, (1.3,0.5):0.9720, (1.3,0.75):0.9803, (1.3,1):0.9956, (1.3,1.5):1.0273, (1.3,2):1.0706
+
+tabular_regression_tabular_exp_MOG_Superconductivity_MoE_Superconductivity_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD)
+Coverage: 0.8899, Width: 0.7816, Median Width: 0.7526, c: 0.8000, theta: 0.2500, t_hat: 1.3111, avg_segments: 1.069, frac_multi: 0.0689, frac_empty: 0.0000, single_fold: False
+
+tabular_regression_tabular_exp_MOG_Superconductivity_MoE_Superconductivity_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD Diagnostics)
+boundary=False, chosen_c=0.8000, chosen_theta=0.2500, single_fold=False, ref_mog_hpd: coverage=0.8923 width=0.7964 | sta_hpd: coverage=0.8899 width=0.7816
+votes (c,theta):n_splits: (0.8,0.25):3, (0.8,0.5):3, (0.6,0.5):2, (1,0.5):2
+tuning_surface ((c,theta):tune_width): (0.4,-0.5):0.8855, (0.4,0):0.8479, (0.4,0.25):0.8356, (0.4,0.5):0.8258, (0.4,0.75):0.8161, (0.4,1):0.8124, (0.4,1.5):0.8243, (0.4,2):0.8895, (0.6,-0.5):0.8414, (0.6,0):0.8054, (0.6,0.25):0.7877, (0.6,0.5):0.7792, (0.6,0.75):0.7863, (0.6,1):0.7955, (0.6,1.5):0.8517, (0.6,2):0.9698, (0.8,-0.5):0.8087, (0.8,0):0.7780, (0.8,0.25):0.7644, (0.8,0.5):0.7655, (0.8,0.75):0.7820, (0.8,1):0.8090, (0.8,1.5):0.9211, (0.8,2):1.0843, (1,-0.5):0.8069, (1,0):0.7848, (1,0.25):0.7737, (1,0.5):0.7790, (1,0.75):0.8120, (1,1):0.8675, (1,1.5):1.0121, (1,2):1.2471, (1.3,-0.5):0.8169, (1.3,0):0.8169, (1.3,0.25):0.8427, (1.3,0.5):0.8766, (1.3,0.75):0.9218, (1.3,1):1.0047, (1.3,1.5):1.3012, (1.3,2):1.6274
+
+tabular_regression_tabular_exp_MOG_Superconductivity_MoE_Superconductivity_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD)
+Coverage: 0.9024, Width: 0.9941, Median Width: 0.9678, c: 1.3000, theta: 0.2500, t_hat: 1.2515, avg_segments: 1.000, frac_multi: 0.0000, frac_empty: 0.0000, single_fold: False
+
+tabular_regression_tabular_exp_MOG_Superconductivity_MoE_Superconductivity_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD Diagnostics)
+boundary=True, chosen_c=1.3000, chosen_theta=0.2500, single_fold=False, ref_mog_hpd: coverage=0.8977 width=1.0147 | sta_hpd: coverage=0.9024 width=0.9941
+votes (c,theta):n_splits: (1.3,0.25):4, (1,0.75):3, (0.6,1.5):1, (0.8,0.75):1, (0.8,1):1
+tuning_surface ((c,theta):tune_width): (0.4,-0.5):1.1778, (0.4,0):1.1479, (0.4,0.25):1.1311, (0.4,0.5):1.1192, (0.4,0.75):1.1056, (0.4,1):1.0914, (0.4,1.5):1.0594, (0.4,2):1.0263, (0.6,-0.5):1.1113, (0.6,0):1.0790, (0.6,0.25):1.0591, (0.6,0.5):1.0366, (0.6,0.75):1.0234, (0.6,1):1.0080, (0.6,1.5):0.9709, (0.6,2):0.9693, (0.8,-0.5):1.0699, (0.8,0):1.0277, (0.8,0.25):1.0089, (0.8,0.5):0.9901, (0.8,0.75):0.9726, (0.8,1):0.9657, (0.8,1.5):0.9931, (0.8,2):1.1309, (1,-0.5):1.0392, (1,0):0.9927, (1,0.25):0.9750, (1,0.5):0.9640, (1,0.75):0.9609, (1,1):0.9915, (1,1.5):1.1541, (1,2):1.3957, (1.3,-0.5):1.0112, (1.3,0):0.9749, (1.3,0.25):0.9573, (1.3,0.5):0.9807, (1.3,0.75):1.0324, (1.3,1):1.1853, (1.3,1.5):1.5589, (1.3,2):1.9615
+
+tabular_regression_tabular_exp_MOGU_Superconductivity_MoE_Superconductivity_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD)
+Coverage: 0.8939, Width: 0.9125, Median Width: 0.9484, c: 0.6000, theta: 0.7500, t_hat: 1.9599, avg_segments: 1.000, frac_multi: 0.0000, frac_empty: 0.0000, single_fold: False
+
+tabular_regression_tabular_exp_MOGU_Superconductivity_MoE_Superconductivity_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (STA-HPD Diagnostics)
+boundary=False, chosen_c=0.6000, chosen_theta=0.7500, single_fold=False, ref_mog_hpd: coverage=0.8890 width=0.9542 | sta_hpd: coverage=0.8939 width=0.9125
+votes (c,theta):n_splits: (0.6,0.75):4, (0.6,1):3, (0.4,1.5):1, (0.6,0.5):1, (0.8,0):1
+tuning_surface ((c,theta):tune_width): (0.4,-0.5):0.9961, (0.4,0):0.9760, (0.4,0.25):0.9645, (0.4,0.5):0.9547, (0.4,0.75):0.9443, (0.4,1):0.9320, (0.4,1.5):0.9077, (0.4,2):0.8999, (0.6,-0.5):0.9469, (0.6,0):0.9192, (0.6,0.25):0.9065, (0.6,0.5):0.8948, (0.6,0.75):0.8903, (0.6,1):0.8890, (0.6,1.5):0.9444, (0.6,2):1.0506, (0.8,-0.5):0.9144, (0.8,0):0.8992, (0.8,0.25):0.8991, (0.8,0.5):0.9129, (0.8,0.75):0.9477, (0.8,1):0.9882, (0.8,1.5):1.1136, (0.8,2):1.2975, (1,-0.5):0.9099, (1,0):0.9274, (1,0.25):0.9698, (1,0.5):1.0354, (1,0.75):1.1004, (1,1):1.1984, (1,1.5):1.4054, (1,2):1.6428, (1.3,-0.5):0.9565, (1.3,0):1.0897, (1.3,0.25):1.1996, (1.3,0.5):1.3463, (1.3,0.75):1.5056, (1.3,1):1.7010, (1.3,1.5):2.1541, (1.3,2):2.5469
+

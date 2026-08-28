@@ -1,0 +1,12 @@
+tabular_regression_tabular_exp_CQR_Synthetic_MoE_Synthetic_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR)
+Coverage: 0.8887, Width: 1.3570, Median Width: 0.7698
+
+tabular_regression_tabular_exp_CQR_Bike_MoE_Bike_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR)
+Coverage: 0.8993, Width: 1.0370, Median Width: 0.8693
+
+tabular_regression_tabular_exp_CQR_Temperature_MoE_Temperature_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR)
+Coverage: 0.9018, Width: 1.0809, Median Width: 1.0553
+
+tabular_regression_tabular_exp_CQR_Superconductivity_MoE_Superconductivity_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (CQR)
+Coverage: 0.8935, Width: 0.9183, Median Width: 0.7927
+

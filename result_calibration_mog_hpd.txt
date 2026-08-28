@@ -1,0 +1,36 @@
+tabular_regression_tabular_exp_MOG_Synthetic_MoE_Synthetic_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoG-HPD)
+Coverage: 0.9087, Width: 1.5757, Median Width: 1.2537, t_hat: 1.7683, avg_segments: 1.000, frac_multi: 0.0000, frac_empty: 0.0000
+
+tabular_regression_tabular_exp_MOGU_Synthetic_MoE_Synthetic_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoG-HPD)
+Coverage: 0.9080, Width: 1.5614, Median Width: 1.2589, t_hat: 1.7532, avg_segments: 1.000, frac_multi: 0.0000, frac_empty: 0.0000
+
+tabular_regression_tabular_exp_MOG_Synthetic_MoE_Synthetic_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm32_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoG-HPD)
+Coverage: 0.9147, Width: 1.0490, Median Width: 0.8822, t_hat: 1.1655, avg_segments: 1.332, frac_multi: 0.2493, frac_empty: 0.0000
+
+tabular_regression_tabular_exp_MOGU_Bike_MoE_Bike_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoG-HPD)
+Coverage: 0.8944, Width: 0.6424, Median Width: 0.6955, t_hat: 0.7625, avg_segments: 0.977, frac_multi: 0.0000, frac_empty: 0.0230
+
+tabular_regression_tabular_exp_MOG_Bike_MoE_Bike_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoG-HPD)
+Coverage: 0.8993, Width: 0.7593, Median Width: 0.7992, t_hat: 0.8760, avg_segments: 0.982, frac_multi: 0.0000, frac_empty: 0.0178
+
+tabular_regression_tabular_exp_MOG_Bike_MoE_Bike_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoG-HPD)
+Coverage: 0.9016, Width: 0.7940, Median Width: 0.8042, t_hat: 1.0205, avg_segments: 1.007, frac_multi: 0.0089, frac_empty: 0.0014
+
+tabular_regression_tabular_exp_MOG_Temperature_MoE_Temperature_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoG-HPD)
+Coverage: 0.8985, Width: 1.0288, Median Width: 1.0376, t_hat: 1.0593, avg_segments: 1.000, frac_multi: 0.0000, frac_empty: 0.0000
+
+tabular_regression_tabular_exp_MOG_Temperature_MoE_Temperature_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoG-HPD)
+Coverage: 0.8952, Width: 0.9817, Median Width: 0.9743, t_hat: 1.0402, avg_segments: 1.007, frac_multi: 0.0073, frac_empty: 0.0000
+
+tabular_regression_tabular_exp_MOGU_Temperature_MoE_Temperature_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm64_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoG-HPD)
+Coverage: 0.8932, Width: 0.9951, Median Width: 1.0056, t_hat: 0.9729, avg_segments: 1.000, frac_multi: 0.0000, frac_empty: 0.0000
+
+tabular_regression_tabular_exp_MOG_Superconductivity_MoE_Superconductivity_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoG-HPD)
+Coverage: 0.8923, Width: 0.7964, Median Width: 0.7911, t_hat: 1.1758, avg_segments: 1.050, frac_multi: 0.0496, frac_empty: 0.0000
+
+tabular_regression_tabular_exp_MOG_Superconductivity_MoE_Superconductivity_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoG-HPD)
+Coverage: 0.8977, Width: 1.0147, Median Width: 1.0258, t_hat: 1.1577, avg_segments: 1.000, frac_multi: 0.0000, frac_empty: 0.0000
+
+tabular_regression_tabular_exp_MOGU_Superconductivity_MoE_Superconductivity_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm128_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (MoG-HPD)
+Coverage: 0.8890, Width: 0.9542, Median Width: 1.0376, t_hat: 1.1710, avg_segments: 1.000, frac_multi: 0.0005, frac_empty: 0.0000
+

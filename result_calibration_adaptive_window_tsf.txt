@@ -1,0 +1,831 @@
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.5066, Coverage: 0.8880, Width: 1.7101, window: 150
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 20.3573, Coverage: 0.7448, Width: 2.7003, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 20.7252, Coverage: 0.7634, Width: 2.8161, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 20.3573, Coverage: 0.7448, Width: 2.7003, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 12.0148, Coverage: 0.7188, Width: 2.6892, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 15.6076, Coverage: 0.7153, Width: 2.5574, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 12.4128, Coverage: 0.7027, Width: 2.6283, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 14.1141, Coverage: 0.6849, Width: 2.5058, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 10.4562, Coverage: 0.6408, Width: 2.4921, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 11.2695, Coverage: 0.6463, Width: 2.4892, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 20.3220, Coverage: 0.7519, Width: 2.7745, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 21.8165, Coverage: 0.7563, Width: 2.7641, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 13.3748, Coverage: 0.7268, Width: 2.5720, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 14.8672, Coverage: 0.7203, Width: 2.6392, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 13.2540, Coverage: 0.6960, Width: 2.6186, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 13.6626, Coverage: 0.6899, Width: 2.5424, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 10.8171, Coverage: 0.6550, Width: 2.4708, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 10.8198, Coverage: 0.6478, Width: 2.4439, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 20.4778, Coverage: 0.7632, Width: 2.7227, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 21.8342, Coverage: 0.7530, Width: 2.7644, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 14.8692, Coverage: 0.7346, Width: 2.5362, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 14.5385, Coverage: 0.7199, Width: 2.4624, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 12.1949, Coverage: 0.6961, Width: 2.6012, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 13.1112, Coverage: 0.6953, Width: 2.5557, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 9.5395, Coverage: 0.6579, Width: 2.5304, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 10.1616, Coverage: 0.6477, Width: 2.4333, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 17.7233, Coverage: 0.7493, Width: 2.7523, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 21.9296, Coverage: 0.7569, Width: 2.7036, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 12.0932, Coverage: 0.7322, Width: 2.6646, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 14.9629, Coverage: 0.7206, Width: 2.5189, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 12.9926, Coverage: 0.6915, Width: 2.6154, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 13.8192, Coverage: 0.6924, Width: 2.5838, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 10.4203, Coverage: 0.6524, Width: 2.4829, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 10.5004, Coverage: 0.6407, Width: 2.4702, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 20.9548, Coverage: 0.7536, Width: 2.7319, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 22.9079, Coverage: 0.7515, Width: 2.8071, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 14.9194, Coverage: 0.7399, Width: 2.5703, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl36_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 15.4280, Coverage: 0.7221, Width: 2.5281, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 12.1807, Coverage: 0.6949, Width: 2.6342, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl48_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 13.2556, Coverage: 0.6827, Width: 2.5269, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne1_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 10.7856, Coverage: 0.6486, Width: 2.4771, window: 20
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl60_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 11.5471, Coverage: 0.6451, Width: 2.4541, window: 20
+
+long_term_forecast_test_DLinear_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.3744, Coverage: 0.8766, Width: 1.5129, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.7366, Coverage: 0.8463, Width: 1.8496, window: 2000
+
+long_term_forecast_test_DLinear_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.1939, Coverage: 0.8474, Width: 1.6553, window: 75
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.3575, Coverage: 0.8792, Width: 1.5495, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.4672, Coverage: 0.8787, Width: 1.5085, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.0202, Coverage: 0.8832, Width: 1.5428, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.7245, Coverage: 0.8924, Width: 1.5592, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.4786, Coverage: 0.8786, Width: 1.5361, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.4300, Coverage: 0.8543, Width: 1.8638, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.4246, Coverage: 0.8790, Width: 1.5358, window: 2000
+
+long_term_forecast_test_DLinear_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.2588, Coverage: 0.8473, Width: 1.7092, window: 75
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.5490, Coverage: 0.8939, Width: 1.5587, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 4.6449, Coverage: 0.8930, Width: 1.3353, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.7211, Coverage: 0.8930, Width: 1.5256, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 3.7681, Coverage: 0.8883, Width: 1.2935, window: 1000
+
+long_term_forecast_test_DLinear_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.6246, Coverage: 0.8804, Width: 1.5476, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.5899, Coverage: 0.8920, Width: 1.4853, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.5259, Coverage: 0.8481, Width: 1.7946, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.8261, Coverage: 0.8850, Width: 1.2666, window: 600
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.6510, Coverage: 0.8929, Width: 1.5096, window: 1000
+
+long_term_forecast_test_DLinear_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.4706, Coverage: 0.8788, Width: 1.5339, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.9032, Coverage: 0.8891, Width: 1.7472, window: 150
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 4.0649, Coverage: 0.8905, Width: 1.2820, window: 1500
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.6991, Coverage: 0.8903, Width: 1.7521, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.5066, Coverage: 0.8880, Width: 1.7101, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.7280, Coverage: 0.8883, Width: 1.7149, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.5409, Coverage: 0.8886, Width: 1.7130, window: 150
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 4.2515, Coverage: 0.8866, Width: 1.3308, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.8365, Coverage: 0.8764, Width: 1.6157, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.7365, Coverage: 0.8819, Width: 1.6010, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.3513, Coverage: 0.8450, Width: 1.8237, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 3.5708, Coverage: 0.8854, Width: 1.6073, window: 250
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.3104, Coverage: 0.8795, Width: 1.5565, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.1196, Coverage: 0.8758, Width: 1.4965, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.4117, Coverage: 0.8789, Width: 1.5197, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.8485, Coverage: 0.8922, Width: 1.5467, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 4.0767, Coverage: 0.8884, Width: 1.3538, window: 1000
+
+long_term_forecast_test_DLinear_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.8223, Coverage: 0.8882, Width: 1.2546, window: 600
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.7365, Coverage: 0.8918, Width: 1.5401, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.7464, Coverage: 0.8887, Width: 1.3291, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 3.0066, Coverage: 0.8551, Width: 1.8980, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.4480, Coverage: 0.8921, Width: 1.4925, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 4.0060, Coverage: 0.8901, Width: 1.2728, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.4826, Coverage: 0.8925, Width: 1.5197, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.9634, Coverage: 0.8893, Width: 1.7381, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.8102, Coverage: 0.8888, Width: 1.7321, window: 150
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.9372, Coverage: 0.8923, Width: 1.2983, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.5908, Coverage: 0.8888, Width: 1.7173, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.8124, Coverage: 0.8871, Width: 1.7075, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.4837, Coverage: 0.8885, Width: 1.7068, window: 150
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 3.3713, Coverage: 0.8886, Width: 1.3563, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 2.1940, Coverage: 0.8795, Width: 1.5535, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 2.8996, Coverage: 0.8918, Width: 1.5724, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 2.3289, Coverage: 0.8786, Width: 1.5200, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 2.3173, Coverage: 0.8806, Width: 1.5221, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 2.6070, Coverage: 0.8784, Width: 1.6001, window: 2000
+
+long_term_forecast_test_DLinear_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.7367, Coverage: 0.8911, Width: 1.2308, window: 1500
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 2.0993, Coverage: 0.8828, Width: 1.5909, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 3.5238, Coverage: 0.8927, Width: 1.5589, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 3.9595, Coverage: 0.8908, Width: 1.3142, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 2.5361, Coverage: 0.8925, Width: 1.4897, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 3.2922, Coverage: 0.8851, Width: 1.5696, window: 250
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 3.5954, Coverage: 0.8912, Width: 1.3273, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 4.0429, Coverage: 0.8502, Width: 1.8433, window: 400
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 3.8904, Coverage: 0.8911, Width: 1.3146, window: 1500
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 2.6331, Coverage: 0.8923, Width: 1.5210, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 3.1583, Coverage: 0.8894, Width: 1.7417, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 2.6842, Coverage: 0.8892, Width: 1.7443, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 2.7948, Coverage: 0.8890, Width: 1.7115, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 2.6565, Coverage: 0.8878, Width: 1.7257, window: 150
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 4.2541, Coverage: 0.8853, Width: 1.3529, window: 600
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 2.7389, Coverage: 0.8883, Width: 1.7185, window: 150
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 3.6951, Coverage: 0.8896, Width: 1.3119, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 2.8849, Coverage: 0.8917, Width: 1.5328, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 2.0747, Coverage: 0.8797, Width: 1.5577, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 2.4490, Coverage: 0.8799, Width: 1.5175, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 2.3455, Coverage: 0.8822, Width: 1.5748, window: 2000
+
+long_term_forecast_test_DLinear_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.6232, Coverage: 0.8907, Width: 1.2278, window: 1500
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 2.0095, Coverage: 0.8772, Width: 1.4934, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 2.7600, Coverage: 0.8922, Width: 1.5353, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 2.9894, Coverage: 0.8764, Width: 1.5550, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 2.4910, Coverage: 0.8917, Width: 1.5400, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 4.0312, Coverage: 0.8944, Width: 1.3398, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 2.4641, Coverage: 0.8934, Width: 1.5204, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 3.9424, Coverage: 0.8941, Width: 1.3761, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 2.4485, Coverage: 0.8924, Width: 1.5180, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 4.9339, Coverage: 0.8873, Width: 1.2976, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 3.0132, Coverage: 0.8897, Width: 1.7625, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 2.8127, Coverage: 0.8896, Width: 1.7145, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 2.6862, Coverage: 0.8871, Width: 1.7148, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 2.8139, Coverage: 0.8890, Width: 1.7142, window: 150
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 3.3338, Coverage: 0.8900, Width: 1.3173, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 2.4874, Coverage: 0.8880, Width: 1.7079, window: 150
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (Adaptive Window CP Delayed)
+q_mean: 4.6234, Coverage: 0.8861, Width: 1.3475, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 2.7203, Coverage: 0.8923, Width: 1.5393, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 2.0822, Coverage: 0.8804, Width: 1.6365, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 2.2045, Coverage: 0.8775, Width: 1.5761, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 2.5510, Coverage: 0.8791, Width: 1.5466, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 2.4307, Coverage: 0.8927, Width: 1.5215, window: 1000
+
+long_term_forecast_test_DLinear_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.7005, Coverage: 0.8914, Width: 1.2340, window: 1500
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 2.0418, Coverage: 0.8773, Width: 1.5144, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 5.8236, Coverage: 0.8553, Width: 1.8091, window: 600
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 1.8818, Coverage: 0.8816, Width: 1.5590, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 2.7033, Coverage: 0.8915, Width: 1.5365, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 4.2793, Coverage: 0.8883, Width: 1.3131, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 2.5192, Coverage: 0.8943, Width: 1.5119, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 3.6029, Coverage: 0.8905, Width: 1.2749, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 3.1392, Coverage: 0.8841, Width: 1.5655, window: 250
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 2.7299, Coverage: 0.8900, Width: 1.7339, window: 150
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 3.8910, Coverage: 0.8917, Width: 1.3276, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 2.8359, Coverage: 0.8886, Width: 1.7219, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 2.6398, Coverage: 0.8886, Width: 1.7080, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 2.5234, Coverage: 0.8898, Width: 1.7136, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 2.7132, Coverage: 0.8903, Width: 1.7187, window: 150
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 3.4427, Coverage: 0.8901, Width: 1.3279, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (Adaptive Window CP Delayed)
+q_mean: 3.7487, Coverage: 0.8916, Width: 1.3393, window: 2000
+
+long_term_forecast_test_DLinear_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.6606, Coverage: 0.8914, Width: 1.2318, window: 1500
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 4.4238, Coverage: 0.8584, Width: 1.8501, window: 600
+
+long_term_forecast_test_DLinear_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.1368, Coverage: 0.8936, Width: 1.5547, window: 1000
+
+long_term_forecast_test_DLinear_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.0513, Coverage: 0.8930, Width: 1.5400, window: 1000
+
+long_term_forecast_test_DLinear_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.2464, Coverage: 0.8930, Width: 1.5379, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 3.7893, Coverage: 0.8576, Width: 1.7489, window: 600
+
+long_term_forecast_test_DLinear_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.1462, Coverage: 0.8937, Width: 1.5302, window: 1000
+
+long_term_forecast_test_DLinear_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.1428, Coverage: 0.8930, Width: 1.5320, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 4.2996, Coverage: 0.8549, Width: 1.7061, window: 600
+
+long_term_forecast_test_DLinear_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.7243, Coverage: 0.8841, Width: 1.7190, window: 150
+
+long_term_forecast_test_DLinear_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.5010, Coverage: 0.8827, Width: 1.7120, window: 150
+
+long_term_forecast_test_DLinear_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.5636, Coverage: 0.8820, Width: 1.6957, window: 150
+
+long_term_forecast_test_DLinear_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.7077, Coverage: 0.8821, Width: 1.7250, window: 150
+
+long_term_forecast_test_DLinear_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.5621, Coverage: 0.8813, Width: 1.7332, window: 150
+
+long_term_forecast_test_PatchTST_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.9252, Coverage: 0.8725, Width: 1.6258, window: 2000
+
+long_term_forecast_test_PatchTST_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.7949, Coverage: 0.8706, Width: 1.6505, window: 2000
+
+long_term_forecast_test_PatchTST_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.1108, Coverage: 0.8782, Width: 1.6142, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.4622, Coverage: 0.8812, Width: 1.7444, window: 600
+
+long_term_forecast_test_PatchTST_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 3.0102, Coverage: 0.8725, Width: 1.5941, window: 2000
+
+long_term_forecast_test_PatchTST_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.3675, Coverage: 0.8741, Width: 1.5946, window: 2000
+
+long_term_forecast_test_PatchTST_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.9300, Coverage: 0.8893, Width: 1.2990, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.6413, Coverage: 0.8819, Width: 1.7508, window: 600
+
+long_term_forecast_test_PatchTST_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 3.8624, Coverage: 0.8901, Width: 1.4287, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.4564, Coverage: 0.8811, Width: 1.7406, window: 600
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.7114, Coverage: 0.8904, Width: 1.7281, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.7571, Coverage: 0.8901, Width: 1.7066, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.5741, Coverage: 0.8895, Width: 1.7100, window: 150
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.7056, Coverage: 0.8887, Width: 1.6938, window: 150
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.3616, Coverage: 0.8815, Width: 1.5625, window: 2000
+
+long_term_forecast_test_PatchTST_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.7406, Coverage: 0.8815, Width: 1.2754, window: 600
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.9033, Coverage: 0.8787, Width: 1.4982, window: 2000
+
+long_term_forecast_test_iTransformer_synth-moe3_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.4186, Coverage: 0.8920, Width: 2.2298, window: 1500
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.0950, Coverage: 0.8799, Width: 1.5156, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.8544, Coverage: 0.8788, Width: 1.4592, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.4075, Coverage: 0.8930, Width: 1.5283, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.3143, Coverage: 0.8929, Width: 1.4766, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.1580, Coverage: 0.8930, Width: 1.4824, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.2149, Coverage: 0.8925, Width: 1.4609, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.9804, Coverage: 0.8867, Width: 1.2757, window: 600
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.5317, Coverage: 0.8855, Width: 1.2429, window: 600
+
+long_term_forecast_test_PatchTST_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 3.4829, Coverage: 0.8898, Width: 1.3536, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.5641, Coverage: 0.8812, Width: 1.7349, window: 600
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.9481, Coverage: 0.8863, Width: 1.2633, window: 600
+
+long_term_forecast_test_iTransformer_exchange-rate_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 3.0036, Coverage: 0.8802, Width: 1.0105, window: 600
+
+long_term_forecast_test_iTransformer_exchange-rate_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.2369, Coverage: 0.8840, Width: 0.9400, window: 600
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug1_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 16.5991, Coverage: 0.7631, Width: 2.7532, window: 50
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.4254, Coverage: 0.8856, Width: 1.2192, window: 600
+
+long_term_forecast_test_iTransformer_weather_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.2824, Coverage: 0.8657, Width: 1.1067, window: 600
+
+long_term_forecast_test_iTransformer_weather_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.1053, Coverage: 0.8495, Width: 1.0626, window: 250
+
+long_term_forecast_test_PatchTST_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 3.1787, Coverage: 0.8897, Width: 1.3735, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.4114, Coverage: 0.8800, Width: 1.7490, window: 600
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 5.2130, Coverage: 0.9156, Width: 2.6719, window: 2000
+
+long_term_forecast_test_PatchTST_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.7562, Coverage: 0.8952, Width: 1.5484, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 5.3373, Coverage: 0.9150, Width: 2.6867, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 4.7488, Coverage: 0.9133, Width: 2.5917, window: 2000
+
+long_term_forecast_test_PatchTST_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.0885, Coverage: 0.8957, Width: 1.5664, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 5.3194, Coverage: 0.9125, Width: 2.6242, window: 2000
+
+long_term_forecast_test_iTransformer_electricity_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.3778, Coverage: 0.8940, Width: 1.0452, window: 600
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 5.0447, Coverage: 0.9150, Width: 2.6276, window: 2000
+
+long_term_forecast_test_PatchTST_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.1654, Coverage: 0.8849, Width: 1.5703, window: 250
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.6150, Coverage: 0.8477, Width: 1.8359, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.8190, Coverage: 0.8528, Width: 1.8868, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.5188, Coverage: 0.8510, Width: 1.8478, window: 2000
+
+long_term_forecast_test_iTransformer_electricity_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.1377, Coverage: 0.8945, Width: 1.0120, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 3.0208, Coverage: 0.8520, Width: 1.8467, window: 2000
+
+long_term_forecast_test_PatchTST_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.4528, Coverage: 0.8856, Width: 1.6218, window: 250
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.2226, Coverage: 0.8477, Width: 1.8233, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 4.6713, Coverage: 0.8577, Width: 1.7608, window: 600
+
+long_term_forecast_test_PatchTST_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.7851, Coverage: 0.8943, Width: 1.5188, window: 1000
+
+long_term_forecast_test_PatchTST_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.1030, Coverage: 0.8915, Width: 1.7669, window: 150
+
+long_term_forecast_test_PatchTST_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.1440, Coverage: 0.8926, Width: 1.7632, window: 150
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 4.5556, Coverage: 0.8594, Width: 1.8490, window: 600
+
+long_term_forecast_test_PatchTST_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.1844, Coverage: 0.8927, Width: 1.7450, window: 150
+
+long_term_forecast_test_PatchTST_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.2107, Coverage: 0.8909, Width: 1.7155, window: 150
+
+long_term_forecast_test_PatchTST_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.9498, Coverage: 0.8945, Width: 1.7594, window: 150
+
+long_term_forecast_test_iTransformer_traffic_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.1688, Coverage: 0.8884, Width: 1.0533, window: 1000
+
+long_term_forecast_test_TimeMixer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.4184, Coverage: 0.8742, Width: 1.5595, window: 2000
+
+long_term_forecast_test_TimeMixer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.9738, Coverage: 0.8772, Width: 1.5636, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 3.2090, Coverage: 0.8578, Width: 1.7198, window: 600
+
+long_term_forecast_test_iTransformer_exchange-rate_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.4057, Coverage: 0.8842, Width: 0.9913, window: 600
+
+long_term_forecast_test_iTransformer_exchange-rate_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.5944, Coverage: 0.8844, Width: 0.9450, window: 600
+
+long_term_forecast_test_iTransformer_exchange-rate_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.0983, Coverage: 0.8895, Width: 0.9678, window: 600
+
+long_term_forecast_test_iTransformer_exchange-rate_ne4_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.8513, Coverage: 0.8830, Width: 0.9349, window: 600
+
+long_term_forecast_test_iTransformer_exchange-rate_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.0935, Coverage: 0.8879, Width: 0.9774, window: 600
+
+long_term_forecast_test_TimeMixer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.0064, Coverage: 0.8761, Width: 1.5766, window: 2000
+
+long_term_forecast_test_iTransformer_exchange-rate_ne5_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.8105, Coverage: 0.8903, Width: 0.9381, window: 600
+
+long_term_forecast_test_iTransformer_national-illness_ne2_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 20.2738, Coverage: 0.7555, Width: 2.7994, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne2_pe1_ug1_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 17.7084, Coverage: 0.7657, Width: 2.7853, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne4_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 22.5201, Coverage: 0.7547, Width: 2.7205, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne4_pe1_ug1_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 15.8469, Coverage: 0.7635, Width: 2.7022, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne5_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 21.8034, Coverage: 0.7511, Width: 2.7016, window: 50
+
+long_term_forecast_test_iTransformer_national-illness_ne5_pe1_ug1_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 16.1525, Coverage: 0.7677, Width: 2.7277, window: 50
+
+long_term_forecast_test_TimeMixer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.0443, Coverage: 0.8792, Width: 1.5118, window: 2000
+
+long_term_forecast_test_iTransformer_weather_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.0369, Coverage: 0.8688, Width: 1.0133, window: 600
+
+long_term_forecast_test_TimeMixer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.8864, Coverage: 0.8827, Width: 1.5553, window: 2000
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 3.6449, Coverage: 0.8510, Width: 1.5858, window: 400
+
+long_term_forecast_test_iTransformer_weather_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.4379, Coverage: 0.8713, Width: 0.9911, window: 600
+
+long_term_forecast_test_TimeMixer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.4791, Coverage: 0.8865, Width: 1.2506, window: 1000
+
+long_term_forecast_test_iTransformer_traffic_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.8255, Coverage: 0.8888, Width: 1.0371, window: 1000
+
+long_term_forecast_test_TimeMixer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.4344, Coverage: 0.8859, Width: 1.2658, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 3.5734, Coverage: 0.8532, Width: 1.6476, window: 400
+
+long_term_forecast_test_TimeMixer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.8553, Coverage: 0.8850, Width: 1.2695, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.5236, Coverage: 0.8815, Width: 1.7390, window: 600
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.5120, Coverage: 0.8804, Width: 1.7342, window: 600
+
+long_term_forecast_test_TimeMixer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.3947, Coverage: 0.8839, Width: 1.2911, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.6491, Coverage: 0.8819, Width: 1.7332, window: 600
+
+long_term_forecast_test_TimeMixer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.1445, Coverage: 0.8900, Width: 1.2644, window: 1500
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.6169, Coverage: 0.8805, Width: 1.7319, window: 600
+
+long_term_forecast_test_TimeMixer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.2353, Coverage: 0.8850, Width: 1.5582, window: 250
+
+long_term_forecast_test_TimeMixer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.0877, Coverage: 0.8949, Width: 1.4558, window: 1000
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 2.4751, Coverage: 0.8811, Width: 1.7225, window: 600
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 5.6355, Coverage: 0.9151, Width: 2.6956, window: 2000
+
+long_term_forecast_test_TimeMixer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 1.9174, Coverage: 0.8944, Width: 1.4741, window: 1000
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 4.7499, Coverage: 0.9115, Width: 2.6359, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 5.1841, Coverage: 0.9145, Width: 2.6342, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 4.8708, Coverage: 0.9149, Width: 2.6466, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Adaptive Window CP Delayed)
+q_mean: 5.0305, Coverage: 0.9130, Width: 2.5870, window: 2000
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Adaptive Window CP Delayed)
+q_mean: 3.1878, Coverage: 0.8482, Width: 1.8631, window: 2000
+
+long_term_forecast_test_TimeMixer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Adaptive Window CP Delayed)
+q_mean: 2.2011, Coverage: 0.8945, Width: 1.4866, window: 1000
+

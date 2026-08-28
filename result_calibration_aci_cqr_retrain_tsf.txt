@@ -1,0 +1,186 @@
+long_term_forecast_cqr_iTransformer_ETTh1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.3799, Coverage: 0.8931, Width: 2.3815, retrains: 29, retrain_time: 370.9s, gamma: 0.001, alpha_t_mean: 0.0894, alpha_t_final: 0.0788, alpha_t_p05: 0.0459, alpha_t_p95: 0.1059, err_rate: 0.1079
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.5199, Coverage: 0.8660, Width: 2.5803, retrains: 29, retrain_time: 363.3s, gamma: 0.001, alpha_t_mean: 0.0811, alpha_t_final: 0.0503, alpha_t_p05: 0.0044, alpha_t_p95: 0.0791, err_rate: 0.1326
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.6108, Coverage: 0.8993, Width: 1.9852, retrains: 119, retrain_time: 1515.0s, gamma: 0.001, alpha_t_mean: 0.0846, alpha_t_final: 0.1030, alpha_t_p05: 0.0450, alpha_t_p95: 0.1789, err_rate: 0.1011
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.5013, Coverage: 0.8960, Width: 1.6908, retrains: 119, retrain_time: 1904.2s, gamma: 0.001, alpha_t_mean: 0.0811, alpha_t_final: 0.0851, alpha_t_p05: 0.0342, alpha_t_p95: 0.1327, err_rate: 0.1047
+
+long_term_forecast_cqr_iTransformer_exchange-rate_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.9561, Coverage: 0.8098, Width: 2.8771, retrains: 14, retrain_time: 219.4s, gamma: 0.001, alpha_t_mean: 0.0469, alpha_t_final: 0.0511, alpha_t_p05: 0.0217, alpha_t_p95: 0.1546, err_rate: 0.2003
+
+long_term_forecast_cqr_iTransformer_national-illness_ne3_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=24, epochs=3)
+q_mean: 3.1327, Coverage: 0.6875, Width: 6.6556, retrains: 0, retrain_time: 0.0s, gamma: 0.001, alpha_t_mean: 0.0828, alpha_t_final: 0.0658, alpha_t_p05: 0.0206, alpha_t_p95: 0.0876, err_rate: 0.3345
+
+long_term_forecast_cqr_iTransformer_weather_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.4329, Coverage: 0.8953, Width: 1.2312, retrains: 108, retrain_time: 1379.3s, gamma: 0.001, alpha_t_mean: 0.0747, alpha_t_final: 0.0873, alpha_t_p05: 0.0446, alpha_t_p95: 0.1203, err_rate: 0.1056
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.4309, Coverage: 0.8911, Width: 2.4395, retrains: 29, retrain_time: 123.1s, gamma: 0.001, alpha_t_mean: 0.0885, alpha_t_final: 0.0731, alpha_t_p05: 0.0265, alpha_t_p95: 0.1079, err_rate: 0.1100
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.5772, Coverage: 0.8681, Width: 2.6556, retrains: 29, retrain_time: 121.9s, gamma: 0.001, alpha_t_mean: 0.0797, alpha_t_final: 0.0522, alpha_t_p05: 0.0149, alpha_t_p95: 0.0812, err_rate: 0.1304
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.6331, Coverage: 0.8990, Width: 2.0415, retrains: 119, retrain_time: 626.0s, gamma: 0.001, alpha_t_mean: 0.0828, alpha_t_final: 0.1022, alpha_t_p05: 0.0387, alpha_t_p95: 0.1839, err_rate: 0.1014
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.5191, Coverage: 0.8977, Width: 1.7155, retrains: 119, retrain_time: 654.6s, gamma: 0.001, alpha_t_mean: 0.0833, alpha_t_final: 0.0963, alpha_t_p05: 0.0518, alpha_t_p95: 0.1289, err_rate: 0.1032
+
+long_term_forecast_cqr_iTransformer_weather_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.4645, Coverage: 0.8942, Width: 1.2990, retrains: 108, retrain_time: 654.0s, gamma: 0.001, alpha_t_mean: 0.0730, alpha_t_final: 0.0931, alpha_t_p05: 0.0537, alpha_t_p95: 0.1210, err_rate: 0.1067
+
+long_term_forecast_cqr_iTransformer_exchange-rate_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 2.4566, Coverage: 0.8959, Width: 7.1197, retrains: 14, retrain_time: 75.2s, gamma: 0.001, alpha_t_mean: 0.1117, alpha_t_final: 0.1082, alpha_t_p05: 0.0596, alpha_t_p95: 0.1826, err_rate: 0.1007
+
+long_term_forecast_cqr_iTransformer_national-illness_ne1_pe0_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=24, epochs=3)
+q_mean: 3.0153, Coverage: 0.7025, Width: 5.9594, retrains: 0, retrain_time: 0.0s, gamma: 0.001, alpha_t_mean: 0.0833, alpha_t_final: 0.0672, alpha_t_p05: 0.0260, alpha_t_p95: 0.0896, err_rate: 0.3246
+
+long_term_forecast_cqr_iTransformer_electricity_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.2753, Coverage: 0.8922, Width: 1.3049, retrains: 53, retrain_time: 2615.4s, gamma: 0.001, alpha_t_mean: 0.0862, alpha_t_final: 0.0826, alpha_t_p05: 0.0363, alpha_t_p95: 0.1219, err_rate: 0.1042
+
+long_term_forecast_cqr_iTransformer_electricity_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.2983, Coverage: 0.8925, Width: 1.3422, retrains: 53, retrain_time: 1266.0s, gamma: 0.001, alpha_t_mean: 0.0882, alpha_t_final: 0.0843, alpha_t_p05: 0.0399, alpha_t_p95: 0.1249, err_rate: 0.1040
+
+long_term_forecast_cqr_iTransformer_traffic_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.3336, Coverage: 0.8919, Width: 1.5410, retrains: 35, retrain_time: 1120.7s, gamma: 0.001, alpha_t_mean: 0.0886, alpha_t_final: 0.0750, alpha_t_p05: 0.0337, alpha_t_p95: 0.0997, err_rate: 0.1077
+
+long_term_forecast_cqr_iTransformer_traffic_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.2929, Coverage: 0.8895, Width: 1.4572, retrains: 35, retrain_time: 4279.2s, gamma: 0.001, alpha_t_mean: 0.0887, alpha_t_final: 0.0720, alpha_t_p05: 0.0297, alpha_t_p95: 0.0997, err_rate: 0.1086
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.6534, Coverage: 0.8799, Width: 2.7308, retrains: 29, retrain_time: 368.2s, gamma: 0.001, alpha_t_mean: 0.0732, alpha_t_final: 0.0511, alpha_t_p05: 0.0120, alpha_t_p95: 0.0869, err_rate: 0.1232
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.3858, Coverage: 0.8762, Width: 2.3795, retrains: 29, retrain_time: 608.5s, gamma: 0.001, alpha_t_mean: 0.0726, alpha_t_final: 0.0421, alpha_t_p05: 0.0159, alpha_t_p95: 0.0909, err_rate: 0.1221
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.6558, Coverage: 0.8785, Width: 2.7591, retrains: 29, retrain_time: 905.8s, gamma: 0.001, alpha_t_mean: 0.0661, alpha_t_final: 0.0453, alpha_t_p05: 0.0245, alpha_t_p95: 0.0759, err_rate: 0.1246
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.6202, Coverage: 0.8668, Width: 2.6697, retrains: 29, retrain_time: 466.0s, gamma: 0.001, alpha_t_mean: 0.0777, alpha_t_final: 0.0574, alpha_t_p05: 0.0072, alpha_t_p95: 0.0882, err_rate: 0.1318
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.6187, Coverage: 0.8634, Width: 2.6871, retrains: 29, retrain_time: 701.8s, gamma: 0.001, alpha_t_mean: 0.0648, alpha_t_final: 0.0662, alpha_t_p05: 0.0304, alpha_t_p95: 0.0882, err_rate: 0.1327
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.6190, Coverage: 0.8614, Width: 2.6613, retrains: 29, retrain_time: 677.5s, gamma: 0.001, alpha_t_mean: 0.0657, alpha_t_final: 0.0702, alpha_t_p05: 0.0388, alpha_t_p95: 0.0920, err_rate: 0.1338
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.6456, Coverage: 0.8995, Width: 2.0200, retrains: 119, retrain_time: 1782.1s, gamma: 0.001, alpha_t_mean: 0.0870, alpha_t_final: 0.0902, alpha_t_p05: 0.0559, alpha_t_p95: 0.1459, err_rate: 0.1011
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.6247, Coverage: 0.8996, Width: 2.0089, retrains: 119, retrain_time: 2361.7s, gamma: 0.001, alpha_t_mean: 0.0858, alpha_t_final: 0.1023, alpha_t_p05: 0.0424, alpha_t_p95: 0.1849, err_rate: 0.1008
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.5927, Coverage: 0.9002, Width: 1.9192, retrains: 119, retrain_time: 2452.3s, gamma: 0.001, alpha_t_mean: 0.0896, alpha_t_final: 0.1060, alpha_t_p05: 0.0560, alpha_t_p95: 0.1759, err_rate: 0.1002
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne2_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.5132, Coverage: 0.8973, Width: 1.6848, retrains: 119, retrain_time: 1249.9s, gamma: 0.001, alpha_t_mean: 0.0831, alpha_t_final: 0.0939, alpha_t_p05: 0.0546, alpha_t_p95: 0.1254, err_rate: 0.1035
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne4_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.5165, Coverage: 0.8968, Width: 1.7060, retrains: 119, retrain_time: 1876.2s, gamma: 0.001, alpha_t_mean: 0.0777, alpha_t_final: 0.0898, alpha_t_p05: 0.0314, alpha_t_p95: 0.1359, err_rate: 0.1039
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne5_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.5063, Coverage: 0.8970, Width: 1.6870, retrains: 119, retrain_time: 2230.3s, gamma: 0.001, alpha_t_mean: 0.0792, alpha_t_final: 0.0906, alpha_t_p05: 0.0412, alpha_t_p95: 0.1307, err_rate: 0.1037
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.2667, Coverage: 0.8855, Width: 2.4128, retrains: 29, retrain_time: 134.4s, gamma: 0.001, alpha_t_mean: 0.1012, alpha_t_final: 0.0668, alpha_t_p05: 0.0249, alpha_t_p95: 0.1249, err_rate: 0.1123
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.9857, Coverage: 0.8940, Width: 3.7167, retrains: 29, retrain_time: 119.5s, gamma: 0.001, alpha_t_mean: 0.1141, alpha_t_final: 0.0919, alpha_t_p05: 0.0469, alpha_t_p95: 0.1659, err_rate: 0.1048
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.5814, Coverage: 0.8998, Width: 1.9009, retrains: 119, retrain_time: 489.5s, gamma: 0.001, alpha_t_mean: 0.0856, alpha_t_final: 0.1026, alpha_t_p05: 0.0467, alpha_t_p95: 0.1779, err_rate: 0.1005
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.9498, Coverage: 0.8957, Width: 2.8778, retrains: 119, retrain_time: 538.2s, gamma: 0.001, alpha_t_mean: 0.0858, alpha_t_final: 0.0961, alpha_t_p05: 0.0566, alpha_t_p95: 0.1376, err_rate: 0.1051
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.6598, Coverage: 0.8766, Width: 2.9130, retrains: 29, retrain_time: 116.3s, gamma: 0.001, alpha_t_mean: 0.0576, alpha_t_final: 0.0408, alpha_t_p05: 0.0118, alpha_t_p95: 0.0830, err_rate: 0.1267
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.7126, Coverage: 0.8780, Width: 2.9834, retrains: 29, retrain_time: 116.3s, gamma: 0.001, alpha_t_mean: 0.0927, alpha_t_final: 0.0347, alpha_t_p05: 0.0049, alpha_t_p95: 0.1056, err_rate: 0.1259
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.6092, Coverage: 0.8995, Width: 1.9759, retrains: 119, retrain_time: 494.4s, gamma: 0.001, alpha_t_mean: 0.0864, alpha_t_final: 0.0972, alpha_t_p05: 0.0425, alpha_t_p95: 0.1834, err_rate: 0.1010
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.6536, Coverage: 0.8973, Width: 1.9893, retrains: 119, retrain_time: 495.1s, gamma: 0.001, alpha_t_mean: 0.0946, alpha_t_final: 0.0954, alpha_t_p05: 0.0506, alpha_t_p95: 0.1593, err_rate: 0.1035
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.3455, Coverage: 0.8932, Width: 2.3447, retrains: 29, retrain_time: 119.4s, gamma: 0.001, alpha_t_mean: 0.0849, alpha_t_final: 0.0781, alpha_t_p05: 0.0524, alpha_t_p95: 0.1143, err_rate: 0.1082
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 1.1587, Coverage: 0.8939, Width: 4.1019, retrains: 29, retrain_time: 114.7s, gamma: 0.001, alpha_t_mean: 0.1111, alpha_t_final: 0.0860, alpha_t_p05: 0.0639, alpha_t_p95: 0.1363, err_rate: 0.1072
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.6183, Coverage: 0.8987, Width: 1.9642, retrains: 119, retrain_time: 488.1s, gamma: 0.001, alpha_t_mean: 0.0854, alpha_t_final: 0.0999, alpha_t_p05: 0.0429, alpha_t_p95: 0.1879, err_rate: 0.1016
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 1.0095, Coverage: 0.8950, Width: 2.8319, retrains: 119, retrain_time: 525.7s, gamma: 0.001, alpha_t_mean: 0.0867, alpha_t_final: 0.0922, alpha_t_p05: 0.0445, alpha_t_p95: 0.1318, err_rate: 0.1058
+
+long_term_forecast_cqr_iTransformer_ETTh1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.4597, Coverage: 0.8849, Width: 2.4430, retrains: 29, retrain_time: 115.4s, gamma: 0.001, alpha_t_mean: 0.0787, alpha_t_final: 0.0682, alpha_t_p05: 0.0299, alpha_t_p95: 0.1024, err_rate: 0.1135
+
+long_term_forecast_cqr_iTransformer_ETTh2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.6918, Coverage: 0.8801, Width: 2.7096, retrains: 29, retrain_time: 114.4s, gamma: 0.001, alpha_t_mean: 0.0865, alpha_t_final: 0.0525, alpha_t_p05: 0.0022, alpha_t_p95: 0.0779, err_rate: 0.1234
+
+long_term_forecast_cqr_iTransformer_ETTm1_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.6521, Coverage: 0.8985, Width: 2.0407, retrains: 119, retrain_time: 527.3s, gamma: 0.001, alpha_t_mean: 0.0871, alpha_t_final: 0.0847, alpha_t_p05: 0.0487, alpha_t_p95: 0.1579, err_rate: 0.1019
+
+long_term_forecast_cqr_iTransformer_ETTm2_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.5181, Coverage: 0.8975, Width: 1.6306, retrains: 119, retrain_time: 518.3s, gamma: 0.001, alpha_t_mean: 0.0791, alpha_t_final: 0.0972, alpha_t_p05: 0.0509, alpha_t_p95: 0.1335, err_rate: 0.1032
+
+long_term_forecast_cqr_iTransformer_electricity_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.2967, Coverage: 0.8925, Width: 1.3399, retrains: 53, retrain_time: 520.6s, gamma: 0.001, alpha_t_mean: 0.0881, alpha_t_final: 0.0832, alpha_t_p05: 0.0389, alpha_t_p95: 0.1218, err_rate: 0.1042
+
+long_term_forecast_cqr_iTransformer_electricity_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.2610, Coverage: 0.8914, Width: 1.3085, retrains: 53, retrain_time: 505.9s, gamma: 0.001, alpha_t_mean: 0.0874, alpha_t_final: 0.0751, alpha_t_p05: 0.0316, alpha_t_p95: 0.1209, err_rate: 0.1056
+
+long_term_forecast_cqr_iTransformer_electricity_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.2599, Coverage: 0.8921, Width: 1.2812, retrains: 53, retrain_time: 2192.6s, gamma: 0.001, alpha_t_mean: 0.0857, alpha_t_final: 0.0803, alpha_t_p05: 0.0390, alpha_t_p95: 0.1169, err_rate: 0.1047
+
+long_term_forecast_cqr_iTransformer_electricity_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.2743, Coverage: 0.8921, Width: 1.3016, retrains: 53, retrain_time: 2230.1s, gamma: 0.001, alpha_t_mean: 0.0863, alpha_t_final: 0.0820, alpha_t_p05: 0.0369, alpha_t_p95: 0.1209, err_rate: 0.1043
+
+long_term_forecast_cqr_iTransformer_electricity_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.2615, Coverage: 0.8919, Width: 1.2850, retrains: 53, retrain_time: 720.1s, gamma: 0.001, alpha_t_mean: 0.0860, alpha_t_final: 0.0801, alpha_t_p05: 0.0389, alpha_t_p95: 0.1173, err_rate: 0.1047
+
+long_term_forecast_cqr_iTransformer_electricity_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.2767, Coverage: 0.8923, Width: 1.3074, retrains: 53, retrain_time: 756.9s, gamma: 0.001, alpha_t_mean: 0.0863, alpha_t_final: 0.0834, alpha_t_p05: 0.0389, alpha_t_p95: 0.1225, err_rate: 0.1040
+
+long_term_forecast_cqr_iTransformer_electricity_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.3061, Coverage: 0.8923, Width: 1.3564, retrains: 53, retrain_time: 2171.5s, gamma: 0.001, alpha_t_mean: 0.0848, alpha_t_final: 0.0842, alpha_t_p05: 0.0407, alpha_t_p95: 0.1223, err_rate: 0.1041
+
+long_term_forecast_cqr_iTransformer_electricity_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.2652, Coverage: 0.8914, Width: 1.3065, retrains: 53, retrain_time: 2179.1s, gamma: 0.001, alpha_t_mean: 0.0873, alpha_t_final: 0.0761, alpha_t_p05: 0.0309, alpha_t_p95: 0.1221, err_rate: 0.1054
+
+long_term_forecast_cqr_iTransformer_electricity_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.2603, Coverage: 0.8914, Width: 1.3071, retrains: 53, retrain_time: 5488.8s, gamma: 0.001, alpha_t_mean: 0.0874, alpha_t_final: 0.0750, alpha_t_p05: 0.0309, alpha_t_p95: 0.1209, err_rate: 0.1056
+
+long_term_forecast_cqr_iTransformer_electricity_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.2962, Coverage: 0.8926, Width: 1.3382, retrains: 53, retrain_time: 5528.2s, gamma: 0.001, alpha_t_mean: 0.0883, alpha_t_final: 0.0834, alpha_t_p05: 0.0394, alpha_t_p95: 0.1219, err_rate: 0.1041
+
+long_term_forecast_cqr_iTransformer_traffic_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.3747, Coverage: 0.8896, Width: 1.6647, retrains: 35, retrain_time: 530.1s, gamma: 0.001, alpha_t_mean: 0.0787, alpha_t_final: 0.0756, alpha_t_p05: 0.0317, alpha_t_p95: 0.0997, err_rate: 0.1080
+
+long_term_forecast_cqr_iTransformer_traffic_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.3028, Coverage: 0.8891, Width: 1.4800, retrains: 35, retrain_time: 530.9s, gamma: 0.001, alpha_t_mean: 0.0888, alpha_t_final: 0.0701, alpha_t_p05: 0.0258, alpha_t_p95: 0.0957, err_rate: 0.1092
+
+long_term_forecast_cqr_iTransformer_traffic_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4024 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.3349, Coverage: 0.8920, Width: 1.5539, retrains: 35, retrain_time: 3902.6s, gamma: 0.001, alpha_t_mean: 0.0887, alpha_t_final: 0.0772, alpha_t_p05: 0.0347, alpha_t_p95: 0.1030, err_rate: 0.1071
+
+long_term_forecast_cqr_iTransformer_traffic_ne3_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4025 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.3014, Coverage: 0.8888, Width: 1.4815, retrains: 35, retrain_time: 3895.1s, gamma: 0.001, alpha_t_mean: 0.0885, alpha_t_final: 0.0705, alpha_t_p05: 0.0277, alpha_t_p95: 0.0967, err_rate: 0.1091
+
+long_term_forecast_cqr_iTransformer_traffic_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.3186, Coverage: 0.8902, Width: 1.5581, retrains: 35, retrain_time: 1275.4s, gamma: 0.001, alpha_t_mean: 0.0868, alpha_t_final: 0.0731, alpha_t_p05: 0.0307, alpha_t_p95: 0.0987, err_rate: 0.1083
+
+long_term_forecast_cqr_iTransformer_traffic_ne1_pe0_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (ACI Retrained CQR, alpha=0.1, gamma=0.001, mode=finetune, window=1000, interval=96, epochs=3)
+q_mean: 0.3101, Coverage: 0.8886, Width: 1.5302, retrains: 35, retrain_time: 1294.7s, gamma: 0.001, alpha_t_mean: 0.0841, alpha_t_final: 0.0691, alpha_t_p05: 0.0267, alpha_t_p95: 0.0947, err_rate: 0.1095
+

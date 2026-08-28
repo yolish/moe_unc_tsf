@@ -1,0 +1,468 @@
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4610, Coverage: 0.8365, Width: 1.8095
+
+long_term_forecast_test_DLinear_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.0836, Coverage: 0.8767, Width: 1.4985
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4610, Coverage: 0.8365, Width: 1.8095
+
+long_term_forecast_test_DLinear_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1134, Coverage: 0.8811, Width: 1.5106
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2919, Coverage: 0.8454, Width: 1.8461
+
+long_term_forecast_test_DLinear_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1110, Coverage: 0.8804, Width: 1.5412
+
+long_term_forecast_test_DLinear_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1533, Coverage: 0.8820, Width: 1.5422
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3018, Coverage: 0.8421, Width: 1.7697
+
+long_term_forecast_test_DLinear_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.0664, Coverage: 0.8806, Width: 1.5412
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2249, Coverage: 0.8417, Width: 1.8145
+
+long_term_forecast_test_DLinear_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1693, Coverage: 0.8899, Width: 1.2302
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3615, Coverage: 0.8474, Width: 1.8623
+
+long_term_forecast_test_DLinear_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1968, Coverage: 0.8895, Width: 1.2514
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5622, Coverage: 0.8657, Width: 1.8869
+
+long_term_forecast_test_DLinear_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1347, Coverage: 0.8890, Width: 1.2507
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.8898, Coverage: 0.8650, Width: 1.8077
+
+long_term_forecast_test_DLinear_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1826, Coverage: 0.8895, Width: 1.2553
+
+long_term_forecast_test_DLinear_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1522, Coverage: 0.8896, Width: 1.2547
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.6562, Coverage: 0.8670, Width: 1.8602
+
+long_term_forecast_test_DLinear_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3932, Coverage: 0.8936, Width: 1.5547
+
+long_term_forecast_test_DLinear_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3603, Coverage: 0.8931, Width: 1.5423
+
+long_term_forecast_test_DLinear_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3790, Coverage: 0.8932, Width: 1.5456
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4848, Coverage: 0.8667, Width: 1.7345
+
+long_term_forecast_test_DLinear_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3692, Coverage: 0.8939, Width: 1.5389
+
+long_term_forecast_test_DLinear_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3307, Coverage: 0.8932, Width: 1.5387
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4923, Coverage: 0.8643, Width: 1.7512
+
+long_term_forecast_test_DLinear_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4900, Coverage: 0.9018, Width: 1.7391
+
+long_term_forecast_test_DLinear_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4749, Coverage: 0.9017, Width: 1.7346
+
+long_term_forecast_test_DLinear_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4766, Coverage: 0.9013, Width: 1.7258
+
+long_term_forecast_test_DLinear_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5065, Coverage: 0.9013, Width: 1.7391
+
+long_term_forecast_test_DLinear_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4590, Coverage: 0.9010, Width: 1.7559
+
+long_term_forecast_test_PatchTST_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.6470, Coverage: 0.8796, Width: 1.7246
+
+long_term_forecast_test_PatchTST_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5695, Coverage: 0.8803, Width: 1.7403
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4673, Coverage: 0.8860, Width: 1.7297
+
+long_term_forecast_test_PatchTST_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3384, Coverage: 0.8816, Width: 1.6490
+
+long_term_forecast_test_PatchTST_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.6600, Coverage: 0.8805, Width: 1.6934
+
+long_term_forecast_test_PatchTST_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3741, Coverage: 0.8817, Width: 1.6504
+
+long_term_forecast_test_PatchTST_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5353, Coverage: 0.8858, Width: 1.3347
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5004, Coverage: 0.8874, Width: 1.7396
+
+long_term_forecast_test_PatchTST_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.7555, Coverage: 0.8849, Width: 1.4690
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4155, Coverage: 0.8859, Width: 1.7328
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.6105, Coverage: 0.9002, Width: 1.7605
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5191, Coverage: 0.9009, Width: 1.7735
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4214, Coverage: 0.9015, Width: 1.7737
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4300, Coverage: 0.8990, Width: 1.7326
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3933, Coverage: 0.9005, Width: 1.7371
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4710, Coverage: 0.9003, Width: 1.7407
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3144, Coverage: 0.9009, Width: 1.7506
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4116, Coverage: 0.9008, Width: 1.7292
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3421, Coverage: 0.9005, Width: 1.7237
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4599, Coverage: 0.8843, Width: 1.6242
+
+long_term_forecast_test_PatchTST_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3241, Coverage: 0.8846, Width: 1.2780
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4309, Coverage: 0.8830, Width: 1.5895
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3156, Coverage: 0.8860, Width: 1.6390
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1968, Coverage: 0.8851, Width: 1.6088
+
+long_term_forecast_test_iTransformer_synth-moe3_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4033, Coverage: 0.8895, Width: 2.3304
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1451, Coverage: 0.8835, Width: 1.5791
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2939, Coverage: 0.8831, Width: 1.6039
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1729, Coverage: 0.8853, Width: 1.5884
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3197, Coverage: 0.8823, Width: 1.5779
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.0925, Coverage: 0.8843, Width: 1.5287
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5816, Coverage: 0.8924, Width: 1.5592
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4903, Coverage: 0.8936, Width: 1.5666
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2931, Coverage: 0.8945, Width: 1.5674
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4998, Coverage: 0.8929, Width: 1.5396
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2237, Coverage: 0.8945, Width: 1.5139
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1561, Coverage: 0.8946, Width: 1.4976
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3919, Coverage: 0.8918, Width: 1.5063
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4333, Coverage: 0.8929, Width: 1.5140
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1363, Coverage: 0.8946, Width: 1.4824
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.6455, Coverage: 0.8884, Width: 1.3038
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2905, Coverage: 0.8911, Width: 1.2915
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3323, Coverage: 0.8886, Width: 1.2731
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1686, Coverage: 0.8906, Width: 1.2603
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4561, Coverage: 0.8865, Width: 1.7216
+
+long_term_forecast_test_PatchTST_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.6333, Coverage: 0.8851, Width: 1.3892
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.7188, Coverage: 0.8873, Width: 1.2896
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2055, Coverage: 0.8903, Width: 1.2685
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.7467, Coverage: 0.8865, Width: 1.3303
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.0784, Coverage: 0.8904, Width: 1.2358
+
+long_term_forecast_test_iTransformer_exchange-rate_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5067, Coverage: 0.8825, Width: 1.0429
+
+long_term_forecast_test_iTransformer_exchange-rate_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2279, Coverage: 0.8843, Width: 0.9352
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 3.3729, Coverage: 0.7394, Width: 3.1005
+
+long_term_forecast_test_iTransformer_national-illness_ne3_pe1_ug1_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 2.6294, Coverage: 0.7762, Width: 3.8176
+
+long_term_forecast_test_iTransformer_weather_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 0.9175, Coverage: 0.8669, Width: 1.1226
+
+long_term_forecast_test_iTransformer_weather_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 0.7257, Coverage: 0.8665, Width: 1.1308
+
+long_term_forecast_test_PatchTST_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5595, Coverage: 0.8846, Width: 1.4044
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3690, Coverage: 0.8859, Width: 1.7407
+
+long_term_forecast_test_iTransformer_electricity_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4604, Coverage: 0.8939, Width: 1.0367
+
+long_term_forecast_test_iTransformer_electricity_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2580, Coverage: 0.8951, Width: 1.0203
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.6931, Coverage: 0.8905, Width: 2.1670
+
+long_term_forecast_test_PatchTST_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2636, Coverage: 0.8952, Width: 1.5484
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.6603, Coverage: 0.8879, Width: 2.1674
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5261, Coverage: 0.8889, Width: 2.1290
+
+long_term_forecast_test_PatchTST_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3619, Coverage: 0.8957, Width: 1.5721
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.6166, Coverage: 0.8880, Width: 2.1316
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5585, Coverage: 0.8885, Width: 2.1254
+
+long_term_forecast_test_PatchTST_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2782, Coverage: 0.8946, Width: 1.5331
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4533, Coverage: 0.8432, Width: 1.8356
+
+long_term_forecast_test_iTransformer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3905, Coverage: 0.8452, Width: 1.8793
+
+long_term_forecast_test_iTransformer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2977, Coverage: 0.8448, Width: 1.8273
+
+long_term_forecast_test_iTransformer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3727, Coverage: 0.8412, Width: 1.8029
+
+long_term_forecast_test_PatchTST_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3489, Coverage: 0.8958, Width: 1.5758
+
+long_term_forecast_test_iTransformer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1945, Coverage: 0.8394, Width: 1.7856
+
+long_term_forecast_test_iTransformer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.6340, Coverage: 0.8668, Width: 1.7406
+
+long_term_forecast_test_iTransformer_traffic_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2726, Coverage: 0.8884, Width: 1.0582
+
+long_term_forecast_test_PatchTST_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2201, Coverage: 0.8940, Width: 1.5285
+
+long_term_forecast_test_iTransformer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.6266, Coverage: 0.8688, Width: 1.8527
+
+long_term_forecast_test_PatchTST_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4104, Coverage: 0.9023, Width: 1.8149
+
+long_term_forecast_test_PatchTST_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3334, Coverage: 0.9012, Width: 1.8418
+
+long_term_forecast_test_iTransformer_traffic_ne3_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.0201, Coverage: 0.8899, Width: 1.7536
+
+long_term_forecast_test_PatchTST_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3111, Coverage: 0.9027, Width: 1.7960
+
+long_term_forecast_test_PatchTST_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3729, Coverage: 0.9047, Width: 1.7692
+
+long_term_forecast_test_PatchTST_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2421, Coverage: 0.9031, Width: 1.8056
+
+long_term_forecast_test_TimeMixer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5858, Coverage: 0.8805, Width: 1.6219
+
+long_term_forecast_test_iTransformer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3363, Coverage: 0.8665, Width: 1.7403
+
+long_term_forecast_test_TimeMixer_ETTh2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4097, Coverage: 0.8817, Width: 1.6145
+
+long_term_forecast_test_iTransformer_exchange-rate_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3785, Coverage: 0.8886, Width: 1.0308
+
+long_term_forecast_test_iTransformer_exchange-rate_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3866, Coverage: 0.8836, Width: 0.9331
+
+long_term_forecast_test_iTransformer_exchange-rate_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2714, Coverage: 0.8930, Width: 0.9926
+
+long_term_forecast_test_iTransformer_exchange-rate_ne4_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.1304, Coverage: 0.8834, Width: 0.9279
+
+long_term_forecast_test_iTransformer_exchange-rate_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2139, Coverage: 0.8896, Width: 0.9760
+
+long_term_forecast_test_TimeMixer_ETTh2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3850, Coverage: 0.8804, Width: 1.6182
+
+long_term_forecast_test_iTransformer_exchange-rate_ne5_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.0868, Coverage: 0.8915, Width: 0.9332
+
+long_term_forecast_test_iTransformer_national-illness_ne2_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 3.5199, Coverage: 0.7452, Width: 3.0002
+
+long_term_forecast_test_iTransformer_national-illness_ne2_pe1_ug1_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 2.9163, Coverage: 0.7755, Width: 4.4926
+
+long_term_forecast_test_iTransformer_national-illness_ne4_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 3.4200, Coverage: 0.7439, Width: 2.9112
+
+long_term_forecast_test_iTransformer_national-illness_ne4_pe1_ug1_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 2.4948, Coverage: 0.7783, Width: 3.5932
+
+long_term_forecast_test_iTransformer_national-illness_ne5_pe1_ug0_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 3.4373, Coverage: 0.7466, Width: 2.9337
+
+long_term_forecast_test_iTransformer_national-illness_ne5_pe1_ug1_ftM_sl96_ll48_pl24_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 2.4832, Coverage: 0.7833, Width: 3.7029
+
+long_term_forecast_test_TimeMixer_ETTh2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3808, Coverage: 0.8833, Width: 1.5396
+
+long_term_forecast_test_iTransformer_weather_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 0.8119, Coverage: 0.8721, Width: 1.0334
+
+long_term_forecast_test_TimeMixer_ETTh2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2896, Coverage: 0.8829, Width: 1.5332
+
+long_term_forecast_test_iTransformer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4050, Coverage: 0.8658, Width: 1.6782
+
+long_term_forecast_test_iTransformer_weather_ne2_pe1_ug1_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 0.8880, Coverage: 0.8737, Width: 0.9921
+
+long_term_forecast_test_TimeMixer_ETTm2_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4664, Coverage: 0.8865, Width: 1.2506
+
+long_term_forecast_test_iTransformer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3491, Coverage: 0.8686, Width: 1.7442
+
+long_term_forecast_test_TimeMixer_ETTm2_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4412, Coverage: 0.8859, Width: 1.2655
+
+long_term_forecast_test_TimeMixer_ETTm2_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5268, Coverage: 0.8848, Width: 1.2693
+
+long_term_forecast_test_iTransformer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4906, Coverage: 0.8860, Width: 1.7240
+
+long_term_forecast_test_iTransformer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4599, Coverage: 0.8858, Width: 1.7234
+
+long_term_forecast_test_TimeMixer_ETTm2_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3627, Coverage: 0.8838, Width: 1.2897
+
+long_term_forecast_test_iTransformer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4471, Coverage: 0.8872, Width: 1.7261
+
+long_term_forecast_test_TimeMixer_ETTm2_ne5_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2644, Coverage: 0.8865, Width: 1.2493
+
+long_term_forecast_test_iTransformer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.4430, Coverage: 0.8859, Width: 1.7188
+
+long_term_forecast_test_TimeMixer_ETTm1_ne1_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3507, Coverage: 0.8939, Width: 1.5190
+
+long_term_forecast_test_iTransformer_ETTm1_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3619, Coverage: 0.8858, Width: 1.7190
+
+long_term_forecast_test_TimeMixer_ETTm1_ne2_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3714, Coverage: 0.8949, Width: 1.4643
+
+long_term_forecast_test_iTransformer_ETTh1_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.7648, Coverage: 0.8897, Width: 2.1923
+
+long_term_forecast_test_TimeMixer_ETTm1_ne3_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.2859, Coverage: 0.8944, Width: 1.4853
+
+long_term_forecast_test_iTransformer_ETTh1_ne2_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5838, Coverage: 0.8859, Width: 2.1177
+
+long_term_forecast_test_iTransformer_ETTh1_ne3_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.6065, Coverage: 0.8878, Width: 2.1215
+
+long_term_forecast_test_iTransformer_ETTh1_ne4_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5745, Coverage: 0.8905, Width: 2.1676
+
+long_term_forecast_test_iTransformer_ETTh1_ne5_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4022 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5970, Coverage: 0.8874, Width: 2.1189
+
+long_term_forecast_test_TimeMixer_ETTm1_ne4_pe1_ug0_ftM_sl96_ll48_pl96_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4021 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.3539, Coverage: 0.8946, Width: 1.5058
+
+long_term_forecast_test_iTransformer_ETTh2_ne1_pe1_ug0_ftM_sl96_ll48_pl336_dm512_nh8_el2_dl1_df2048_expand2_dc4_fc1_ebtimeF_dtTrue_test_0_seed4023 (Aleatoric MoG CP (second option) Delayed)
+q_mean: 1.5751, Coverage: 0.8408, Width: 1.8250
+

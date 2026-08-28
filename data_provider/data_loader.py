@@ -16,6 +16,38 @@ from utils.augmentation import run_augmentation_single
 warnings.filterwarnings('ignore')
 
 
+class Dataset_Window(Dataset):
+    """Forecasting dataset over pre-sliced arrays, for rolling-window retraining.
+
+    Unlike the Dataset_* classes below, this one does no file reading, scaling or
+    border computation: it is handed an already-transformed slice of the series and
+    only provides the sliding-window view over it. __getitem__/__len__ are identical
+    to Dataset_ETT_hour so the sample semantics (stride 1, label_len overlap) match.
+    """
+
+    def __init__(self, data_x, data_stamp, size):
+        self.seq_len, self.label_len, self.pred_len = size[0], size[1], size[2]
+        self.data_x = data_x
+        self.data_y = data_x
+        self.data_stamp = data_stamp
+
+    def __getitem__(self, index):
+        s_begin = index
+        s_end = s_begin + self.seq_len
+        r_begin = s_end - self.label_len
+        r_end = r_begin + self.label_len + self.pred_len
+
+        seq_x = self.data_x[s_begin:s_end]
+        seq_y = self.data_y[r_begin:r_end]
+        seq_x_mark = self.data_stamp[s_begin:s_end]
+        seq_y_mark = self.data_stamp[r_begin:r_end]
+
+        return seq_x, seq_y, seq_x_mark, seq_y_mark
+
+    def __len__(self):
+        return len(self.data_x) - self.seq_len - self.pred_len + 1
+
+
 class Dataset_ETT_hour(Dataset):
     def __init__(self, args, root_path, flag='train', size=None,
                  features='S', data_path='ETTh1.csv',
@@ -746,3 +778,196 @@ class UEAloader(Dataset):
 
     def __len__(self):
         return len(self.all_IDs)
+
+class Dataset_Synthetic(Dataset):
+    def __init__(self, root_path=None, flag='train', size=None, data_path=None, data_name=None, proportions=[0.2, 0.3, 0.5], seed=42):
+        # במאמר השתמשו ב-500 דגימות לכל סט בניסוי הסינתטי
+        self.n_samples_per_split = 500 if size is None else size[0]
+        self.proportions = proportions
+        self.flag = flag
+        self.seed = seed
+
+        type_map = {'train': 0, 'val': 1, 'test': 2}
+        self.set_type = type_map[flag]
+
+        # סקיילרים ל-X ול-Y בדומה לדאטה הטבלאי
+        self.scaler_x = StandardScaler()
+        self.scaler_y = StandardScaler()
+
+        self.__read_data__()
+
+    def __read_data__(self):
+        # נייצר את כלל הדגימות (1500) עם Seed קבוע (per-run) כדי שהסטים יהיו עקביים זה מול זה
+        total_samples = self.n_samples_per_split * 3
+        np.random.seed(self.seed)
+        
+        X = np.random.uniform(-3, 3, total_samples)
+        eps = np.random.normal(0, 1, total_samples)
+        
+        domains = np.random.choice([0, 1, 2], p=self.proportions, size=total_samples)
+        Y = np.zeros(total_samples)
+        
+        Y[domains == 0] = X[domains == 0] + eps[domains == 0]
+        Y[domains == 1] = X[domains == 1]**2 + eps[domains == 1]
+        Y[domains == 2] = X[domains == 2]**3 + eps[domains == 2]
+        
+        X = X.reshape(-1, 1)
+        Y = Y.reshape(-1, 1)
+
+        # --- נרמול מבוסס על סט האימון בלבד ---
+        train_start = 0
+        train_end = self.n_samples_per_split
+        X_train = X[train_start:train_end]
+        Y_train = Y[train_start:train_end]
+        
+        self.scaler_x.fit(X_train)
+        self.scaler_y.fit(Y_train)
+
+        # --- חיתוך הסט הרלוונטי (Train / Val / Test) ---
+        start_idx = self.set_type * self.n_samples_per_split
+        end_idx = start_idx + self.n_samples_per_split
+        
+        X_split = X[start_idx:end_idx]
+        Y_split = Y[start_idx:end_idx]
+
+        # ביצוע הנרמול על הסט החתוך
+        X_split = self.scaler_x.transform(X_split)
+        Y_split = self.scaler_y.transform(Y_split)
+
+        self.X = torch.tensor(X_split, dtype=torch.float32)
+        self.Y = torch.tensor(Y_split, dtype=torch.float32)
+
+    def __getitem__(self, index):
+        return self.X[index], self.Y[index]
+
+    def __len__(self):
+        return len(self.X)
+
+import pandas as pd
+import numpy as np
+import torch
+from torch.utils.data import Dataset
+from sklearn.preprocessing import StandardScaler
+import os
+
+class Dataset_Tabular(Dataset):
+    def __init__(self, root_path=None, flag='train', size=None, data_path='', data_name='', seed=42):
+        self.flag = flag
+        self.data_name = data_name if data_name else data_path
+        self.root_path = root_path
+        self.data_path = data_path
+        self.seed = seed
+
+        # יחס חלוקה: 60% train / 20% val / 20% test מתוך כלל הנתונים
+        self.split_proportions = (0.60, 0.20, 0.20)
+
+        type_map = {'train': 0, 'val': 1, 'test': 2}
+        self.set_type = type_map[flag]
+        
+        # הוספת סקיילר נפרד למשתנה המטרה (Y) בנוסף לפיצ'רים (X)
+        self.scaler_x = StandardScaler()
+        self.scaler_y = StandardScaler()
+        self.__read_data__()
+
+    def __read_data__(self):
+        # --- 1. טעינת נתונים וקידוד קטגורי ---
+        if 'bike' in self.data_name.lower():
+            try:
+                from ucimlrepo import fetch_ucirepo
+            except ImportError:
+                raise ImportError("Please install ucimlrepo package: pip install ucimlrepo")
+            
+            if self.set_type == 0:
+                print("Downloading Bike Sharing dataset from UCI...")
+            dataset = fetch_ucirepo(id=275) 
+            X_df = dataset.data.features
+            Y_df = dataset.data.targets
+            
+            if 'dteday' in X_df.columns:
+                X_df = X_df.drop(columns=['dteday'])
+
+            # לפי המאמר: משתנים קטגוריים/סדרתיים מקודדים כ"binary flags or integer
+            # codes" - הם כבר מקודדים כך במקור (season/mnth/hr/weekday/weathersit
+            # כקודים שלמים, holiday/workingday/yr כדגלים בינאריים), אז לא מבצעים
+            # One-Hot שמנפח את מספר הפיצ'רים ומשנה את מה שמנורמל בהמשך.
+            X = X_df.astype(float).values
+            Y = Y_df['cnt'].values.reshape(-1, 1).astype(float)
+
+        elif 'temperature' in self.data_name.lower() or 'bias' in self.data_name.lower():
+            if self.set_type == 0:
+                print("Loading Temperature dataset via pandas...")
+            try:
+                url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00514/Bias_correction_ucl.csv"
+                df = pd.read_csv(url)
+            except Exception:
+                file_path = os.path.join(self.root_path, self.data_path)
+                df = pd.read_csv(file_path)
+            
+            df = df.dropna()
+            cols_to_drop = ['station', 'Date', 'Next_Tmax']
+            df = df.drop(columns=[c for c in cols_to_drop if c in df.columns])
+            
+            Y = df.pop('Next_Tmin').values.reshape(-1, 1).astype(float)
+            X = df.astype(float).values
+
+        elif 'supercon' in self.data_name.lower():
+            try:
+                from ucimlrepo import fetch_ucirepo
+            except ImportError:
+                raise ImportError("Please install ucimlrepo package: pip install ucimlrepo")
+
+            if self.set_type == 0:
+                print("Downloading Superconductivity dataset from UCI...")
+            dataset = fetch_ucirepo(id=464)
+            X_df = dataset.data.features
+            Y_df = dataset.data.targets
+
+            # No material-family (cuprate/iron-based/low-Tc) label exists in this file,
+            # so any such regime structure must be inferred by the gate from the 81
+            # feature columns alone -- deliberately not adding one, matching Bike's
+            # no-one-hot approach above.
+            X = X_df.astype(float).values
+            Y = Y_df.iloc[:, 0].values.reshape(-1, 1).astype(float)
+        else:
+            raise ValueError(f"Unknown tabular dataset: {self.data_name}")
+
+        # --- 2. יצירת סביבה i.i.d על ידי ערבוב (Shuffle) כדי להתאים להנחות המאמר ---
+        # שימוש ב-Seed קבוע (per-run) כדי שכל הסטים (Train, Val, Test) יראו את אותו הערבוב
+        np.random.seed(self.seed)
+        indices = np.random.permutation(len(X))
+        X_shuffled = X[indices]
+        Y_shuffled = Y[indices]
+
+        # חיתוך המדגמים לפי יחס 60/20/20 מתוך כלל הנתונים המעורבבים
+        n_total = len(X_shuffled)
+        train_size = int(round(self.split_proportions[0] * n_total))
+        val_size = int(round(self.split_proportions[1] * n_total))
+        # השארית הולכת ל-test כדי לספוג את שגיאת העיגול ולכסות את כל הנתונים
+        split_bounds = {
+            0: (0, train_size),                                # train
+            1: (train_size, train_size + val_size),            # val
+            2: (train_size + val_size, n_total),               # test
+        }
+        start_idx, end_idx = split_bounds[self.set_type]
+
+        X_split = X_shuffled[start_idx:end_idx]
+        Y_split = Y_shuffled[start_idx:end_idx]
+
+        # --- 3. נרמול (מבוסס רק על האימון) ---
+        X_train_split = X_shuffled[:train_size]
+        Y_train_split = Y_shuffled[:train_size]
+        
+        self.scaler_x.fit(X_train_split)
+        self.scaler_y.fit(Y_train_split)
+        
+        X_split = self.scaler_x.transform(X_split)
+        Y_split = self.scaler_y.transform(Y_split)
+        
+        self.X = torch.tensor(X_split, dtype=torch.float32)
+        self.Y = torch.tensor(Y_split, dtype=torch.float32)
+
+    def __getitem__(self, index):
+        return self.X[index], self.Y[index]
+
+    def __len__(self):
+        return len(self.X)

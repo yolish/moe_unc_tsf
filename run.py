@@ -151,7 +151,140 @@ if __name__ == '__main__':
     parser.add_argument('--do_cpvs_calibration', default=False, action='store_true', help='whether to perform CPVS calibration')
     parser.add_argument('--do_cqr_calibration', default=False, action='store_true', help='Whether to perform CQR calibration')
     parser.add_argument('--do_cp_calibration', default=False, action='store_true', help='Whether to perform CP calibration')
-    
+    parser.add_argument('--do_cqr_retrain_calibration', default=False, action='store_true',
+                        help='Whether to perform rolling-window retrained CQR calibration. The model is periodically '
+                             're-fit on a trailing window of recent history as the test stream advances, following the '
+                             'rolling re-estimation protocol of Gibbs & Candes (Adaptive Conformal Inference, NeurIPS '
+                             '2021, Sec 2.2), with the retrain cadence of EnCQR (Jensen et al., IEEE TNNLS 2022). '
+                             'Requires --use_quantile_loss.')
+    parser.add_argument('--do_aleatoric_mog_calibration', default=False, action='store_true',
+                        help='Whether to perform Aleatoric MoG calibration (CP-VS scored by '
+                             'sigma_ale * exp(var_epi / var_ale)). Requires --prob_expert.')
+    parser.add_argument('--do_aleatoric_mog_calibration_second_option', default=False, action='store_true',
+                        help='Whether to perform the second Aleatoric MoG variant, which scales by '
+                             '(sigma_epi + sigma_ale) * exp(var_epi / var_ale). Requires --prob_expert.')
+    parser.add_argument('--do_aleatoric_only_calibration', default=False, action='store_true',
+                        help='Whether to perform Aleatoric Only calibration (variance scaling on the '
+                             'aleatoric component alone). Requires --prob_expert.')
+    parser.add_argument('--do_aleatoric_scale_calibration', default=False, action='store_true',
+                        help='Whether to perform Aleatoric Scale calibration: variance scaling that '
+                             'calibrates the aleatoric component only and carries the epistemic '
+                             'component as an uncalibrated floor, width = sqrt(q^2*var_ale + var_epi). '
+                             'Requires --prob_expert.')
+    parser.add_argument('--do_aci_aleatoric_scale_calibration', default=False, action='store_true',
+                        help='Whether to perform ACI Aleatoric Scale calibration: the Aleatoric Scale '
+                             'score/interval with the target level driven by Adaptive Conformal '
+                             'Inference (Gibbs & Candes 2021), alpha_t <- alpha_t + gamma*(alpha - err_t) '
+                             'per (horizon, channel) cell, so realized coverage is steered back to '
+                             'nominal under drift. gamma=0 recovers Aleatoric Scale. Requires --prob_expert.')
+    parser.add_argument('--aci_gamma', type=float, default=0.01,
+                        help='ACI step size, shared by every --do_aci_*_calibration method. Larger '
+                             'tracks distribution shift faster at the cost of noisier interval '
+                             'widths. Note the delayed-update protocol feeds back errors that stay '
+                             'correlated across a whole horizon, so the effective step is '
+                             '~pred_len*gamma; on long horizons consider scaling this down '
+                             '(0.1/pred_len keeps alpha_t off the clip on ETTh1, i.e. ~0.001 at '
+                             'pred_len=96).')
+    parser.add_argument('--do_aci_aleatoric_scale_g001_calibration', default=False, action='store_true',
+                        help='Second ACI Aleatoric Scale variant with gamma fixed at 0.001 regardless '
+                             'of --aci_gamma, run alongside --do_aci_aleatoric_scale_calibration for '
+                             'side-by-side comparison. Writes to a separate result file. Requires '
+                             '--prob_expert.')
+    parser.add_argument('--aci_alpha', type=float, default=0.1,
+                        help='Nominal miscoverage the ACI recursion targets; intervals aim for '
+                             '1 - alpha coverage. Shared by every --do_aci_*_calibration method, '
+                             'including ACI MoECP (which uses this, NOT --moecp_alpha).')
+    parser.add_argument('--do_aci_cp_calibration', default=False, action='store_true',
+                        help='ACI-adaptive standard CP: AdaptiveCP\'s absolute-residual score with the '
+                             'target level driven by the Gibbs & Candes (2021) recursion per (horizon, '
+                             'channel) cell. Uses --aci_gamma/--aci_alpha. gamma=0 recovers '
+                             '--do_cp_calibration exactly. Ungated: works for any model.')
+    parser.add_argument('--do_aci_cpvs_calibration', default=False, action='store_true',
+                        help='ACI-adaptive CP-VS: AdaptiveCPVS\'s sigma-normalized residual score with '
+                             'the ACI level recursion, width = q*sigma. gamma=0 recovers '
+                             '--do_cpvs_calibration exactly. Requires --prob_expert for a meaningful '
+                             'sigma.')
+    parser.add_argument('--do_aci_aleatoric_only_calibration', default=False, action='store_true',
+                        help='ACI-adaptive aleatoric-only variance scaling: score r^2/var_ale, width '
+                             'sqrt(q^2*var_ale), with the ACI level recursion. gamma=0 recovers '
+                             '--do_aleatoric_only_calibration exactly. Requires --prob_expert.')
+    parser.add_argument('--do_aci_cqr_calibration', default=False, action='store_true',
+                        help='ACI-adaptive CQR: OnlineCQRQuantile\'s signed conformity score with the '
+                             'ACI level recursion. gamma=0 recovers --do_cqr_calibration exactly. '
+                             'Requires --use_quantile_loss.')
+    parser.add_argument('--do_aci_cqr_retrain_calibration', default=False, action='store_true',
+                        help='ACI-adaptive retrained CQR: the rolling model re-fit of Gibbs & Candes '
+                             'Sec 2.2 plus the level recursion of their Sec 2.1, i.e. both halves of '
+                             'the paper rather than only the retraining half. Uses --retrain_* and '
+                             '--aci_gamma/--aci_alpha. gamma=0 recovers '
+                             '--do_cqr_retrain_calibration exactly. Requires --use_quantile_loss.')
+    parser.add_argument('--do_aci_moecp_calibration', default=False, action='store_true',
+                        help='ACI-adaptive MoECP: the gate-localized weighted quantile read off at a '
+                             'per-(horizon, channel) level 1 - alpha_t instead of a fixed 1 - alpha. '
+                             'Unlike the other ACI variants the lower clip is not windup-prone here: '
+                             'alpha_t -> 0 makes the weighted CDF fall short of its target and the '
+                             'interval goes unbounded, which forces err_t = 0 and pulls alpha_t back '
+                             'up. Uses --aci_gamma/--aci_alpha and --moecp_temperature/'
+                             '--moecp_recompute_every. Runs serially (--moecp_workers is ignored). '
+                             'gamma=0 recovers --do_moecp_calibration bit-for-bit.')
+    parser.add_argument('--do_adaptive_variance_calibration', default=False, action='store_true',
+                        help='Whether to perform Adaptive Variance calibration: the Aleatoric Scale '
+                             'family with a learned epistemic weight r, width = sqrt(q^2*var_ale + '
+                             'r*var_epi). r is tuned for width on contiguous blocks of the validation '
+                             'split (r=1 is Aleatoric Scale, r=0 is Aleatoric Only). Requires --prob_expert.')
+    parser.add_argument('--do_adaptive_window_calibration', default=False, action='store_true',
+                        help='Whether to perform Adaptive Window calibration: the Aleatoric Scale '
+                             'score/interval with the sliding-window size selected per dataset by '
+                             'replaying the delayed online protocol on held-out validation steps and '
+                             'minimizing the interval score. Requires --prob_expert.')
+    parser.add_argument('--do_cp_dvs_calibration', default=False, action='store_true',
+                        help='Whether to perform CP-DVS calibration: split conformal whose scale '
+                             'field is fit by quantile regression at the target level on the MoG '
+                             'law-of-total-variance decomposition (within/between components). '
+                             'Standard CP and CP-VS are exact points of its model family. '
+                             'Requires --prob_expert.')
+    parser.add_argument('--cp_dvs_alpha', type=float, default=0.1,
+                        help='Miscoverage level for CP-DVS; intervals target 1 - alpha coverage.')
+    parser.add_argument('--do_moecp_calibration', default=False, action='store_true',
+                        help='Whether to perform MoECP calibration for time series: weighted '
+                             'conformal prediction whose calibration quantile is localized by '
+                             'gate-distribution similarity, w_i = exp(-tau*KL(pi~||pi_i)). Uses '
+                             'the same rolling window (1000) and delayed-update protocol as CPVS. '
+                             'Can return unbounded intervals by design. Requires --prob_expert.')
+    parser.add_argument('--moecp_alpha', type=float, default=0.1,
+                        help='Miscoverage level for time-series MoECP.')
+    parser.add_argument('--moecp_temperature', type=float, default=1.0,
+                        help='MoECP tau: multinomial count for the gate randomization and the '
+                             'exponent on the KL divergence. Larger localizes harder, at the cost '
+                             "of the test point's own weight w~_{n+1} more often exceeding alpha "
+                             '(unbounded interval). tau=1 keeps that near 0 on this TSF grid while '
+                             'still localizing meaningfully (widths stay well under standard_cp\'s); '
+                             'the paper\'s tabular default of 100 pushed unbounded rates as high as '
+                             '25%% here. tau=0 eliminates it exactly but degenerates to uniform '
+                             'weights, i.e. plain split CP on the absolute residual.')
+    parser.add_argument('--moecp_recompute_every', type=int, default=1,
+                        help='Recompute MoECP localized weights every k-th test origin (1 = '
+                             'exact). Raise to trade fidelity for speed on long horizons.')
+    parser.add_argument('--moecp_workers', type=int, default=1,
+                        help='Split the MoECP channel axis across this many worker processes. '
+                             'The parent keeps sole ownership of the RNG and scatters the pi~ '
+                             'it draws, so results are bit-identical to the serial path (1). '
+                             'Only worth raising on wide datasets: MoECP is O(W log W * H * C) '
+                             'per origin, so traffic (862 channels) is ~13 s/origin serially.')
+    parser.add_argument('--retrain_mode', type=str, default='finetune', choices=['finetune', 'scratch'],
+                        help='finetune: warm-start from current weights (default; keeps the ACI-faithful shared '
+                             'window trainable). scratch: re-initialize the model each retrain - pair with a larger '
+                             '--retrain_window (>=5000), which forfeits the single-shared-window property.')
+    parser.add_argument('--retrain_interval', type=int, default=None,
+                        help='Retrain every this many test steps. Defaults to pred_len.')
+    parser.add_argument('--retrain_window', type=int, default=1000,
+                        help='Size of the trailing window (in samples) used for BOTH the model re-fit and the '
+                             'conformal score buffer, per ACI Sec 2.2.')
+    parser.add_argument('--retrain_epochs', type=int, default=3, help='Epochs per retrain (no early stopping)')
+    parser.add_argument('--retrain_lr', type=float, default=None,
+                        help='Learning rate used when retraining. Defaults to --learning_rate.')
+
+
     # Overwrite existing checkpoints and force retraining
     parser.add_argument('--overwrite', action='store_true', default=False, help='Overwrite existing checkpoints and force retraining')
 
@@ -277,6 +410,119 @@ if __name__ == '__main__':
                     if args.do_cp_calibration:
                         print(f"Running CP calibration for {setting}...")
                         exp.calibrate_cp(setting)
+                    if args.use_quantile_loss and args.do_cqr_retrain_calibration:
+                        if args.prob_expert:
+                            print(f"Skipping Retrained CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                        else:
+                            print(f"Running Retrained CQR calibration for {setting}...")
+                            exp.calibrate_cqr_retrain(setting)
+                    if args.do_aleatoric_mog_calibration:
+                        if not (args.moe and args.prob_expert):
+                            print(f"Skipping Aleatoric MoG calibration for {setting}: requires --prob_expert "
+                                  f"(no separated aleatoric/epistemic uncertainty otherwise).")
+                        else:
+                            print(f"Running Aleatoric MoG calibration for {setting}...")
+                            exp.calibrate_aleatoric_mog(setting)
+                    if args.do_aleatoric_mog_calibration_second_option:
+                        if not (args.moe and args.prob_expert):
+                            print(f"Skipping Aleatoric MoG (second option) calibration for {setting}: requires "
+                                  f"--prob_expert (no separated aleatoric/epistemic uncertainty otherwise).")
+                        else:
+                            print(f"Running Aleatoric MoG (second option) calibration for {setting}...")
+                            exp.calibrate_aleatoric_mog_second_option(setting)
+                    if args.do_aleatoric_only_calibration:
+                        if not (args.moe and args.prob_expert):
+                            print(f"Skipping Aleatoric Only calibration for {setting}: requires --prob_expert "
+                                  f"(no separated aleatoric/epistemic uncertainty otherwise).")
+                        else:
+                            print(f"Running Aleatoric Only calibration for {setting}...")
+                            exp.calibrate_aleatoric_only(setting)
+                    if args.do_aleatoric_scale_calibration:
+                        if not (args.moe and args.prob_expert):
+                            print(f"Skipping Aleatoric Scale calibration for {setting}: requires --prob_expert "
+                                  f"(no separated aleatoric/epistemic uncertainty otherwise).")
+                        else:
+                            print(f"Running Aleatoric Scale calibration for {setting}...")
+                            exp.calibrate_aleatoric_scale(setting)
+                    if args.do_aci_aleatoric_scale_calibration:
+                        if not (args.moe and args.prob_expert):
+                            print(f"Skipping ACI Aleatoric Scale calibration for {setting}: requires --prob_expert "
+                                  f"(no separated aleatoric/epistemic uncertainty otherwise).")
+                        else:
+                            print(f"Running ACI Aleatoric Scale calibration for {setting}...")
+                            exp.calibrate_aci_aleatoric_scale(setting)
+                    if args.do_aci_aleatoric_scale_g001_calibration:
+                        if not (args.moe and args.prob_expert):
+                            print(f"Skipping ACI Aleatoric Scale (g=0.001) calibration for {setting}: requires "
+                                  f"--prob_expert (no separated aleatoric/epistemic uncertainty otherwise).")
+                        else:
+                            print(f"Running ACI Aleatoric Scale (g=0.001) calibration for {setting}...")
+                            exp.calibrate_aci_aleatoric_scale_g001(setting)
+                    if args.do_adaptive_variance_calibration:
+                        if not (args.moe and args.prob_expert):
+                            print(f"Skipping Adaptive Variance calibration for {setting}: requires --prob_expert "
+                                  f"(no separated aleatoric/epistemic uncertainty otherwise).")
+                        else:
+                            print(f"Running Adaptive Variance calibration for {setting}...")
+                            exp.calibrate_adaptive_variance(setting)
+                    if args.do_adaptive_window_calibration:
+                        if not (args.moe and args.prob_expert):
+                            print(f"Skipping Adaptive Window calibration for {setting}: requires --prob_expert "
+                                  f"(no separated aleatoric/epistemic uncertainty otherwise).")
+                        else:
+                            print(f"Running Adaptive Window calibration for {setting}...")
+                            exp.calibrate_adaptive_window(setting)
+                    if args.do_cp_dvs_calibration:
+                        if not (args.moe and args.prob_expert):
+                            print(f"Skipping CP-DVS calibration for {setting}: requires --prob_expert "
+                                  f"(no MoG variance decomposition otherwise).")
+                        else:
+                            print(f"Running CP-DVS calibration for {setting}...")
+                            exp.calibrate_cp_dvs(setting)
+                    if args.do_moecp_calibration:
+                        if not args.moe or (args.unc_gating and not args.prob_expert):
+                            print(f"Skipping MoECP calibration for {setting}: requires a softmax "
+                                  f"gating distribution (num_experts > 1, and --prob_expert if "
+                                  f"--unc_gating is set).")
+                        else:
+                            print(f"Running MoECP calibration for {setting}...")
+                            exp.calibrate_moecp(setting)
+
+                    # ACI-adaptive variants. Gating conditions are copied verbatim from each
+                    # base method's block above so the two stay in lockstep.
+                    if args.do_aci_cp_calibration:
+                        print(f"Running ACI CP calibration for {setting}...")
+                        exp.calibrate_aci_cp(setting)
+                    if args.moe and args.prob_expert and args.do_aci_cpvs_calibration:
+                        print(f"Running ACI CP-VS calibration for {setting}...")
+                        exp.calibrate_aci_cpvs(setting)
+                    if args.do_aci_aleatoric_only_calibration:
+                        if not (args.moe and args.prob_expert):
+                            print(f"Skipping ACI Aleatoric Only calibration for {setting}: requires "
+                                  f"--prob_expert (no MoG variance decomposition otherwise).")
+                        else:
+                            print(f"Running ACI Aleatoric Only calibration for {setting}...")
+                            exp.calibrate_aci_aleatoric_only(setting)
+                    if args.use_quantile_loss and args.do_aci_cqr_calibration:
+                        if args.prob_expert:
+                            print(f"Skipping ACI CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                        else:
+                            print(f"Running ACI CQR calibration for {setting}...")
+                            exp.calibrate_aci_cqr(setting)
+                    if args.use_quantile_loss and args.do_aci_cqr_retrain_calibration:
+                        if args.prob_expert:
+                            print(f"Skipping ACI Retrained CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                        else:
+                            print(f"Running ACI Retrained CQR calibration for {setting}...")
+                            exp.calibrate_aci_cqr_retrain(setting)
+                    if args.do_aci_moecp_calibration:
+                        if not args.moe or (args.unc_gating and not args.prob_expert):
+                            print(f"Skipping ACI MoECP calibration for {setting}: requires a softmax "
+                                  f"gating distribution (num_experts > 1, and --prob_expert if "
+                                  f"--unc_gating is set).")
+                        else:
+                            print(f"Running ACI MoECP calibration for {setting}...")
+                            exp.calibrate_aci_moecp(setting)
 
                 elif isinstance(exp, Exp_Tabular_Regression):
                     if args.use_reg_moecp:
@@ -386,6 +632,117 @@ if __name__ == '__main__':
             if args.do_cp_calibration:
                 print(f"Running CP calibration for {setting}...")
                 exp.calibrate_cp(setting)
+            if args.use_quantile_loss and args.do_cqr_retrain_calibration:
+                if args.prob_expert:
+                    print(f"Skipping Retrained CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                else:
+                    print(f"Running Retrained CQR calibration for {setting}...")
+                    exp.calibrate_cqr_retrain(setting)
+            if args.do_aleatoric_mog_calibration:
+                if not (args.moe and args.prob_expert):
+                    print(f"Skipping Aleatoric MoG calibration for {setting}: requires --prob_expert "
+                          f"(no separated aleatoric/epistemic uncertainty otherwise).")
+                else:
+                    print(f"Running Aleatoric MoG calibration for {setting}...")
+                    exp.calibrate_aleatoric_mog(setting)
+            if args.do_aleatoric_mog_calibration_second_option:
+                if not (args.moe and args.prob_expert):
+                    print(f"Skipping Aleatoric MoG (second option) calibration for {setting}: requires "
+                          f"--prob_expert (no separated aleatoric/epistemic uncertainty otherwise).")
+                else:
+                    print(f"Running Aleatoric MoG (second option) calibration for {setting}...")
+                    exp.calibrate_aleatoric_mog_second_option(setting)
+            if args.do_aleatoric_only_calibration:
+                if not (args.moe and args.prob_expert):
+                    print(f"Skipping Aleatoric Only calibration for {setting}: requires --prob_expert "
+                          f"(no separated aleatoric/epistemic uncertainty otherwise).")
+                else:
+                    print(f"Running Aleatoric Only calibration for {setting}...")
+                    exp.calibrate_aleatoric_only(setting)
+            if args.do_aleatoric_scale_calibration:
+                if not (args.moe and args.prob_expert):
+                    print(f"Skipping Aleatoric Scale calibration for {setting}: requires --prob_expert "
+                          f"(no separated aleatoric/epistemic uncertainty otherwise).")
+                else:
+                    print(f"Running Aleatoric Scale calibration for {setting}...")
+                    exp.calibrate_aleatoric_scale(setting)
+            if args.do_aci_aleatoric_scale_calibration:
+                if not (args.moe and args.prob_expert):
+                    print(f"Skipping ACI Aleatoric Scale calibration for {setting}: requires --prob_expert "
+                          f"(no separated aleatoric/epistemic uncertainty otherwise).")
+                else:
+                    print(f"Running ACI Aleatoric Scale calibration for {setting}...")
+                    exp.calibrate_aci_aleatoric_scale(setting)
+            if args.do_aci_aleatoric_scale_g001_calibration:
+                if not (args.moe and args.prob_expert):
+                    print(f"Skipping ACI Aleatoric Scale (g=0.001) calibration for {setting}: requires "
+                          f"--prob_expert (no separated aleatoric/epistemic uncertainty otherwise).")
+                else:
+                    print(f"Running ACI Aleatoric Scale (g=0.001) calibration for {setting}...")
+                    exp.calibrate_aci_aleatoric_scale_g001(setting)
+            if args.do_adaptive_variance_calibration:
+                if not (args.moe and args.prob_expert):
+                    print(f"Skipping Adaptive Variance calibration for {setting}: requires --prob_expert "
+                          f"(no separated aleatoric/epistemic uncertainty otherwise).")
+                else:
+                    print(f"Running Adaptive Variance calibration for {setting}...")
+                    exp.calibrate_adaptive_variance(setting)
+            if args.do_adaptive_window_calibration:
+                if not (args.moe and args.prob_expert):
+                    print(f"Skipping Adaptive Window calibration for {setting}: requires --prob_expert "
+                          f"(no separated aleatoric/epistemic uncertainty otherwise).")
+                else:
+                    print(f"Running Adaptive Window calibration for {setting}...")
+                    exp.calibrate_adaptive_window(setting)
+            if args.do_cp_dvs_calibration:
+                if not (args.moe and args.prob_expert):
+                    print(f"Skipping CP-DVS calibration for {setting}: requires --prob_expert "
+                          f"(no MoG variance decomposition otherwise).")
+                else:
+                    print(f"Running CP-DVS calibration for {setting}...")
+                    exp.calibrate_cp_dvs(setting)
+            if args.do_moecp_calibration:
+                if not args.moe or (args.unc_gating and not args.prob_expert):
+                    print(f"Skipping MoECP calibration for {setting}: requires a softmax gating "
+                          f"distribution (num_experts > 1, and --prob_expert if --unc_gating is set).")
+                else:
+                    print(f"Running MoECP calibration for {setting}...")
+                    exp.calibrate_moecp(setting)
+
+            # ACI-adaptive variants. Gating conditions are copied verbatim from each base
+            # method's block above so the two stay in lockstep.
+            if args.do_aci_cp_calibration:
+                print(f"Running ACI CP calibration for {setting}...")
+                exp.calibrate_aci_cp(setting)
+            if args.moe and args.prob_expert and args.do_aci_cpvs_calibration:
+                print(f"Running ACI CP-VS calibration for {setting}...")
+                exp.calibrate_aci_cpvs(setting)
+            if args.do_aci_aleatoric_only_calibration:
+                if not (args.moe and args.prob_expert):
+                    print(f"Skipping ACI Aleatoric Only calibration for {setting}: requires "
+                          f"--prob_expert (no MoG variance decomposition otherwise).")
+                else:
+                    print(f"Running ACI Aleatoric Only calibration for {setting}...")
+                    exp.calibrate_aci_aleatoric_only(setting)
+            if args.use_quantile_loss and args.do_aci_cqr_calibration:
+                if args.prob_expert:
+                    print(f"Skipping ACI CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                else:
+                    print(f"Running ACI CQR calibration for {setting}...")
+                    exp.calibrate_aci_cqr(setting)
+            if args.use_quantile_loss and args.do_aci_cqr_retrain_calibration:
+                if args.prob_expert:
+                    print(f"Skipping ACI Retrained CQR for setting {setting}: Pinball loss is incompatible with prob experts")
+                else:
+                    print(f"Running ACI Retrained CQR calibration for {setting}...")
+                    exp.calibrate_aci_cqr_retrain(setting)
+            if args.do_aci_moecp_calibration:
+                if not args.moe or (args.unc_gating and not args.prob_expert):
+                    print(f"Skipping ACI MoECP calibration for {setting}: requires a softmax gating "
+                          f"distribution (num_experts > 1, and --prob_expert if --unc_gating is set).")
+                else:
+                    print(f"Running ACI MoECP calibration for {setting}...")
+                    exp.calibrate_aci_moecp(setting)
 
         elif isinstance(exp, Exp_Tabular_Regression):
             if args.use_reg_moecp:

@@ -9,6 +9,11 @@ data_dict = {
     'ETTm1': Dataset_ETT_minute,
     'ETTm2': Dataset_ETT_minute,
     'custom': Dataset_Custom,
+    # 3-regime synthetic series from scripts/make_synth_moe3.py. Plain Dataset_Custom
+    # (same CSV layout, same 70/10/20 split, same train-fit scaling as the real
+    # datasets, so the numbers are comparable); it earns its own key only so the
+    # `setting` string records the dataset name instead of a generic "custom".
+    'SynthMoE3': Dataset_Custom,
     'm4': Dataset_M4,
     'PSM': PSMSegLoader,
     'MSL': MSLSegLoader,
@@ -27,7 +32,7 @@ def data_provider(args, flag):
     Data = data_dict[args.data]
     timeenc = 0 if args.embed != 'timeF' else 1
 
-    shuffle_flag = False if (flag == 'test' or flag == 'TEST') else True
+    shuffle_flag = False if (flag == 'test' or flag == 'TEST' or flag == 'val') else True
     drop_last = False
     batch_size = args.batch_size
     freq = args.freq

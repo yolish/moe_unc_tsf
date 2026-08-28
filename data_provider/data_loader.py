@@ -16,6 +16,38 @@ from utils.augmentation import run_augmentation_single
 warnings.filterwarnings('ignore')
 
 
+class Dataset_Window(Dataset):
+    """Forecasting dataset over pre-sliced arrays, for rolling-window retraining.
+
+    Unlike the Dataset_* classes below, this one does no file reading, scaling or
+    border computation: it is handed an already-transformed slice of the series and
+    only provides the sliding-window view over it. __getitem__/__len__ are identical
+    to Dataset_ETT_hour so the sample semantics (stride 1, label_len overlap) match.
+    """
+
+    def __init__(self, data_x, data_stamp, size):
+        self.seq_len, self.label_len, self.pred_len = size[0], size[1], size[2]
+        self.data_x = data_x
+        self.data_y = data_x
+        self.data_stamp = data_stamp
+
+    def __getitem__(self, index):
+        s_begin = index
+        s_end = s_begin + self.seq_len
+        r_begin = s_end - self.label_len
+        r_end = r_begin + self.label_len + self.pred_len
+
+        seq_x = self.data_x[s_begin:s_end]
+        seq_y = self.data_y[r_begin:r_end]
+        seq_x_mark = self.data_stamp[s_begin:s_end]
+        seq_y_mark = self.data_stamp[r_begin:r_end]
+
+        return seq_x, seq_y, seq_x_mark, seq_y_mark
+
+    def __len__(self):
+        return len(self.data_x) - self.seq_len - self.pred_len + 1
+
+
 class Dataset_ETT_hour(Dataset):
     def __init__(self, args, root_path, flag='train', size=None,
                  features='S', data_path='ETTh1.csv',

@@ -9,13 +9,15 @@ data_paths=("ETTh2.csv" "ETTm2.csv" "ETTm1.csv" "ETTh1.csv")
 datasets=("ETTh2" "ETTm2" "ETTm1" "ETTh1")
 #pred_lengths=(720 336 192 96)
 pred_lengths=(96)
-num_experts=(1)
-#num_experts=(1 3)
-#configurations=(2 3)
-configurations=(4)
-#seeds=(2351 2352 2353 2354 2355)
-seeds=(1193)
+# ne=3 gives CP-MoG / CP-MoG-a / CP-fixed; ne=1 gives CP-G.
+num_experts=(1 3)
+# config 2 = MoGE trunk (CP-MoG, CP-MoG-a, CP-fixed); config 4 = pinball trunk (both CQR variants).
+configurations=(2 4)
+seeds=(4021 4022 4023 4024 4025)
 model_id="test"
+# CQR trains a separate pinball-loss network; a distinct model_id keeps its
+# checkpoint from colliding with the ne=1 non-probabilistic one (same ne/pe/ug).
+cqr_model_id="cqr"
 features="M"
 seq_len=96
 label_len=48
@@ -74,7 +76,12 @@ do
                         --pred_len $pred_len \
                         --seed $seed \
                         --num_experts $ne \
-                        --prob_expert
+                        --prob_expert \
+                        --aci_alpha 0.1 \
+                        --aci_gamma 0.001 \
+                        --do_aci_cpvs_calibration \
+                        --do_aci_aleatoric_scale_g001_calibration \
+                        --do_aci_cp_calibration
                     fi
                     if [ $config -eq 3 ]; then
                         if [ $pred_len -eq 96 ]; then
@@ -120,14 +127,17 @@ do
                             --unc_gating 
                         fi
                     fi
-                    if [ $config -eq 4 ]; then
-                        echo "python -u run.py --task_name long_term_forecast --root_path $root_path --data_path $data_path --model $model_name --data $dataset --pred_len $pred_len --num_experts $ne --use_quantile_loss --do_cqr_calibration --seed $seed"
+                    # CQR is a single-expert trunk in the paper: the reported CQR columns
+                    # are read from the ne=1 table for every dataset, so an ne=3 CQR run
+                    # would train for hours and feed no cell.
+                    if [ $config -eq 4 ] && [ $ne -eq 1 ]; then
+                        echo "python -u run.py ... --data $dataset --pred_len $pred_len --num_experts $ne --use_quantile_loss --do_aci_cqr_calibration --do_aci_cqr_retrain_calibration --seed $seed"
                         python -u run.py \
                         --task_name long_term_forecast \
                         --is_training 1 \
                         --root_path $root_path \
                         --data_path $data_path \
-                        --model_id $model_id \
+                        --model_id $cqr_model_id \
                         --model $model_name \
                         --data $dataset \
                         --features $features \
@@ -138,7 +148,10 @@ do
                         --seed $seed \
                         --num_experts $ne \
                         --use_quantile_loss \
-                        --do_cqr_calibration
+                        --aci_alpha 0.1 \
+                        --aci_gamma 0.001 \
+                        --do_aci_cqr_calibration \
+                        --do_aci_cqr_retrain_calibration
                     fi             
                 done
             done    
